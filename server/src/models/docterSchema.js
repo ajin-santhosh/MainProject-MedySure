@@ -22,7 +22,18 @@ const docterSchema = new mongoose.Schema(
       enum: ["male", "female", "other"],
     },
     experiance: {
-        T
+        type: String,
+        required: true
+    },
+    department:{
+        type: String,
+        required: true
+    },
+    qualification:{
+         type: String,
+        required: true
     }
+},  { timestamps: true }
 
-})
+)
+module.exports = mongoose.model("docters", docterSchema)
