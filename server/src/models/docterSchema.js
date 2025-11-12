@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Users = require("./userSchema");
 
-const docterSchema = new mongoose.Schema(
+const doctorSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,4 +36,4 @@ const docterSchema = new mongoose.Schema(
 },  { timestamps: true }
 
 )
-module.exports = mongoose.model("docters", docterSchema)
+module.exports = mongoose.model("Doctor", doctorSchema)
