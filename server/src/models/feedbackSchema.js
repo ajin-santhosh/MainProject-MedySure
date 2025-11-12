@@ -13,6 +13,7 @@ const feedbackSchema = new mongoose.Schema({
   appointmentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Appointment",
+    default:null
   },
   description: {
     type: String,

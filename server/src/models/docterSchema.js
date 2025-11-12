@@ -5,20 +5,20 @@ const doctorSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
+      required: true
     },
     name: {
       type: String,
-      required: true,
+      required: true
     },
     lastName: {
       type: String,
-      required: true,
+      required: true
     },
     gender: {
       type: String,
       required: true,
-      enum: ["male", "female", "other"],
+      enum: ["male", "female", "other"]
     },
     experiance: {
         type: String,

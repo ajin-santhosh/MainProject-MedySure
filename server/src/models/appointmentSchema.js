@@ -4,17 +4,18 @@ const appointmentSchema = new mongoose.Schema(
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
+      required: true
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
+      required: true
     },
     reportId: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Report",
+        default:null
       }
     ],
 
@@ -23,28 +24,28 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: (v) => v > Date.now(),
-        message: "Appointment date must be in the future.",
+        message: "Appointment date must be in the future."
       },
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     description: {
-      type: String,
+      type: String
     },
     status: {
       type: String,
       enum: ["pending", "scheduled", "rescheduled", "cancelled", "completed"],
       default: "pending",
-      required: true,
+      required: true
     },
     notes: {
-      type: String,
+      type: String
     },
     payment: {
       type: Boolean,
-      default: false,
+      default: false
     },
   },
   { timestamps: true }
