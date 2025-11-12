@@ -5,54 +5,54 @@ const patientSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
+      required: true
     },
     name: {
       type: String,
-      required: true,
+      required: true
     },
     lastName: {
       type: String,
-      required: true,
+      required: true
     },
     phone: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     gender: {
       type: String,
       required: true,
-      enum: ["male", "female", "other"],
+      enum: ["male", "female", "other"]
     },
     age: {
       type: Number,
-      required: true,
+      required: true
     },
     blood_group: {
       type: String,
-      required: true,
+      required: true
     },
     height: {
       type: String,
-      required: true,
+      required: true
     },
     weight: {
       type: String,
-      required: true,
+      required: true
     },
     place: {
       type: String,
-      required: true,
+      required: true
     },
     paid: {
       type: Boolean,
-      default: false,
+      default: false
     },
     emergencyContact: {
       name: { type: String, required: true },
       relation: { type: String, required: true },
-      phone: { type: String, required: true, trim: true },
+      phone: { type: String, required: true, trim: true }
     },
   },
   { timestamps: true }

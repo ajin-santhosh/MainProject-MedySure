@@ -5,24 +5,24 @@ const postSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     description: {
-      type: String,
+      type: String
     },
     fileUrl: [
       {
-        type: String,
+        type: String
       },
     ],
     status: {
       type: String,
       enum: ["draft", "published"],
-      default: "draft",
+      default: "draft"
     },
   },
   { timestamps: true }

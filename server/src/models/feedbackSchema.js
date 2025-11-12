@@ -3,12 +3,12 @@ const feedbackSchema = new mongoose.Schema({
   patientId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",
-    required: true,
+    required: true
   },
   doctorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",
-    required: true,
+    required: true
   },
   appointmentId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -16,12 +16,12 @@ const feedbackSchema = new mongoose.Schema({
     default:null
   },
   description: {
-    type: String,
+    type: String
   },
   rating: {
     type: Number,
     enum: [1, 2, 3, 4, 5],
-    default: null,
+    default: null
   },
 
 },
