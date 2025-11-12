@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Users = require("./userSchema");
 const appointmentSchema = new mongoose.Schema(
   {
     patientId: {
@@ -16,16 +15,16 @@ const appointmentSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Report",
-      },
+      }
     ],
 
     appointmentDate: {
       type: Date,
       required: true,
       validate: {
-    validator: (v) => v > Date.now(),
-    message: "Appointment date must be in the future.",
-  },
+        validator: (v) => v > Date.now(),
+        message: "Appointment date must be in the future.",
+      },
     },
     title: {
       type: String,
@@ -41,7 +40,7 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
     notes: {
-   type: String
+      type: String,
     },
     payment: {
       type: Boolean,
