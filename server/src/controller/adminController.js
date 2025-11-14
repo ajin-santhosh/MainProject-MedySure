@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt");
 const Users = require("../models/userSchema");
 
+// Create Admin controller
 const createAdmin = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
     if (!email || !password) {
       return res
         .status(400)
@@ -19,7 +20,7 @@ const createAdmin = async (req, res) => {
       password: hashPassword,
       role: "admin",
     });
-    res.status(201).json({
+    return res.status(201).json({
       message: "admin registered successfully",
       user: { email: newUser.email, role: newUser.role },
     });
@@ -28,4 +29,40 @@ const createAdmin = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-module.exports = createAdmin
+
+//Update Admin controller
+const updateAdmin = async (req, res) => {
+  const {userId} = req.params
+  const { email, password, active } = req.body;
+  try {
+    const updatingAdmin = await Users.findById(userId);
+    if (!updatingAdmin) {
+      return res.status(409).json({ message: "admin not exist in db" });
+    }
+    if (email) {
+      const existingemail = await Users.findOne({ email });
+      if (existingemail) {
+        return res.status(409).json({ message: "mail id already in use" });
+      }
+      updatingAdmin.email = email;
+    }
+    if (password) {
+      const hashPassword = await bcrypt.hash(password, 10);
+      updatingAdmin.password = hashPassword;
+    }
+    if (active) {
+      updatingAdmin.active = active;
+    }
+
+    const updatedAdmin = await updatingAdmin.save();
+    return res.status(201).json({
+      message: "admin updated successfully",
+      user: { email: updatedAdmin.email, role: updatedAdmin.role },
+    });
+  } catch (error) {
+    console.error("Error updating admin:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = {createAdmin,updateAdmin}

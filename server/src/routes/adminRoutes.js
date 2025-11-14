@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const createAdmin = require("../controller/adminController")
+const {createAdmin,updateAdmin} = require("../controller/adminController")
 
-router.post('/createadmin', createAdmin)
-
+router.post('/createAdmin', createAdmin)  
+router.put('/updateAdmin/:userId',updateAdmin)
 module.exports = router
