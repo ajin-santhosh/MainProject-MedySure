@@ -16,11 +16,13 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: true,
-      enum: ["patient", "doctor", "admin"]
+      enum: ["patient", "doctor", "admin"],
+      index: true   
     },
     active: {
       type: Boolean,
-      default: true
+      default: true,
+      index: true   
     },
   },
   { timestamps: true }

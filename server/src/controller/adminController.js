@@ -32,7 +32,7 @@ const createAdmin = async (req, res) => {
 
 //Update Admin controller
 const updateAdmin = async (req, res) => {
-  const {userId} = req.params
+  const { userId } = req.params;
   const { email, password, active } = req.body;
   try {
     const updatingAdmin = await Users.findById(userId);
@@ -64,5 +64,32 @@ const updateAdmin = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const getAdmins = async (req, res) => {
+  try {
+    const getAdmin = await Users.find({ role: "admin" });
+    return res.status(201).json({
+      message: "admin data",
+      getAdmin,
+    });
+  } catch (error) {
+    console.error("Error in getting admin:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+const deleteAdmin = async (req,res) => {
+    const {userId} = req.params
+    try{
+        const del = await Users.findByIdAndDelete(userId) 
+        return res.status(201).json({
+      message: "admin deleted successfully",
+      del,
+    });
+         
+    }
+    catch(error){
+           console.error("Error in deleting admin:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
 
-module.exports = {createAdmin,updateAdmin}
+module.exports = { createAdmin, updateAdmin, getAdmins,deleteAdmin };
