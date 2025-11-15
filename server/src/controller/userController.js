@@ -1,0 +1,95 @@
+const bcrypt = require("bcrypt");
+const Users = require("../models/userSchema");
+const { registerDoctor, updateDoctordetails,deletingDoctorDetails } = require("./doctorController");
+
+// create docter
+const createDoctor = async (req, res) => {
+  const { email, password, ...otherData } = req.body;
+  try {
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "email and password are required" });
+    }
+    const existingemail = await Users.findOne({ email });
+    if (existingemail) {
+      return res.status(409).json({ message: "mail id already used" });
+    }
+    const hashPassword = await bcrypt.hash(password, 10);
+    const newUser = await Users.create({
+      email,
+      password: hashPassword,
+      role: "doctor",
+    });
+    const userId = newUser._id;
+    const newrDoctor = await registerDoctor(otherData, userId); // passing data to doctor controller
+    return res.status(201).json({
+      message: "docter registered successfully",
+      user: newUser,
+      doctor: newrDoctor,
+    });
+  } catch (error) {
+    console.error("Error creating doctor:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//update doctor
+const updateDoctor = async (req, res) => {
+  const { userId } = req.params;
+  const { email, password, active, ...otherData } = req.body;
+  try {
+    const updatingDoctor = await Users.findById(userId);
+    if (!updatingDoctor) {
+      return res.status(409).json({ message: "doctor not exist in db" });
+    }
+    if (email) {
+      const existingemail = await Users.findOne({ email, _id: { $ne: userId } });
+      if (existingemail) {
+        return res.status(409).json({ message: "mail id already in use" });
+      }
+      updatingDoctor.email = email;
+    }
+    if (password) {
+      const hashPassword = await bcrypt.hash(password, 10);
+      updatingDoctor.password = hashPassword;
+    }
+    if (active !== undefined) {
+      updatingDoctor.active = active;
+    }
+    const updatedDoctor = await updatingDoctor.save();
+    if (Object.keys(otherData).length > 0) {
+        await updateDoctordetails(userId, otherData);
+    }
+    return res.status(201).json({
+      message: "doctor updated successfully",
+      user: updatedDoctor,
+    });
+    
+  } catch (error) {
+    console.error("Error updating doctor:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Deleting doctor
+const deleteDoctor = async (req,res) => {
+    const {userId} = req.params
+    try{
+        const del = await Users.findByIdAndDelete(userId) 
+        const deletedDoctorDetails = await deletingDoctorDetails(userId)
+
+        return res.status(201).json({
+        message: "admin deleted successfully",
+        del,
+        deletedDoctorDetails
+    });
+         
+    }
+    catch(error){
+           console.error("Error in deleting admin:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+module.exports = { createDoctor, updateDoctor,deleteDoctor };

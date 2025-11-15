@@ -43,13 +43,13 @@ const updateAdmin = async (req, res) => {
       //   statusCode : 409
       // }
       // return next(obj)
-      // return res.status(409).json({ message: "admin not exist in db" });
+      return res.status(409).json({ message: "admin not exist in db" });
     }
 
       
 
     if (email) {
-      const existingemail = await Users.findOne({ email });
+      const existingemail = await Users.findOne({ email, _id: { $ne: userId } });
       if (existingemail) {
         return res.status(409).json({ message: "mail id already in use" });
       }
@@ -92,7 +92,7 @@ const deleteAdmin = async (req,res) => {
         const del = await Users.findByIdAndDelete(userId) 
         return res.status(201).json({
       message: "admin deleted successfully",
-      del,
+      del
     });
          
     }
