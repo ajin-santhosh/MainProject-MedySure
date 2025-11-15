@@ -27,6 +27,7 @@ const createAdmin = async (req, res) => {
   } catch (error) {
     console.error("Error creating admin:", error);
     return res.status(500).json({ message: "Internal Server Error" });
+    
   }
 };
 
@@ -37,8 +38,16 @@ const updateAdmin = async (req, res) => {
   try {
     const updatingAdmin = await Users.findById(userId);
     if (!updatingAdmin) {
-      return res.status(409).json({ message: "admin not exist in db" });
+      // const obj =  {
+      //   message : "admin not exist in db",
+      //   statusCode : 409
+      // }
+      // return next(obj)
+      // return res.status(409).json({ message: "admin not exist in db" });
     }
+
+      
+
     if (email) {
       const existingemail = await Users.findOne({ email });
       if (existingemail) {
@@ -62,6 +71,7 @@ const updateAdmin = async (req, res) => {
   } catch (error) {
     console.error("Error updating admin:", error);
     return res.status(500).json({ message: "Internal Server Error" });
+    
   }
 };
 const getAdmins = async (req, res) => {
