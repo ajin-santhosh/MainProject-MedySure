@@ -31,6 +31,7 @@ const createAdmin = async (req, res) => {
   }
 };
 
+//
 //Update Admin controller
 const updateAdmin = async (req, res) => {
   const { userId } = req.params;
@@ -74,6 +75,9 @@ const updateAdmin = async (req, res) => {
     
   }
 };
+
+//
+//Show admins
 const getAdmins = async (req, res) => {
   try {
     const getAdmin = await Users.find({ role: "admin" });
@@ -86,6 +90,8 @@ const getAdmins = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+//
+// delete admin
 const deleteAdmin = async (req,res) => {
     const {userId} = req.params
     try{

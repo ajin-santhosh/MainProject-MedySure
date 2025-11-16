@@ -14,6 +14,7 @@ const registerDoctor = async (otherData, userId) => {
     throw error;
   }
 };
+//
 // updated docter collection
 const updateDoctordetails = async (userId, otherData) => {
   try {
@@ -28,6 +29,8 @@ const updateDoctordetails = async (userId, otherData) => {
     throw error;
   }
 };
+//
+// delete dcotor from doctor collection
 const deletingDoctorDetails = async (userId) => {
   try {
     const deletedDoctor = await Doctor.findOneAndDelete({ userId: userId });
@@ -42,6 +45,8 @@ const deletingDoctorDetails = async (userId) => {
     throw error;
   }
 };
+//
+// show all doctrors
 const getDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find();

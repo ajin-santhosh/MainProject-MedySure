@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const Users = require("../models/userSchema");
 const { registerDoctor, updateDoctordetails,deletingDoctorDetails } = require("./doctorController");
+const{patientSignInMailVerfication} = require("../controller/mailController")
 
 // create docter
 const createDoctor = async (req, res) => {
@@ -91,5 +92,40 @@ const deleteDoctor = async (req,res) => {
     return res.status(500).json({ message: "Internal Server Error" });
     }
 }
+//
+// create patient in User
 
-module.exports = { createDoctor, updateDoctor,deleteDoctor };
+const createPatient = async (req,res) => {
+
+const { email, password, ...otherData } = req.body;
+  try {
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "email and password are required" });
+    }
+    const existingemail = await Users.findOne({ email });
+    if (existingemail) {
+      return res.status(409).json({ message: "mail id already used" });
+    }
+    const hashPassword = await bcrypt.hash(password, 10);
+    const newUser = await Users.create({
+      email,
+      password: hashPassword,
+      role: "patient",
+    });
+    const userId = newUser._id;
+    const mailsender = await patientSignInMailVerfication(userId)  // mail sender
+    if(mailsender !== true){
+      return res.status(500).json({message: "error in sending mail"})
+    }
+    return res.status(201).json({
+      message: "patient registered successfully",
+      user: newUser
+    })
+  } catch (error) {
+    console.error("Error creating patient:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+module.exports = { createDoctor, updateDoctor,deleteDoctor,createPatient };
