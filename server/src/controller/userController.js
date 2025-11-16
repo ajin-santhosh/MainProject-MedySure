@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const Users = require("../models/userSchema");
 const { registerDoctor, updateDoctordetails,deletingDoctorDetails } = require("./doctorController");
 const{patientSignInMailVerfication} = require("../controller/mailController")
+const{updatePatientDetails,deletingPatientDetails}= require("../controller/patientController")
 
 // create docter
 const createDoctor = async (req, res) => {
@@ -128,4 +129,60 @@ const { email, password, ...otherData } = req.body;
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
-module.exports = { createDoctor, updateDoctor,deleteDoctor,createPatient };
+
+const updatePatient = async (req, res) => {
+  const { userId } = req.params;
+  const { email, password, active, ...otherData } = req.body;
+  try {
+    const updatingPatient = await Users.findById(userId);
+    if (!updatingPatient) {
+      return res.status(409).json({ message: "patient not exist in db" });
+    }
+    if (email) {
+      const existingemail = await Users.findOne({ email, _id: { $ne: userId } });
+      if (existingemail) {
+        return res.status(409).json({ message: "mail id already in use" });
+      }
+      updatingPatient.email = email;
+    }
+    if (password) {
+      const hashPassword = await bcrypt.hash(password, 10);
+      updatingPatient.password = hashPassword;
+    }
+    if (active !== undefined) {
+      updatingPatient.active = active;
+    }
+    const updatedPatient = await updatingPatient.save();
+    if (Object.keys(otherData).length > 0) {
+        await updatePatientDetails(userId, otherData);
+    }
+    return res.status(201).json({
+      message: "patient updated successfully",
+      user: updatedPatient,
+    });
+    
+  } catch (error) {
+    console.error("Error updating patient:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+// Deleting doctor
+const deletePatient = async (req,res) => {
+    const {userId} = req.params
+    try{
+        const del = await Users.findByIdAndDelete(userId) 
+        const deletedPatientDetails = await deletingPatientDetails(userId)
+
+        return res.status(201).json({
+        message: "patient deleted successfully",
+        del,
+        deletedPatientDetails
+    });
+         
+    }
+    catch(error){
+           console.error("Error in deleting patient:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+module.exports = { createDoctor, updateDoctor,deleteDoctor,createPatient,updatePatient,deletePatient };

@@ -8,7 +8,7 @@ const patientSchema = new mongoose.Schema(
       required: true,
       index: true
     },
-    name: {
+    firstName: {
       type: String,
       required: true
     },
