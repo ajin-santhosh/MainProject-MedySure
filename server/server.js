@@ -1,19 +1,24 @@
 require('dotenv').config()
+const cookieParser = require("cookie-parser");
 const express = require('express')
 const connectDB = require('./src/config/db')
 const errorHandler = require("./src/middleware/errorHandler")
 const adminRoutes = require("./src/routes/adminRoutes")
 const doctorRoutes = require("./src/routes/doctorRoutes")
 const patientRoutes = require("./src/routes/patientRoutes")
+const loginRoutes = require("./src/routes/loginRoutes")
+const appointmentRoutes = require("./src/routes/appointmentRoutes")
 const app = express()
 const port = process.env.Port
 connectDB()
 app.use(express.json())
+app.use(cookieParser());
 
 app.use('/medysure/api/admin',adminRoutes)
 app.use('/medysure/api/doctor',doctorRoutes)
 app.use('/medysure/api/patient',patientRoutes)
-
+app.use('/medysure/api',loginRoutes)
+app.use('/medysure/api/appointment',appointmentRoutes)
 // app.use(errorHandler)
 
 app.listen(port, () => {

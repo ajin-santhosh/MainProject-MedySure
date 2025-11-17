@@ -51,12 +51,13 @@ const getDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find();
     return res.status(201).json({
+      success:true,
       message: "doctor data",
-      doctors,
+      data: doctors,
     });
   } catch (error) {
     console.error("Error fetching doctors:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
   }
 };
 

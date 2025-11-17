@@ -9,7 +9,7 @@ const patientOtpValidator = async (req, res) => {
   const { otp } = req.body;
   try {
     if (!userId || !otp) {
-      return res.status(400).json({ message: "userid and otp are required" });
+      return res.status(400).json({ success:false, message: "userid and otp are required" });
     }
     const secret = Buffer.from(userId.toString()).toString("base64");
     const isValid = speakeasy.totp.verify({
@@ -25,7 +25,7 @@ const patientOtpValidator = async (req, res) => {
       return res.status(500).json({
         success: false,
         message: "Invalid or expired OTP and user is deleted",
-        del,
+        data:del,
       });
     }
 
@@ -34,7 +34,7 @@ const patientOtpValidator = async (req, res) => {
       .json({ success: true, message: "OTP verified successfully!" });
   } catch (error) {
     console.error("Error otp verification:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
   }
 };
 //
@@ -75,11 +75,11 @@ const registerPatientDetails = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "pateint details registered successfully",
-      newpatient,
+      data:newpatient,
     });
   } catch (error) {
     console.error("Error registering patient:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
   }
 };
 // updated patient details
@@ -118,12 +118,13 @@ const getPatient = async (req, res) => {
   try {
     const patients = await Patient.find();
     return res.status(201).json({
+      success:true,
       message: "patient data",
-      patients,
+      data:patients,
     });
   } catch (error) {
     console.error("Error fetching patients:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
   }
 };
 module.exports = {

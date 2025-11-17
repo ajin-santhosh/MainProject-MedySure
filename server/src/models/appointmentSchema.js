@@ -4,21 +4,31 @@ const appointmentSchema = new mongoose.Schema(
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true
+      required: true,
+      index:true
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      required: true
+      required: true,
+      index:true
+
     },
     reportId: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Report",
-        default:null
+        default:null,
+        index:true
+
       }
     ],
+        paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+      index:true
 
+    },
     appointmentDate: {
       type: Date,
       required: true,
@@ -38,14 +48,18 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "scheduled", "rescheduled", "cancelled", "completed"],
       default: "pending",
-      required: true
+      required: true,
+      index:true
+
     },
     notes: {
       type: String
     },
     payment: {
       type: Boolean,
-      default: false
+      default: false,
+      index:true
+
     },
   },
   { timestamps: true }

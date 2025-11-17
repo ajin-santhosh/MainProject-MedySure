@@ -8,11 +8,11 @@ const createAdmin = async (req, res) => {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ success: false ,message: "email and password are required" });
+        .json({ success: false,message: "email and password are required" });
     }
     const existingadmin = await Users.findOne({ email });
     if (existingadmin) {
-      return res.status(409).json({success:false. message: "mail id already used" });
+      return res.status(409).json({success:false, message: "mail id already used" });
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const newUser = await Users.create({
@@ -21,13 +21,14 @@ const createAdmin = async (req, res) => {
       role: "admin",
     });
     return res.status(201).json({
-      success:
+      success:true,
       message: "admin registered successfully",
-      user: { email: newUser.email, role: newUser.role },
+      data: { email: newUser.email, role: newUser.role },
     });
   } catch (error) {
     console.error("Error creating admin:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false,
+      message: "Internal Server Error" });
     
   }
 };
@@ -45,7 +46,7 @@ const updateAdmin = async (req, res) => {
       //   statusCode : 409
       // }
       // return next(obj)
-      return res.status(409).json({ message: "admin not exist in db" });
+      return res.status(409).json({ success:false, message: "admin not exist in db" });
     }
 
       
@@ -53,7 +54,7 @@ const updateAdmin = async (req, res) => {
     if (email) {
       const existingemail = await Users.findOne({ email, _id: { $ne: userId } });
       if (existingemail) {
-        return res.status(409).json({ message: "mail id already in use" });
+        return res.status(409).json({ success:false, message: "mail id already in use" });
       }
       updatingAdmin.email = email;
     }
@@ -67,12 +68,13 @@ const updateAdmin = async (req, res) => {
 
     const updatedAdmin = await updatingAdmin.save();
     return res.status(201).json({
+      success:true,
       message: "admin updated successfully",
-      user: { email: updatedAdmin.email, role: updatedAdmin.role },
+      data: { email: updatedAdmin.email, role: updatedAdmin.role },
     });
   } catch (error) {
     console.error("Error updating admin:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
     
   }
 };
@@ -83,12 +85,13 @@ const getAdmins = async (req, res) => {
   try {
     const getAdmin = await Users.find({ role: "admin" });
     return res.status(201).json({
+      success:true,
       message: "admin data",
-      getAdmin,
+      data:getAdmin,
     });
   } catch (error) {
     console.error("Error in getting admin:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({success:false, message: "Internal Server Error" });
   }
 };
 //
@@ -98,14 +101,15 @@ const deleteAdmin = async (req,res) => {
     try{
         const del = await Users.findByIdAndDelete(userId) 
         return res.status(201).json({
-      message: "admin deleted successfully",
-      del
+          success:true,
+          message: "admin deleted successfully",
+          data: del
     });
          
     }
     catch(error){
            console.error("Error in deleting admin:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
     }
 }
 
