@@ -8,11 +8,11 @@ const createAdmin = async (req, res) => {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ message: "email and password are required" });
+        .json({ success: false ,message: "email and password are required" });
     }
     const existingadmin = await Users.findOne({ email });
     if (existingadmin) {
-      return res.status(409).json({ message: "mail id already used" });
+      return res.status(409).json({success:false. message: "mail id already used" });
     }
     const hashPassword = await bcrypt.hash(password, 10);
     const newUser = await Users.create({
@@ -21,6 +21,7 @@ const createAdmin = async (req, res) => {
       role: "admin",
     });
     return res.status(201).json({
+      success:
       message: "admin registered successfully",
       user: { email: newUser.email, role: newUser.role },
     });

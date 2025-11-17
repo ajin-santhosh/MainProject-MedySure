@@ -22,13 +22,11 @@ const patientOtpValidator = async (req, res) => {
     // console.log(otp,secret)
     if (!isValid) {
       const del = await Users.findByIdAndDelete(userId);
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: "Invalid or expired OTP and user is deleted",
-          del,
-        });
+      return res.status(500).json({
+        success: false,
+        message: "Invalid or expired OTP and user is deleted",
+        del,
+      });
     }
 
     return res
@@ -74,13 +72,13 @@ const registerPatientDetails = async (req, res) => {
         phone: emergencyContact.phone,
       },
     });
-     return res.status(201).json({
-        success:true,
+    return res.status(201).json({
+      success: true,
       message: "pateint details registered successfully",
-      newpatient
-    })
+      newpatient,
+    });
   } catch (error) {
-     console.error("Error registering patient:", error);
+    console.error("Error registering patient:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -128,4 +126,10 @@ const getPatient = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-module.exports = { patientOtpValidator, registerPatientDetails,updatePatientDetails,deletingPatientDetails,getPatient };
+module.exports = {
+  patientOtpValidator,
+  registerPatientDetails,
+  updatePatientDetails,
+  deletingPatientDetails,
+  getPatient,
+};
