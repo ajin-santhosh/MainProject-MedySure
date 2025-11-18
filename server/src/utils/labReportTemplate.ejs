@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Lab Report</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    background: #ffffff;
+}
+
+.report-container {
+    width: 800px;
+ min-height: calc(100% - 40px);
+     padding: 20px;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #0a6b6b, #f7c144) 1;
+    border-radius: 12px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    max-width: 150px;
+    height: auto;
+}
+
+.patient-info {
+    margin-bottom: 20px;
+}
+
+.patient-info p {
+    margin: 6px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc; /* simple grey border ONLY */
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+    </style>
+</head>
+<body>
+<div class="report-container">
+
+    <div class="header">
+        <img src="<%= logo %>" alt="Lab Logo">
+        <h1>MedySure</h1>
+        <p>Your Medical Partner</p>
+    </div>
+
+    <div class="patient-info">
+        <p><strong>First Name:</strong> <%= firstName %></p>
+        <p><strong>Last Name:</strong> <%= lastName %></p>
+        <p><strong>Phone:</strong> <%= phone %></p>
+        <p><strong>Gender:</strong> <%= gender %></p>
+        <p><strong>Amount:</strong> <%= amount %></p>
+        <p><strong>Date:</strong> <%= date %></p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <% tableFields.forEach(field => { %>
+                    <th><%= field.label %></th>
+                <% }) %>
+            </tr>
+        </thead>
+        <tbody>
+            <% tableData.forEach(row => { %>
+                <tr>
+                    <% tableFields.forEach(field => { %>
+                        <td><%= row[field.key] %></td>
+                    <% }) %>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+</div>
+</body>
+
+</html>
