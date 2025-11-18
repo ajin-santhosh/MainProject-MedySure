@@ -8,6 +8,7 @@ const doctorRoutes = require("./src/routes/doctorRoutes")
 const patientRoutes = require("./src/routes/patientRoutes")
 const loginRoutes = require("./src/routes/loginRoutes")
 const appointmentRoutes = require("./src/routes/appointmentRoutes")
+const feedbackRoutes = require("./src/routes/feedbackRoutes")
 const app = express()
 const port = process.env.Port
 connectDB()
@@ -19,6 +20,7 @@ app.use('/medysure/api/doctor',doctorRoutes)
 app.use('/medysure/api/patient',patientRoutes)
 app.use('/medysure/api',loginRoutes)
 app.use('/medysure/api/appointment',appointmentRoutes)
+app.use('/medysure/api/feedback',feedbackRoutes)
 // app.use(errorHandler)
 
 app.listen(port, () => {

@@ -1,5 +1,7 @@
 const Appointment = require("../models/appointmentSchema");
 
+
+//Create 
 const createAppointment = async (req, res) => {
   const {
     patientId,
@@ -45,6 +47,7 @@ const createAppointment = async (req, res) => {
   }
 };
 
+//Update
 const updateAppointment = async (req, res) => {
   const { appointmentId } = req.params;
   const updateData = req.body;
@@ -72,6 +75,8 @@ const updateAppointment = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+
+//Delete
 const deleteAppointment = async (req, res) => {
   const {appointmentId} = req.params;
   try {
@@ -96,6 +101,7 @@ const deleteAppointment = async (req, res) => {
   }
 };
 
+//Get
 const getAppointment = async (req, res) => {
   try {
     const appointments = await Appointment.find();
