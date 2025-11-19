@@ -1,8 +1,12 @@
 const ejs = require("ejs");
 const path = require("path");
 const createPdf = require("../utils/reportPdfGenerator");
+const uploadPdfBuffer = require("../utils/cloudinaryUpload");
+const reportMailSender = require("../utils/reportMailSender")
+const Report = require("../models/reportSchema")
 
 const createReport = async (req, res) => {
+  const {patientId,doctorId,title,description} = req.body
   try {
     const ejsFilePath = path.join(
       __dirname,
@@ -48,13 +52,28 @@ const createReport = async (req, res) => {
       ],
     };
     const { buffer } = await createPdf(ejsFilePath, data);
+    await reportMailSender(buffer)
 
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=example.pdf",
-    });
+    const customPublicId = `report_${Date.now()}`; // need to customise while creating frontend
+        const result = await uploadPdfBuffer(buffer, customPublicId);
 
-    return res.end(buffer);
+    // res.set({
+    //   "Content-Type": "application/pdf",
+    //   "Content-Disposition": "attachment; filename=example.pdf",
+    // });
+    const saveReport = await Report.create({
+      patientId,
+      doctorId,
+      title,
+      fileUrl: result.secure_url,
+      public_id:result.public_id
+      })
+    return res.json({
+      message: "PDF uploaded successfully  and saved to db",
+      url: result.secure_url,
+      public_id: result.public_id,
+      data:saveReport
+    })
   } catch (err) {
     console.error(err);
     res.status(500).send("Error generating PDF");
