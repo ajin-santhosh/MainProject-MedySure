@@ -1,9 +1,18 @@
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage';
+
 
 export default function App() {
   return (
-    <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage/>} />  // uh 
+        <Route path='/register' element={<RegisterPage/>}/>
+
+
+      </Routes>
+    </Router>
   )
 }
