@@ -1,6 +1,7 @@
 require('dotenv').config()
 const cookieParser = require("cookie-parser");
 const express = require('express')
+const cors = require('cors')
 const connectDB = require('./src/config/db')
 const errorHandler = require("./src/middleware/errorHandler")
 const adminRoutes = require("./src/routes/adminRoutes")
@@ -13,7 +14,10 @@ const reportRoutes = require("./src/routes/reportRoutes")
 const app = express()
 const port = process.env.Port
 connectDB()
-app.use(express.json())
+app.use(cors({
+  origin: "http://localhost:5173",   // correct spelling
+  credentials: true
+}));app.use(express.json())
 app.use(cookieParser());
 
 app.use('/medysure/api/admin',adminRoutes)

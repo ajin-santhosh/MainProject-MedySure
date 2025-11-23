@@ -33,7 +33,7 @@ const userLogin = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
-      data: { id: user._id, email: user.email }
+      data: { id: user._id, email: user.email,role:user.role }
     });
 
   } catch (error) {

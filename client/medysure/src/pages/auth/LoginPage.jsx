@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Field,
   FieldDescription,
@@ -10,8 +10,45 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/Theme/theme-toggle";
-import { ImageOff, Import } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+// function start
+
 function LoginPage() {
+  const api_url = import.meta.env.VITE_API_URL;
+  // const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [warning, setWarning] = useState('')
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  const handleSubtmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      const login = await axios.post(`${api_url}/userLogin`, formData, {
+        withCredentials: true,
+      });
+      
+      console.log(
+        "Login successful:",
+        login.data.message,
+        login.data.data.id,
+        login.data.data.role
+      );
+      setWarning('')
+    } catch (error) {
+      if (error.response) {
+        // Backend returned error (like 401)
+        setWarning(error.response.data.message || "Login failed");
+      } else if (error.request) {
+        setWarning("Server not responding. Try again later.");
+      } else {
+        setWarning("Something went wrong: " + error.message);
+      }
+  }
+};
+
   return (
     <>
       <div className="min-h-screen p-10 ">
@@ -40,31 +77,52 @@ function LoginPage() {
           </div>
 
           <div className="flex w-full md:w-1/2 justify-center items-center p-10  font-pfont_2">
-            <FieldSet className="border-2 border-gary-200 border-l-gray-400 p-10">
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="email">E-mail</FieldLabel>
-                  <Input id="email" type="email" placeholder="name@email.com" />
-                  <FieldDescription>
-                    Enter You registerd email id.
-                  </FieldDescription>
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <FieldDescription>
-                    Must be at least 6 characters long.
-                  </FieldDescription>
-                  <Input id="password" type="password" placeholder="••••••••" />
-                </Field>
-              </FieldGroup>
-              <Button>Login</Button>{" "}
-              <p className="text-center text-gray-600 mt-4">
-                Don’t have an account?{" "}
-                <Link to="/register" className="text-blue-500 hover:underline">
-                  Register
-                </Link>
-              </p>
-            </FieldSet>
+            <form onSubmit={handleSubtmit}>
+              <FieldSet className="border-2 border-gary-200 border-l-gray-400 p-10">
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="email">E-mail</FieldLabel>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                    <FieldDescription>
+                      Enter You registerd email id.
+                    </FieldDescription>
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldDescription>
+                      Must be at least 6 characters long.
+                    </FieldDescription>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
+                  </Field>
+                </FieldGroup>
+                <Button type="submit">Login</Button>{" "}
+ {warning && (
+        <p className="text-red-800 font-sm">{warning}</p>
+      )}
+
+                <p className="text-center text-gray-600 mt-4">
+                  Don’t have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-blue-500 hover:underline"
+                  >
+                    Register
+                  </Link>
+                </p>
+              </FieldSet>
+            </form>
           </div>
         </div>
       </div>

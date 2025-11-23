@@ -30,6 +30,10 @@ function App() {
 
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/otp-verify" element={<OtpVerifyPage />} />
+          <Route path="/patient-form" element={<PatientRegistration />} />
+
+
         </Routes>
       </Router>
     </>
