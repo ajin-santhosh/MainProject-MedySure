@@ -30,25 +30,21 @@ function LoginPage() {
               className="w-3/4 h-3/4 mb-6 rounded-2xl"
             />
 
-            <h2 className="text-3xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+            <h2 className="text-3xl font-medysure font-normal tracking-wide mb-4 text-gray-800 dark:text-gray-100">
               MedySure
             </h2>
 
-            <p className="text-gray-600 dark:text-gray-300 text-center max-w-sm">
+            <p className="text-gray-600 font-pfont_1 dark:text-gray-300 text-center max-w-sm">
               Your Daily Life Medical Partner
             </p>
           </div>
 
-          <div className="flex w-full md:w-1/2 justify-center items-center p-10 ">
-            <FieldSet className='border-2 border-gary-200 border-l-gray-400 p-10'>
+          <div className="flex w-full md:w-1/2 justify-center items-center p-10  font-pfont_2">
+            <FieldSet className="border-2 border-gary-200 border-l-gray-400 p-10">
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="username">E-mail</FieldLabel>
-                  <Input
-                    id="username"
-                    type="emial"
-                    placeholder="example @ emil.com"
-                  />
+                  <FieldLabel htmlFor="email">E-mail</FieldLabel>
+                  <Input id="email" type="email" placeholder="name@email.com" />
                   <FieldDescription>
                     Enter You registerd email id.
                   </FieldDescription>
@@ -63,11 +59,11 @@ function LoginPage() {
               </FieldGroup>
               <Button>Login</Button>{" "}
               <p className="text-center text-gray-600 mt-4">
-          Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-500 hover:underline">
-            Register
-          </Link>
-        </p>
+                Don’t have an account?{" "}
+                <Link to="/register" className="text-blue-500 hover:underline">
+                  Register
+                </Link>
+              </p>
             </FieldSet>
           </div>
         </div>
