@@ -109,7 +109,7 @@ const deleteDoctor = async (req, res) => {
 // create patient in User
 
 const createPatient = async (req, res) => {
-  const { email, password, ...otherData } = req.body;
+  const { email, password } = req.body;
   try {
     if (!email || !password) {
       return res
@@ -134,7 +134,7 @@ const createPatient = async (req, res) => {
     return res.status(201).json({
       success:true,
       message: "patient registered successfully",
-      data: newUser,
+      data: {id:newUser._id}
     });
   } catch (error) {
     console.error("Error creating patient:", error);

@@ -25,7 +25,10 @@ function LoginPage() {
   const handleSubtmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    setWarning('')
     try {
+        
+
       const login = await axios.post(`${api_url}/userLogin`, formData, {
         withCredentials: true,
       });
@@ -35,7 +38,8 @@ function LoginPage() {
         login.data.data.id,
         login.data.data.role
       );
-      setWarning('')
+      sessionStorage.setItem("user_id", register.data.data.id)
+
       if(login.data.data.role == 'admin'){
         navigate('/admin')
       }

@@ -32,7 +32,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/otp-verify" element={<OtpVerifyPage />} />
           <Route path="/patient-form" element={<PatientRegistration />} />
-          <Route path="/admin" element={<AdminPage />} />
+          {/* <Route path="/admin" element={<AdminPage />} /> */}
 
 
         </Routes>

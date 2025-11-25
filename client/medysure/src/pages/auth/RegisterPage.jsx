@@ -5,7 +5,56 @@ import { FieldDescription } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
 function RegisterPage() {
+  const navigate = useNavigate()
+  const api_url = import.meta.env.VITE_API_URL;
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirm_password: "",
+  });
+  const [warning, setWarning] = useState("");
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e)=> {
+  setWarning('')
+    console.log(formData);
+    if(formData.password !== formData.confirm_password){
+      return(
+        setWarning('Password not Matched')
+    )
+    }
+    try{  
+      const register = await axios.post(`${api_url}/patient/createPatient`,formData,{
+        withCredentials:true
+      })
+      console.log(
+        "register successful:",
+        register.data.message,
+        register.data.data.id
+      )
+      sessionStorage.setItem("user_id", register.data.data.id)
+      navigate('/otp-verify')
+    }
+    catch(error){
+
+      if (error.response) {
+        // Backend returned error (like 401)
+        setWarning(error.response.data.message || "register failed");
+      } else if (error.request) {
+        setWarning("Server not responding. Try again later.");
+      } else {
+        setWarning("Something went wrong: " + error.message);
+      }
+    }
+
+  }
+
   return (
     <>
       <div className="min-h-screen p-10 ">
@@ -35,11 +84,37 @@ function RegisterPage() {
 
           <div className="flex flex-col w-full md:w-1/2 justify-center p-10 gap-2 font-pfont_2">
             <Label htmlFor="email">Email</Label>
-            <Input type="email" id="email" placeholder="name@example.com" />
+            <Input
+              type="email"
+              id="email"
+              placeholder="name@example.com"
+              value={formData.email}
+              onChange={handleChange}
+            />
             <FieldDescription>
               Enter your valid email id for otp verification
             </FieldDescription>
-            <Button className="w-20">Verify</Button>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              type="password"
+              id="password"
+              placeholder="*******"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <FieldDescription>Enter a Password</FieldDescription>
+            <Label htmlFor="confirm_password">Confirm Password</Label>
+            <Input
+              type="password"
+              id="confirm_password"
+              placeholder="*******"
+              value={formData.confirm_password}
+              onChange={handleChange}
+            />
+           {warning && (
+        <p className="text-red-800 font-sm">{warning}</p>
+      )}
+            <Button className="w-20" onClick = {handleSubmit}>Verify</Button>
             <p className="text- text-gray-600 mt-4 ">
               Already have an account, sign in -
               <Link to="/" className="text-blue-500 hover:underline">

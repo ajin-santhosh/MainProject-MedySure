@@ -19,13 +19,13 @@ const patientOtpValidator = async (req, res) => {
       step: 300, // Must match send step
       window: 0, // No time drift allowed
     });
-    // console.log(otp,secret)
+    console.log(otp,secret)
     if (!isValid) {
-      const del = await Users.findByIdAndDelete(userId);
+      // const del = await Users.findByIdAndDelete(userId);
       return res.status(500).json({
         success: false,
-        message: "Invalid or expired OTP and user is deleted",
-        data:del,
+        message: "Invalid or expired OTP and ",
+        // data:del,
       });
     }
 

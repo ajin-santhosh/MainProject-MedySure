@@ -18,6 +18,8 @@ app.use(cors({
   origin: "http://localhost:5173",   // correct spelling
   credentials: true
 }));app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 
 app.use('/medysure/api/admin',adminRoutes)
