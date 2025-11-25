@@ -16,7 +16,7 @@ import axios from "axios";
 
 function LoginPage() {
   const api_url = import.meta.env.VITE_API_URL;
-  // const navigate = useNavigate();
+   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [warning, setWarning] = useState('')
   const handleChange = (e) => {
@@ -29,7 +29,6 @@ function LoginPage() {
       const login = await axios.post(`${api_url}/userLogin`, formData, {
         withCredentials: true,
       });
-      
       console.log(
         "Login successful:",
         login.data.message,
@@ -37,6 +36,18 @@ function LoginPage() {
         login.data.data.role
       );
       setWarning('')
+      if(login.data.data.role == 'admin'){
+        navigate('/admin')
+      }
+      else if (login.data.data.role == 'doctor'){
+        navigate('/doctor')
+      }
+      else if (login.data.data.role == 'patient'){
+        navigate('/patient')
+      }
+      else{
+        console.log("error in role")
+      }
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)
