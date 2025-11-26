@@ -83,6 +83,7 @@ function RegisterPage() {
           </div>
 
           <div className="flex flex-col w-full md:w-1/2 justify-center p-10 gap-2 font-pfont_2">
+          <form action="" onSubmit={handleSubmit}>
             <Label htmlFor="email">Email</Label>
             <Input
               type="email"
@@ -90,6 +91,7 @@ function RegisterPage() {
               placeholder="name@example.com"
               value={formData.email}
               onChange={handleChange}
+              required
             />
             <FieldDescription>
               Enter your valid email id for otp verification
@@ -101,6 +103,7 @@ function RegisterPage() {
               placeholder="*******"
               value={formData.password}
               onChange={handleChange}
+              required
             />
             <FieldDescription>Enter a Password</FieldDescription>
             <Label htmlFor="confirm_password">Confirm Password</Label>
@@ -110,17 +113,19 @@ function RegisterPage() {
               placeholder="*******"
               value={formData.confirm_password}
               onChange={handleChange}
+              required
             />
            {warning && (
         <p className="text-red-800 font-sm">{warning}</p>
       )}
-            <Button className="w-20" onClick = {handleSubmit}>Verify</Button>
+            <Button className="w-20" >Verify</Button>
             <p className="text- text-gray-600 mt-4 ">
               Already have an account, sign in -
               <Link to="/" className="text-blue-500 hover:underline">
                 Login
               </Link>
             </p>
+            </form>
           </div>
         </div>
       </div>
