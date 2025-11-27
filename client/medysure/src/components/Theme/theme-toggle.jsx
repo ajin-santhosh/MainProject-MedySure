@@ -12,7 +12,7 @@ export default function ThemeToggle() {
       }
       className="p-2 rounded border"
     >
-      {theme === "dark" ? <Sun /> : <Moon />}
+      {theme === "dark" ? <Sun /> : <Moon   />}
     </button>
   );
 }

@@ -290,7 +290,7 @@ export default function AdminNavBar({ children }) {
       </div>
 
       {/* Content */}
-      <main className="flex-1 p-6 overflow-auto relative">
+      <main className="flex-1 overflow-auto relative">
         {children}
 
        <Outlet />
