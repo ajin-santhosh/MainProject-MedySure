@@ -3,6 +3,8 @@ import ThemeToggle from "@/components/Theme/theme-toggle";
 import DataCards from "@/components/cards/DataCards";
 import axios from "axios";
 import { data } from "react-router-dom";
+import AppointmentPieChart from "../charts/AppointmentPieChart";
+import AppointmentWeekReport from "../charts/AppointmentWeekReport";
 function AdminDashBoard() {
   const api_url = import.meta.env.VITE_API_URL;
   const [totalpatients, setTotalpatients] = useState(0);
@@ -44,7 +46,7 @@ function AdminDashBoard() {
 
     const interval = setInterval(() => {
       fetchCount(); // update every 5 seconds
-    }, 5000);
+    }, 20000);
 
     return () => clearInterval(interval);
   }, []);
@@ -94,7 +96,7 @@ function AdminDashBoard() {
           <div className="flex items-center space-x-2">
             {/* Hamburger for mobile */}
 
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
               Dashboard
             </h1>
           </div>
@@ -108,6 +110,19 @@ function AdminDashBoard() {
          {totalCardData.map((item) => (
         <DataCards key={item.id} data={item} />
       ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4  shadow-xl">
+        
+          <div className="justify-items-center"> 
+            <h2 className="font-sans text-xl font-bold text-center">Apointment Statics</h2>
+                        <AppointmentPieChart />
+
+          </div>
+          <div className="justify-items-center">
+                        <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">Apointments by days (Last 7 days)</h2>
+
+          <AppointmentWeekReport />
+          </div>
         </div>
       </div>
     </>
