@@ -70,8 +70,8 @@ export default function AppointmentPieChart({ isAnimationActive = true }) {
     <PieChart
       style={{
         width: "100%",
-        maxWidth: "500px",
-        maxHeight: "80vh",
+        maxWidth: "300px",
+        maxHeight: "60vh",
         aspectRatio: 1,
       }}
       responsive

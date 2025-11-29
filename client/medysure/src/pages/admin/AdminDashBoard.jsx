@@ -3,8 +3,10 @@ import ThemeToggle from "@/components/Theme/theme-toggle";
 import DataCards from "@/components/cards/DataCards";
 import axios from "axios";
 import { data } from "react-router-dom";
+import { ShieldCheck, ShieldOff } from "lucide-react";
 import AppointmentPieChart from "../charts/AppointmentPieChart";
 import AppointmentWeekReport from "../charts/AppointmentWeekReport";
+import PatientChart from "../charts/PatientChart";
 function AdminDashBoard() {
   const api_url = import.meta.env.VITE_API_URL;
   const [totalpatients, setTotalpatients] = useState(0);
@@ -12,35 +14,39 @@ function AdminDashBoard() {
   const [totalappointment, setTotalappointment] = useState(0);
   const [totalfeedback, setTotalfeedback] = useState(0);
   const [totalreport, setTotalreport] = useState(0);
+  const [totalactivepatient, setTotalactivepatient] = useState(0);
   const fetchCount = async () => {
     try {
-      const [p_count, d_cont, a_count, f_count, r_count] = await Promise.all([
-        axios.get(`${api_url}/dashboard/totalPatients`, {
-          withCredentials: true,
-        }),
-        axios.get(`${api_url}/dashboard/totalDoctors`, {
-          withCredentials: true,
-        }),
-        axios.get(`${api_url}/dashboard/totalappointments`, {
-          withCredentials: true,
-        }),
-        axios.get(`${api_url}/dashboard/totalfeedback`, {
-          withCredentials: true,
-        }),
-        axios.get(`${api_url}/dashboard/totalreports`, {
-          withCredentials: true,
-        }),
-      ]);
+      const [p_count, d_cont, a_count, f_count, r_count, p_status_count] =
+        await Promise.all([
+          axios.get(`${api_url}/dashboard/totalPatients`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/totalDoctors`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/totalappointments`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/totalfeedback`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/totalreports`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/acivePatientCount`),
+        ]);
       setTotalpatients(p_count.data.total);
       setTotaldoctors(d_cont.data.total);
       setTotalappointment(a_count.data.data);
       setTotalfeedback(f_count.data.data);
       setTotalreport(r_count.data.data);
+      setTotalactivepatient(p_status_count.data.total);
     } catch (error) {
       console.error("Error in API calls for counts:", error);
     }
   };
-  console.log(totalappointment)
+  console.log(totalappointment);
   useEffect(() => {
     fetchCount(); // load immediately
 
@@ -86,7 +92,7 @@ function AdminDashBoard() {
       total_count: totalreport,
       th2: "MedySure Reports",
       th3: "total number of Reports created so far",
-    }
+    },
   ];
   return (
     <>
@@ -105,25 +111,82 @@ function AdminDashBoard() {
             <ThemeToggle />
           </div>
         </header>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4 mt-6
-">
-         {totalCardData.map((item) => (
-        <DataCards key={item.id} data={item} />
-      ))}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4 mt-6
+"
+        >
+          {totalCardData.map((item) => (
+            <DataCards key={item.id} data={item} />
+          ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4  shadow-xl">
-        
-          <div className="justify-items-center"> 
-            <h2 className="font-sans text-xl font-bold text-center">Apointment Statics</h2>
-                        <AppointmentPieChart />
-
+        {/* Appintment dashboard */}
+        <h3 className=" text-xl font-bold pl-4 pt-4 font-pfont_2 ">
+          {" "}
+          Appintment Dashboard
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg ">
+          <div className="justify-items-center">
+            <h2 className="font-sans text-xl font-bold text-center">
+              Appointment Statics
+            </h2>
+            <AppointmentPieChart />
           </div>
           <div className="justify-items-center">
-                        <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">Apointments by days (Last 7 days)</h2>
+            <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">
+              Appointments by days (Last 7 days)
+            </h2>
 
-          <AppointmentWeekReport />
+            <AppointmentWeekReport />
           </div>
         </div>
+        {/* Patient dashboard */}
+        <h3 className="font-sans text-xl font-bold pl-4 pt-4 font-pfont_2">
+          {" "}
+          Patient Dashboard
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg ">
+          <div className="justify-items-center">
+            <h2 className="font-sans text-xl font-bold text-center">
+              Patient Registration Statics
+            </h2>
+            <PatientChart />
+          </div>
+          <div className="justify-items-center ">
+            <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">
+              {" "}
+              Patient Count
+            </h2>
+            <div className="border shadow-xl rounded-sm p-6 bg-white dark:bg-gray-950 hover:shadow-2xl transition-shadow duration-300 w-1/2 ">
+              {/* <h2 className="text-2xl font-bold font-sans underline decoration-gray-300 mb-4 text-center">
+                Patients Count
+              </h2> */}
+
+              <div className="grid gap-4 mt-4">
+                <div className="flex items-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
+                  <span>
+                    <ShieldCheck />
+                  </span>
+                  <p className="text-lg font-medium p-1 ">Active Patients:</p>
+                  <span className="text-xl font-bold">
+                    {totalactivepatient}
+                  </span>
+                </div>
+
+                <div className="flex items-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
+                  <span>
+                    <ShieldOff />
+                  </span>
+                  <p className="text-lg font-medium p-1">Inactive Patients:</p>
+                  <span className="text-xl font-bold">
+                    {totalpatients - totalactivepatient}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/*   patient dashboard end */}
+        
       </div>
     </>
   );

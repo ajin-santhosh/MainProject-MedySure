@@ -38,7 +38,7 @@ function LoginPage() {
         login.data.data.id,
         login.data.data.role
       );
-      sessionStorage.setItem("user_id", register.data.data.id)
+      sessionStorage.setItem("user_id", login.data.data.id)
 
       if(login.data.data.role == 'admin'){
         navigate('/admin')

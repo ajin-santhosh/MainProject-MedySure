@@ -10,5 +10,6 @@ router.get('/totalfeedback',dashBoardController.totalFeedback)
 router.get('/totalreports',dashBoardController.totalReport)
 router.get('/appintmentStatusReport',dashBoardController.appintmentStatusReport)
 router.get('/appointmentWeekReport',dashBoardController.appointmentWeekReport)
-
+router.get('/patientWeekReport',dashBoardController.patientWeekReport)
+router.get('/acivePatientCount',dashBoardController.acivePatientCount)
 module.exports = router
