@@ -74,8 +74,13 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
 
         {openMenus.profile && !collapsed && (
           <div className="ml-8 mt-2 flex flex-col gap-2">
+            <Link to='doctors'>
             <button className="text-sm hover:underline">Doctors</button>
-            <button className="text-sm hover:underline">Patient</button>
+            </Link>
+            <Link>
+                        <button className="text-sm hover:underline">Patient</button>
+
+            </Link>
           </div>
         )}
       </div>
@@ -254,11 +259,11 @@ export default function AdminNavBar({ children }) {
             className="p-4 bg-white dark:bg-gray-950 text-black dark:text-white"
           >
             <div className="flex items-center">
-              <img
+              {/* <img
                 src="https://res.cloudinary.com/dvlal7skv/image/upload/v1764175364/Green_and_White_Modern_Medical_Logo__1__page-0001-removebg-preview_pnxcha.png"
                 alt="logo"
                 className="w-14 h-14"
-              />
+              /> */}
               <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "}
             </div>
 
@@ -280,12 +285,12 @@ export default function AdminNavBar({ children }) {
           </SheetContent>
         </Sheet>
         <div className="flex items-center">
-          <img
+          {/* <img
             src="https://res.cloudinary.com/dvlal7skv/image/upload/v1764175364/Green_and_White_Modern_Medical_Logo__1__page-0001-removebg-preview_pnxcha.png"
             alt="logo"
             className="w-14 h-14"
-          />
-          <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "}
+          /> */}
+          {/* <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "} */}
         </div>
       </div>
 

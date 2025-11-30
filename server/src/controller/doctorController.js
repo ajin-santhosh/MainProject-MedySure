@@ -49,7 +49,32 @@ const deletingDoctorDetails = async (userId) => {
 // show all doctrors
 const getDoctors = async (req, res) => {
   try {
-    const doctors = await Doctor.find();
+    const doctors = await Doctor.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "user"
+    }
+  },
+  { $unwind: "$user" },
+  {
+    $project: {
+      
+_id:1,
+userId:1,
+firstName:1,
+lastName:1,
+gender:1,
+experiance:1,
+department:1,
+qualification:1,
+active:"$user.active",
+email: "$user.email" 
+    }
+  }
+])
     return res.status(201).json({
       success:true,
       message: "doctor data",

@@ -7,9 +7,11 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import OtpVerifyPage from "./pages/auth/OtpVerifyPage";
 import PatientRegistration from "./pages/auth/PatientRegistration";
+// Admin Components
 import AdminNavBar from "./pages/admin/AdminNavBar";
 import AdminDashBoard from "./pages/admin/AdminDashBoard";
 import AdminAppointment from "./pages/admin/AdminAppointment";
+import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
 function App() {
   return (
     <>
@@ -41,6 +43,7 @@ function App() {
 
           {/* Admin child routes */}
           <Route path="dashboard" element={<AdminDashBoard />} />
+          <Route path="doctors" element={<AdminManageDoctors />} />
           <Route path="appointment" element={<AdminAppointment />} />
 
         </Route>
