@@ -1,6 +1,6 @@
-import ThemeToggle from '@/components/Theme/theme-toggle'
+import ThemeToggle from "@/components/Theme/theme-toggle";
 // import Sample from './Sample';
-"use client";
+("use client");
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -43,11 +43,12 @@ import {
   ButtonGroup,
   ButtonGroupSeparator,
 } from "@/components/ui/button-group";
-
 import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
+// import { Sample } from "./Sample";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { AdminAddDoctorSheet } from "./AdminAddDoctorSheet";
 
 const api_url = import.meta.env.VITE_API_URL;
-
 
 export const getColumns = (deleteDoctor) => [
   {
@@ -158,25 +159,33 @@ export const getColumns = (deleteDoctor) => [
 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <Sheet>
+              <SheetTrigger asChild>
+                
+                  <DropdownMenuItem className="text-green-700"
+                    onSelect={(e) => e.preventDefault()}>
+                    Update
+                  </DropdownMenuItem>
+                
+              </SheetTrigger  >
+              <AdminAddDoctorSheet mode="update" 
+                initialData={doctor} />
+            </Sheet>
 
-            <DropdownMenuItem className="text-green-700">
-              
-              Update</DropdownMenuItem>
-
-            <DropdownMenuItem 
-            className="text-red-700"
-          onClick={() =>
-            toast.warning("Delete doctor?", {
-              description: "This action cannot be undone.",
-              action: {
-                label: "Confirm",
-                onClick: () => deleteDoctor(doctor.userId),
-              },
-            })
-          }
-        >
-          Delete
-        </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-700"
+              onClick={() =>
+                toast.warning("Delete doctor?", {
+                  description: "This action cannot be undone.",
+                  action: {
+                    label: "Confirm",
+                    onClick: () => deleteDoctor(doctor.userId),
+                  },
+                })
+              }
+            >
+              Delete
+            </DropdownMenuItem>
 
             <DropdownMenuItem
               className="text-blue-700"
@@ -190,7 +199,6 @@ export const getColumns = (deleteDoctor) => [
     },
   },
 ];
-
 
 function AdminManageDoctors() {
   const [data, setData] = useState([]);
@@ -253,158 +261,158 @@ function AdminManageDoctors() {
   });
   return (
     <>
-       <div className={`flex-1 flex flex-col`}>
-               {/* Header */}
-               <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-                 <div className="flex items-center space-x-2">
-                   {/* Hamburger for mobile */}
-       
-                   <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-                     Doctors
-                   </h1>
-                 </div>
-       
-                 <div className="flex items-center space-x-4">
-                   <ThemeToggle />
-                 </div>
-               </header>
-               <div>
+      <div className={`flex-1 flex flex-col`}>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
 
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              Doctors
+            </h1>
+          </div>
 
-               </div>
-               <div className='p-5'>
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
+        <div></div>
+        <div className="p-5">
+          <div className="w-full">
+            {/* FILTER BAR */}
+            <div className="flex items-end py-4">
+              <Input
+                placeholder="Filter emails..."
+                value={table.getColumn("email")?.getFilterValue() || ""}
+                onChange={(e) =>
+                  table.getColumn("email")?.setFilterValue(e.target.value)
+                }
+                className="max-w-sm"
+              />
 
-               <div className="w-full">
-               
-                     {/* FILTER BAR */}
-                     <div className="flex items-end py-4">
-                       <Input
-                         placeholder="Filter emails..."
-                         value={table.getColumn("email")?.getFilterValue() || ""}
-                         onChange={(e) =>
-                           table.getColumn("email")?.setFilterValue(e.target.value)
-                         }
-                         className="max-w-sm"
-                       />
-               
-                       <ButtonGroup className="pl-5">
-                         <Button variant="outline">Add Doctor</Button>
-                         <ButtonGroupSeparator />
-                         <Button size="icon" variant="outline">
-                           <UserRoundPlus />
-                         </Button>
-                       </ButtonGroup>
-               
-                       <ButtonGroup className="pl-5">
-                         <Button variant="outline">Export CSV</Button>
-                         <ButtonGroupSeparator />
-                         <Button size="icon" variant="outline">
-                           <FileSpreadsheet />
-                         </Button>
-                       </ButtonGroup>
-               
-                       <DropdownMenu>
-                         <DropdownMenuTrigger asChild>
-                           <Button variant="outline" className="ml-auto">
-                             Columns <ChevronDown className="ml-2 h-4 w-4" />
-                           </Button>
-                         </DropdownMenuTrigger>
-               
-                         <DropdownMenuContent align="end">
-                           {table
-                             .getAllColumns()
-                             .filter((c) => c.getCanHide())
-                             .map((column) => (
-                               <DropdownMenuCheckboxItem
-                                 key={column.id}
-                                 checked={column.getIsVisible()}
-                                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                 className="capitalize"
-                               >
-                                 {column.id}
-                               </DropdownMenuCheckboxItem>
-                             ))}
-                         </DropdownMenuContent>
-                       </DropdownMenu>
-                     </div>
-               
-                     {/* TABLE */}
-                     <div className="overflow-hidden rounded-md border">
-                       <Table>
-                         <TableHeader>
-                           {table.getHeaderGroups().map((group) => (
-                             <TableRow key={group.id}>
-                               {group.headers.map((header) => (
-                                 <TableHead key={header.id}>
-                                   {header.isPlaceholder
-                                     ? null
-                                     : flexRender(
-                                         header.column.columnDef.header,
-                                         header.getContext()
-                                       )}
-                                 </TableHead>
-                               ))}
-                             </TableRow>
-                           ))}
-                         </TableHeader>
-               
-                         <TableBody>
-                           {table.getRowModel().rows.length ? (
-                             table.getRowModel().rows.map((row) => (
-                               <TableRow key={row.id}>
-                                 {row.getVisibleCells().map((cell) => (
-                                   <TableCell key={cell.id}>
-                                     {flexRender(
-                                       cell.column.columnDef.cell,
-                                       cell.getContext()
-                                     )}
-                                   </TableCell>
-                                 ))}
-                               </TableRow>
-                             ))
-                           ) : (
-                             <TableRow>
-                               <TableCell colSpan="100%" className="text-center h-24">
-                                 No results.
-                               </TableCell>
-                             </TableRow>
-                           )}
-                         </TableBody>
-                       </Table>
-                     </div>
-               
-                     {/* FOOTER */}
-                     <div className="flex items-center justify-end space-x-2 py-4">
-                       <div className="text-sm text-muted-foreground">
-                         {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                         {table.getFilteredRowModel().rows.length} row(s) selected.
-                       </div>
-               
-                       <Button
-                         size="sm"
-                         variant="outline"
-                         onClick={() => table.previousPage()}
-                         disabled={!table.getCanPreviousPage()}
-                       >
-                         Previous
-                       </Button>
-               
-                       <Button
-                         size="sm"
-                         variant="outline"
-                         onClick={() => table.nextPage()}
-                         disabled={!table.getCanNextPage()}
-                       >
-                         Next
-                       </Button>
-                     </div>
-                   </div>
-                             </div>
+              <ButtonGroup className="pl-5">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline">Add Doctor</Button>
+                  </SheetTrigger>
+                  <AdminAddDoctorSheet  />
+                </Sheet>
+                <ButtonGroupSeparator />
+                <Button size="icon" variant="outline">
+                  <UserRoundPlus />
+                </Button>
+              </ButtonGroup>
 
+              <ButtonGroup className="pl-5">
+                <Button variant="outline">Export CSV</Button>
+                <ButtonGroupSeparator />
+                <Button size="icon" variant="outline">
+                  <FileSpreadsheet />
+                </Button>
+              </ButtonGroup>
 
-               </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="ml-auto">
+                    Columns <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((c) => c.getCanHide())
+                    .map((column) => (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                        className="capitalize"
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* TABLE */}
+            <div className="overflow-hidden rounded-md border">
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((group) => (
+                    <TableRow key={group.id}>
+                      {group.headers.map((header) => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+
+                <TableBody>
+                  {table.getRowModel().rows.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan="100%" className="text-center h-24">
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* FOOTER */}
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <div className="text-sm text-muted-foreground">
+                {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                {table.getFilteredRowModel().rows.length} row(s) selected.
+              </div>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
-  )
+  );
 }
 
-export default AdminManageDoctors
+export default AdminManageDoctors;

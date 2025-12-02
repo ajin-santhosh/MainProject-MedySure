@@ -8,7 +8,7 @@ const registerDoctor = async (otherData, userId) => {
       userId,
       ...otherData,
     });
-    return newDoctor;
+    return newDoctor
   } catch (error) {
     console.error("Error creating doctor in doctor collection:", error);
     throw error;
@@ -71,7 +71,8 @@ experiance:1,
 department:1,
 qualification:1,
 active:"$user.active",
-email: "$user.email" 
+email: "$user.email" ,
+password:"$user.password"
     }
   }
 ])
