@@ -77,7 +77,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
             <Link to='doctors'>
             <button className="text-sm hover:underline">Doctors</button>
             </Link>
-            <Link>
+            <Link to='patients'>
                         <button className="text-sm hover:underline">Patient</button>
 
             </Link>

@@ -9,7 +9,9 @@ const patientOtpValidator = async (req, res) => {
   const { otp } = req.body;
   try {
     if (!userId || !otp) {
-      return res.status(400).json({ success:false, message: "userid and otp are required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "userid and otp are required" });
     }
     const secret = Buffer.from(userId.toString()).toString("base64");
     const isValid = speakeasy.totp.verify({
@@ -19,7 +21,7 @@ const patientOtpValidator = async (req, res) => {
       step: 300, // Must match send step
       window: 0, // No time drift allowed
     });
-    console.log(otp,secret)
+    console.log(otp, secret);
     if (!isValid) {
       // const del = await Users.findByIdAndDelete(userId);
       return res.status(500).json({
@@ -34,7 +36,9 @@ const patientOtpValidator = async (req, res) => {
       .json({ success: true, message: "OTP verified successfully!" });
   } catch (error) {
     console.error("Error otp verification:", error);
-    return res.status(500).json({ success:false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 //
@@ -75,11 +79,13 @@ const registerPatientDetails = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "pateint details registered successfully",
-      data:newpatient,
+      data: newpatient,
     });
   } catch (error) {
     console.error("Error registering patient:", error);
-    return res.status(500).json({ success:false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 // updated patient details
@@ -116,15 +122,72 @@ const deletingPatientDetails = async (userId) => {
 // show all Patients
 const getPatient = async (req, res) => {
   try {
-    const patients = await Patient.find();
+    const patients = await Patient.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          firstName: 1,
+          lastName: 1,
+          gender: 1,
+          phone: 1,
+          age: 1,
+          blood_group: 1,
+          height: 1,
+          weight: 1,
+          place: 1,
+          paid: 1,
+          emergencyContact: {
+            name: 1,
+            relation: 1,
+            phone: 1,
+          },
+          active: "$user.active",
+          email: "$user.email",
+          password: "$user.password",
+        },
+      },
+    ]);
+    const formattedPatients = patients.map((p) => ({
+      userId: p.userId,
+      firstName: p.firstName,
+      lastName: p.lastName,
+      gender: p.gender,
+      phone: p.phone,
+      age: p.age,
+      blood_group: p.blood_group,
+      height: p.height,
+      weight: p.weight,
+      place: p.place,
+      paid: p.paid,
+
+      emergencyContactname: p.emergencyContact?.name || "",
+      emergencyContactrelation: p.emergencyContact?.relation || "",
+      emergencyContactphone: p.emergencyContact?.phone || "",
+
+      active: p.active,
+      email: p.email,
+      password: p.password,
+    }));
     return res.status(201).json({
-      success:true,
+      success: true,
       message: "patient data",
-      data:patients,
+      data: formattedPatients,
     });
   } catch (error) {
     console.error("Error fetching patients:", error);
-    return res.status(500).json({ success:false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 };
 module.exports = {

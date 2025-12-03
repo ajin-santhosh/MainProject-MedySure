@@ -1,11 +1,7 @@
-import ThemeToggle from "@/components/Theme/theme-toggle";
-// import Sample from './Sample';
+
 ("use client");
-
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+// component import
 import { toast } from "sonner";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -44,12 +40,19 @@ import {
   ButtonGroupSeparator,
 } from "@/components/ui/button-group";
 import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
-// import { Sample } from "./Sample";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+
+//pages import
+// import { Sample } from "./Sample";
+import ThemeToggle from "@/components/Theme/theme-toggle";
 import { AdminAddDoctorSheet } from "./AdminAddDoctorSheet";
 
+// library import
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
 
+// logic from here
 export const getColumns = (deleteDoctor) => [
   {
     accessorKey: "userId",
@@ -73,9 +76,9 @@ export const getColumns = (deleteDoctor) => [
   },
 
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => <div>{row.getValue("status")}</div>,
+    accessorKey: "active",
+    header: "active",
+    cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
   },
 
   {

@@ -1,3 +1,4 @@
+("use client");
 // component import
 import { toast } from "sonner";
 import {
@@ -39,7 +40,11 @@ import {
 } from "@/components/ui/button-group";
 import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-
+// import pages
+// import Sample from "../admin/Sample"
+import ThemeToggle from "@/components/Theme/theme-toggle";
+import AdminUpdatePatients from "./AdminUpdatePatients";
+// library import
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
@@ -70,7 +75,9 @@ export const getColumns = (deletePatient) => [
   {
     accessorKey: "active",
     header: "active",
-    cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
+    cell: ({ row }) => (
+      <div>{row.getValue("active") ? "active" : "in active"}</div>
+    ),
   },
 
   {
@@ -235,7 +242,7 @@ export const getColumns = (deletePatient) => [
         Paid <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("paid")?"yes":"no"}</div>,
+    cell: ({ row }) => <div>{row.getValue("paid") ? "yes" : "no"}</div>,
   },
 
   // ACTIONS COLUMN
@@ -256,8 +263,9 @@ export const getColumns = (deletePatient) => [
 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {/* <Sheet>
-              <SheetTrigger asChild> */}
+
+            <Sheet>
+              <SheetTrigger asChild>
 
             <DropdownMenuItem
               className="text-green-700"
@@ -266,10 +274,10 @@ export const getColumns = (deletePatient) => [
               Update
             </DropdownMenuItem>
 
-            {/* </SheetTrigger  >
-              <AdminAddDoctorSheet mode="update" 
+            </SheetTrigger  >
+              <AdminUpdatePatients 
                 initialData={patient} />
-            </Sheet> */}
+            </Sheet>
 
             <DropdownMenuItem
               className="text-red-700"
@@ -299,7 +307,7 @@ export const getColumns = (deletePatient) => [
   },
 ];
 
-function sample() {
+function AdminManagePatients() {
   const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
@@ -361,126 +369,141 @@ function sample() {
   return (
     <>
       <div className={`flex-1 flex flex-col`}>
-        <div></div>
-        <div className="p-5">
-          <div className="w-full">
-            {/* FILTER BAR */}
-            <div className="flex items-end py-4">
-              <Input
-                placeholder="Filter emails..."
-                value={table.getColumn("email")?.getFilterValue() || ""}
-                onChange={(e) =>
-                  table.getColumn("email")?.setFilterValue(e.target.value)
-                }
-                className="max-w-sm"
-              />
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
 
-              
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              Patients
+            </h1>
+          </div>
 
-              <ButtonGroup className="pl-5">
-                <Button variant="outline">Export CSV</Button>
-                <ButtonGroupSeparator />
-                <Button size="icon" variant="outline">
-                  <FileSpreadsheet />
-                </Button>
-              </ButtonGroup>
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="ml-auto">
-                    Columns <ChevronDown className="ml-2 h-4 w-4" />
+        <div className={`flex-1 flex flex-col`}>
+          <div></div>
+          <div className="p-5">
+            <div className="w-full">
+              {/* FILTER BAR */}
+              <div className="flex items-end py-4">
+                <Input
+                  placeholder="Filter emails..."
+                  value={table.getColumn("email")?.getFilterValue() || ""}
+                  onChange={(e) =>
+                    table.getColumn("email")?.setFilterValue(e.target.value)
+                  }
+                  className="max-w-sm"
+                />
+
+                <ButtonGroup className="pl-5">
+                  <Button variant="outline">Export CSV</Button>
+                  <ButtonGroupSeparator />
+                  <Button size="icon" variant="outline">
+                    <FileSpreadsheet />
                   </Button>
-                </DropdownMenuTrigger>
+                </ButtonGroup>
 
-                <DropdownMenuContent align="end">
-                  {table
-                    .getAllColumns()
-                    .filter((c) => c.getCanHide())
-                    .map((column) => (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                        className="capitalize"
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="ml-auto">
+                      Columns <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
 
-            {/* TABLE */}
-            <div className="overflow-hidden rounded-md border">
-              <Table>
-                <TableHeader>
-                  {table.getHeaderGroups().map((group) => (
-                    <TableRow key={group.id}>
-                      {group.headers.map((header) => (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
+                  <DropdownMenuContent align="end">
+                    {table
+                      .getAllColumns()
+                      .filter((c) => c.getCanHide())
+                      .map((column) => (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                          className="capitalize"
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
                       ))}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-
-                <TableBody>
-                  {table.getRowModel().rows.length ? (
-                    table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan="100%" className="text-center h-24">
-                        No results.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-
-            {/* FOOTER */}
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <div className="text-sm text-muted-foreground">
-                {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                {table.getFilteredRowModel().rows.length} row(s) selected.
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
+              {/* TABLE */}
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    {table.getHeaderGroups().map((group) => (
+                      <TableRow key={group.id}>
+                        {group.headers.map((header) => (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableHeader>
 
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
+                  <TableBody>
+                    {table.getRowModel().rows.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan="100%" className="text-center h-24">
+                          No results.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* FOOTER */}
+              <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="text-sm text-muted-foreground">
+                  {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                  {table.getFilteredRowModel().rows.length} row(s) selected.
+                </div>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  Previous
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -489,4 +512,4 @@ function sample() {
   );
 }
 
-export default sample;
+export default AdminManagePatients;

@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,23 +22,28 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-export function AdminAddDoctorSheet({ mode = "add", initialData }) {
+function AdminUpdatePatients({initialData}) {
   const api_url = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
+  //   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: initialData?.email || "",
     password: "",
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
-    department: initialData?.department || "",
-    experiance: initialData?.experiance || "",
     gender: initialData?.gender || "",
-    qualification: initialData?.qualification || "",
+    phone: initialData?.phone || "",
+    age: initialData?.age || "",
+    blood_group: initialData?.blood_group || "",
+    height: initialData?.height || "",
+    weight: initialData?.weight || "",
+    place: initialData?.place || "",
+    paid: initialData?.paid || ""
+    // emergencyContactname: initialData?.emergencyContactname || "",
+    // emergencyContactrelation: initialData?.emergencyContactrelation || "",
+    // emergencyContactphone: initialData?.emergencyContactphone || "",
   });
-
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -46,105 +52,63 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
   const handleSelectChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     let validationErrors = {};
-    
-    if (mode === "add") {   // Adding doctor
-    if (!formData.password) validationErrors.password = "password is required";
-      if (!formData.gender) validationErrors.gender = "Gender is required";
-      if (!formData.department)
-        validationErrors.department = "deparrtment is required";
-      if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        return; // stop submission
-      }
-
-      setErrors({});
-
-      const payload = {
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        department: formData.department,
-        experiance: formData.experiance,
-        gender: formData.gender,
-        qualification: formData.qualification,
-      };
-    //   console.log(payload);
-
-      try {
-        const res = await axios.post(
-          `${api_url}/doctor/createDoctor`,
-          payload,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("Server response:", res.data.data);
-        alert("registration completed successfully");
-        // navigate("/doctors");
-      } catch (error) {
-        if (error.response) {
-          // Backend returned error (like 401)
-          validationErrors.err = error.response.data.message || "failed";
-        } else if (error.request) {
-          validationErrors.err = "Server not responding. Try again later.";
-        } else {
-          validationErrors.err = "Something went wrong: " + error.message;
-        }
-        if (Object.keys(validationErrors).length > 0) {
-          setErrors(validationErrors);
-        }
-      }
-    } 
-    
-    else {
-      if (!formData.gender) validationErrors.gender = "Gender is required";
-      if (!formData.department)
-        validationErrors.department = "deparrtment is required";
+    if (!formData.gender) validationErrors.gender = "Gender is required";
+      if (!formData.blood_group)
+        validationErrors.blood_group = "blood group is required";
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         return; // stop submission
       }
       setErrors({});
       let payload = {
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        department: formData.department,
-        experiance: formData.experiance,
-        gender: formData.gender,
-        qualification: formData.qualification,
-      };
+      email: formData.email,
+      password: formData.password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      gender: formData.gender,
+      age: formData.age,
+      blood_group: formData.blood_group,
+      height: formData.height,
+      weight: formData.weight,
+      place: formData.place
+      
+    }
+    if (!formData.password) {
+       payload = {
+      email: formData.email,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      gender: formData.gender,
+      age: formData.age,
+      blood_group: formData.blood_group,
+      height: formData.height,
+      weight: formData.weight,
+      place: formData.place
+    //   emergencyContact: {
+    //     name: formData.emergencyContactname,
+    //     relation: formData.emergencyContactrelation,
+    //     phone: formData.emergencyContactphone,
+    //   },
+    }
+    }
 
-      if (!formData.password) {
-        // check password
-         payload = {
-          email: formData.email,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          department: formData.department,
-          experiance: formData.experiance,
-          gender: formData.gender,
-          qualification: formData.qualification,
-        };
-      } 
+ console.log(payload)
 
-      // console.log(payload)
-  try {
+ try {
         const res = await axios.put(
-          `${api_url}/doctor/updateDoctor/${initialData.userId}`,
+          `${api_url}/patient/updatePatient/${initialData.userId}`,
           payload,
           {
             withCredentials: true,
           }
         );
         console.log("Server response:", res.data.data);
-        alert("doctor update completed successfully");
+        alert("Patient update completed successfully");
         // navigate("/admin/doctors");
       } catch (error) {
         if (error.response) {
@@ -160,7 +124,6 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
         }
       }
 
-    }
   };
 
   return (
@@ -168,9 +131,7 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
       <SheetContent>
         <form onSubmit={handleSubmit}>
           <SheetHeader>
-            <SheetTitle>
-              {mode === "add" ? "Add Doctor" : "Update Doctor"}
-            </SheetTitle>
+            <SheetTitle>Update patient</SheetTitle>
             {/* <SheetDescription>
             Make changes to your profile here. Click save when you&apos;re done.
           </SheetDescription> */}
@@ -197,13 +158,10 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
-                
               />
               {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password}
-                  </p>
-                )}
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
             <div className="grid gap-3">
               <Label htmlFor="firstName">First Name</Label>
@@ -227,49 +185,61 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
                 required
               />
             </div>
+            <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                type="text"
+                placeholder="+91 ..."
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
             <div className="grid gap-3">
-              <Label htmlFor="department"> Department</Label>
-              <Select
-                value={formData.department}
-                onValueChange={(value) =>
-                  handleSelectChange("department", value)
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="generalMedicine">
-                      General Medicine
-                    </SelectItem>
-                    <SelectItem value="pediatrics">Pediatrics</SelectItem>
-                    <SelectItem value="gynecology">Gynecology</SelectItem>
-                    <SelectItem value="cardiology">Cardiology</SelectItem>
-                    <SelectItem value="dermatology">Dermatology</SelectItem>
-                    <SelectItem value="orthopedics">Orthopedics</SelectItem>
-                    <SelectItem value="neurology">Neurology</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-                {errors.gender && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.department}
-                  </p>
-                )}
-              </Select>
+              <Label htmlFor="place">Place</Label>
+              <Input
+                id="place"
+                type="text"
+                placeholder="...."
+                value={formData.place}
+                onChange={handleChange}
+                required
+              />
+            </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="experiance">Experiance</Label>
-                <Input
-                  id="experiance"
-                  type="text"
-                  placeholder="..+"
-                  value={formData.experiance}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="grid gap-3">
+                <Label htmlFor="blood_group"> Blood Group</Label>
+                <Select
+                  value={formData.blood_group}
+                  onValueChange={(value) =>
+                    handleSelectChange("blood_group", value)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="blood group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="A+">A positive (A+)</SelectItem>
+                      <SelectItem value="A-">A negative (A-)</SelectItem>
+                      <SelectItem value="B+">B positive (B+)</SelectItem>
+                      <SelectItem value="B-">B negative (B-)</SelectItem>
+                      <SelectItem value="AB+">AB positive (AB+)</SelectItem>
+                      <SelectItem value="AB-">AB negative (AB-)</SelectItem>
+                      <SelectItem value="O+">O positive (O+)</SelectItem>
+                      <SelectItem value="O-">O negative (O-)</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                  {errors.blood_group && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.blood_group}
+                    </p>
+                  )}
+                </Select>
               </div>
               <div>
                 <Label htmlFor="gender">Gender</Label>
@@ -293,16 +263,47 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
                 </Select>
               </div>
             </div>
-            <div className="grid gap-3">
-              <Label htmlFor="qualification"> Qualification</Label>
+             <div className="grid grid-cols-3 gap-3">
+                  <div className="grid gap-3">
+              <Label htmlFor="phone">Age</Label>
               <Input
-                id="qualification"
+                id="age"
                 type="text"
-                placeholder="qualification"
-                value={formData.qualification}
+                placeholder=".."
+                value={formData.age}
                 onChange={handleChange}
                 required
               />
+            </div>
+             <div className="grid gap-3">
+              <Label htmlFor="height">Hieght</Label>
+              <Input
+                id="height"
+                type="text"
+                placeholder=".. cm"
+                value={formData.height}
+                onChange={handleChange}
+                required
+              />
+            </div>
+             <div className="grid gap-3">
+              <Label htmlFor="weight">Weight</Label>
+              <Input
+                id="weight"
+                type="text"
+                placeholder=".. kg"
+                value={formData.weight}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+             </div>
+             
+
+
+            <div className="grid gap-3">
+             
               {errors.err && (
                 <p className="text-red-700 text-sm mt-1">{errors.err}</p>
               )}
@@ -320,3 +321,5 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
     </>
   );
 }
+
+export default AdminUpdatePatients;

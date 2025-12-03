@@ -12,6 +12,7 @@ import AdminNavBar from "./pages/admin/AdminNavBar";
 import AdminDashBoard from "./pages/admin/AdminDashBoard";
 import AdminAppointment from "./pages/admin/AdminAppointment";
 import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
+import AdminManagePatients from "./pages/admin/AdminManagePatients";
 function App() {
   return (
     <>
@@ -44,6 +45,8 @@ function App() {
           {/* Admin child routes */}
           <Route path="dashboard" element={<AdminDashBoard />} />
           <Route path="doctors" element={<AdminManageDoctors />} />
+          <Route path="patients" element={<AdminManagePatients />} />
+
           <Route path="appointment" element={<AdminAppointment />} />
 
         </Route>
