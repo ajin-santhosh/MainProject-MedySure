@@ -22,8 +22,9 @@ function RegisterPage() {
   };
 
   const handleSubmit = async (e)=> {
+    e.preventDefault()
   setWarning('')
-    console.log(formData);
+    // console.log(formData);
     if(formData.password !== formData.confirm_password){
       return(
         setWarning('Password not Matched')
@@ -36,9 +37,9 @@ function RegisterPage() {
       console.log(
         "register successful:",
         register.data.message,
-        register.data.data.id
+        register.data.data
       )
-      sessionStorage.setItem("user_id", register.data.data.id)
+      sessionStorage.setItem("user_id", register.data.data)
       navigate('/otp-verify')
     }
     catch(error){

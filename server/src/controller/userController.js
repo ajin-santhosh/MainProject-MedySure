@@ -134,7 +134,7 @@ const createPatient = async (req, res) => {
     return res.status(201).json({
       success:true,
       message: "patient registered successfully",
-      data: {id:newUser._id}
+      data: userId
     });
   } catch (error) {
     console.error("Error creating patient:", error);
