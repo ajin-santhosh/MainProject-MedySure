@@ -30,6 +30,7 @@ function AdminUpdatePatients({initialData}) {
   const [formData, setFormData] = useState({
     email: initialData?.email || "",
     password: "",
+    active: initialData?.active || false,
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
     gender: initialData?.gender || "",
@@ -51,6 +52,14 @@ function AdminUpdatePatients({initialData}) {
   // For custom Select components
   const handleSelectChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  }; 
+  // for handle toggle
+  const handleToggle = (e) => {
+    const { id, type, checked,value} = e.target;
+    setFormData((prev) => ({
+    ...prev,
+    [id]: type === "checkbox" ? checked : value,
+  }));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +75,7 @@ function AdminUpdatePatients({initialData}) {
       let payload = {
       email: formData.email,
       password: formData.password,
+      active:formData.active,
       firstName: formData.firstName,
       lastName: formData.lastName,
       phone: formData.phone,
@@ -80,6 +90,7 @@ function AdminUpdatePatients({initialData}) {
     if (!formData.password) {
        payload = {
       email: formData.email,
+      active:formData.active,
       firstName: formData.firstName,
       lastName: formData.lastName,
       phone: formData.phone,
@@ -286,7 +297,7 @@ function AdminUpdatePatients({initialData}) {
                 required
               />
             </div>
-             <div className="grid gap-3">
+             <div className="grid gap-2">
               <Label htmlFor="weight">Weight</Label>
               <Input
                 id="weight"
@@ -299,10 +310,51 @@ function AdminUpdatePatients({initialData}) {
             </div>
 
              </div>
+             <div // toggle
+              className="grid grid-cols-2"
+            >
+              <div >
+                <h2 className="text-sm font-semibold">
+                  User Status: <span className="text-sm font-semibold text-blue-500" > {formData.active ? "Active" : "Inactive"}</span>
+                 
+                </h2>
+              </div>
+
+              {/* Hidden real checkbox */}
+              <div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                     type="checkbox"
+                     id="active"
+                    checked={formData.active}
+                    onChange={handleToggle}
+                    className="sr-only peer"
+                  />
+
+                  {/* Track */}
+                  <div
+                    className="
+            w-10 h-4 rounded-full
+            peer bg-gray-400 peer-checked:bg-green-500
+            transition-colors duration-300
+          "
+                  ></div>
+
+                  {/* Thumb */}
+                  <div
+                    className="
+            absolute left-1 top-1 w-2 h-2 rounded-full bg-white shadow-md 
+            transition-transform duration-300
+            peer-checked:translate-x-6
+          "
+                  ></div>
+                </label>
+              </div>
+            </div>  
              
 
 
-            <div className="grid gap-3">
+            <div className="grid gap-2">
              
               {errors.err && (
                 <p className="text-red-700 text-sm mt-1">{errors.err}</p>

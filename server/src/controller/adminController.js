@@ -3,7 +3,7 @@ const Users = require("../models/userSchema");
 
 // Create Admin controller
 const createAdmin = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password,active } = req.body;
   try {
     if (!email || !password) {
       return res
@@ -19,6 +19,7 @@ const createAdmin = async (req, res) => {
       email,
       password: hashPassword,
       role: "admin",
+      active
     });
     return res.status(201).json({
       success:true,
@@ -62,9 +63,9 @@ const updateAdmin = async (req, res) => {
       const hashPassword = await bcrypt.hash(password, 10);
       updatingAdmin.password = hashPassword;
     }
-    if (active) {
+    
       updatingAdmin.active = active;
-    }
+    
 
     const updatedAdmin = await updatingAdmin.save();
     return res.status(201).json({

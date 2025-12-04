@@ -15,7 +15,7 @@ const {
 
 // create docter
 const createDoctor = async (req, res) => {
-  const { email, password, ...otherData } = req.body;
+  const { email, password,active, ...otherData } = req.body;
   try {
     if (!email || !password) {
       return res
@@ -31,6 +31,7 @@ const createDoctor = async (req, res) => {
       email,
       password: hashPassword,
       role: "doctor",
+      active,
     });
     const userId = newUser._id;
     const newrDoctor = await registerDoctor(otherData, userId); // passing data to doctor controller
@@ -69,9 +70,9 @@ const updateDoctor = async (req, res) => {
       const hashPassword = await bcrypt.hash(password, 10);
       updatingDoctor.password = hashPassword;
     }
-    if (active !== undefined) {
-      updatingDoctor.active = active;
-    }
+    
+    updatingDoctor.active = active;
+    
     const updatedDoctor = await updatingDoctor.save();
     if (Object.keys(otherData).length > 0) {
       await updateDoctordetails(userId, otherData);
@@ -109,7 +110,7 @@ const deleteDoctor = async (req, res) => {
 // create patient in User
 
 const createPatient = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password,active} = req.body;
   try {
     if (!email || !password) {
       return res
@@ -125,6 +126,7 @@ const createPatient = async (req, res) => {
       email,
       password: hashPassword,
       role: "patient",
+      active,
     });
     const userId = newUser._id;
     const mailsender = await patientSignInMailVerfication(userId); // mail sender
@@ -165,9 +167,9 @@ const updatePatient = async (req, res) => {
       const hashPassword = await bcrypt.hash(password, 10);
       updatingPatient.password = hashPassword;
     }
-    if (active !== undefined) {
+    
       updatingPatient.active = active;
-    }
+    
     const updatedPatient = await updatingPatient.save();
     if (Object.keys(otherData).length > 0) {
       await updatePatientDetails(userId, otherData);
