@@ -45,9 +45,9 @@ import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
 
 // logic from here
-export const getColumns = (deletePatient) => [
+export const getColumns = (deleteAdmin) => [
   {
-    accessorKey: "userId",
+    accessorKey: "_id",
     header: ({ table }) => (
       <Checkbox
         checked={
@@ -86,157 +86,7 @@ export const getColumns = (deletePatient) => [
     cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
 
-  {
-    accessorKey: "firstName",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        First Name <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("firstName")}</div>,
-  },
 
-  {
-    accessorKey: "lastName",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Last Name <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("lastName")}</div>,
-  },
-
-  {
-    accessorKey: "gender",
-    header: "Gender",
-    cell: ({ row }) => <div>{row.getValue("gender")}</div>,
-  },
-  {
-    accessorKey: "phone",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Phone <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("phone")}</div>,
-  },
-  {
-    accessorKey: "age",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Age <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("age")}</div>,
-  },
-  {
-    accessorKey: "blood_group",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Blood Group <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("blood_group")}</div>,
-  },
-  {
-    accessorKey: "height",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Height <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("height")}</div>,
-  },
-  {
-    accessorKey: "weight",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Weight <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("weight")}</div>,
-  },
-  {
-    accessorKey: "place",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Place <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("place")}</div>,
-  },
-  {
-    accessorKey: "emergencyContactname",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Emergency Contact Name <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("emergencyContactname")}</div>,
-  },
-  {
-    accessorKey: "emergencyContactrelation",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Emergency Contact Relation <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("emergencyContactrelation")}</div>,
-  },
-  {
-    accessorKey: "emergencyContactphone",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Emergency Contact Phone <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("emergencyContactphone")}</div>,
-  },
-  {
-    accessorKey: "paid",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Paid <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("paid")?"yes":"no"}</div>,
-  },
 
   // ACTIONS COLUMN
   {
@@ -244,7 +94,7 @@ export const getColumns = (deletePatient) => [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const patient = row.original;
+      const admin = row.original;
 
       return (
         <DropdownMenu>
@@ -274,11 +124,11 @@ export const getColumns = (deletePatient) => [
             <DropdownMenuItem
               className="text-red-700"
               onClick={() =>
-                toast.warning("Delete doctor?", {
+                toast.warning("Delete Admin?", {
                   description: "This action cannot be undone.",
                   action: {
                     label: "Confirm",
-                    onClick: () => deletePatient(patient.userId),
+                    onClick: () => deleteAdmin(admin._id),
                   },
                 })
               }
@@ -288,7 +138,7 @@ export const getColumns = (deletePatient) => [
 
             <DropdownMenuItem
               className="text-blue-700"
-              onClick={() => navigator.clipboard.writeText(patient.email)}
+              onClick={() => navigator.clipboard.writeText(admin.email)}
             >
               Copy Email
             </DropdownMenuItem>
@@ -299,7 +149,7 @@ export const getColumns = (deletePatient) => [
   },
 ];
 
-function sample() {
+function Sample() {
   const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
@@ -307,42 +157,42 @@ function sample() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
-  // fetch doctors
-  const pat = async () => {
+  // fetch admin
+  const adm = async () => {
     try {
-      const res = await axios.get(`${api_url}/patient/getPatients`, {
+      const res = await axios.get(`${api_url}/admin/getAdmins`, {
         withCredentials: true,
       });
       setData(res.data.data);
     } catch (err) {
-      console.error("Error loading patients", err);
+      console.error("Error loading admins", err);
     }
   };
 
-  // // delete patient + reload list
-  const deletePatient = async (userId) => {
+  // // delete admin + reload list
+  const deleteAdmin = async (_id) => {
     try {
-      await axios.delete(`${api_url}/patient/deletePatient/${userId}`, {
+      await axios.delete(`${api_url}/admin/deleteAdmin/${_id}`, {
         withCredentials: true,
       });
 
-      console.log("patient deleted:", userId);
+      console.log("Admin deleted:", _id);
 
       // re-fetch data
-      pat();
+      adm();
     } catch (error) {
-      console.error("Error patient delete", error);
+      console.error("Error in admin delete", error);
     }
   };
 
   // load once
   useEffect(() => {
-    pat();
+    adm();
   }, []);
 
   const table = useReactTable({
     data,
-    columns: getColumns(deletePatient),
+    columns: getColumns(deleteAdmin),
     state: {
       sorting,
       columnFilters,
@@ -489,4 +339,4 @@ function sample() {
   );
 }
 
-export default sample;
+export default Sample;

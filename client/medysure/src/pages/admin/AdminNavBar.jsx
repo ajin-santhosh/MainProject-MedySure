@@ -74,6 +74,9 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
 
         {openMenus.profile && !collapsed && (
           <div className="ml-8 mt-2 flex flex-col gap-2">
+             <Link to='admins'>
+            <button className="text-sm hover:underline">Admins</button>
+            </Link>
             <Link to='doctors'>
             <button className="text-sm hover:underline">Doctors</button>
             </Link>
