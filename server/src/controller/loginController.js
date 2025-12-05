@@ -14,14 +14,18 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await Users.findOne({ email });
-    if (!user || !user.active) {
+    if (!user) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+    if (!user.active) {
+      return res.status(401).json({ success: false, message: "your User acount is now deactivated please contact the administration" });
     }
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
+    
 
     const token = createAccessToken({
       id: user._id.toString(),

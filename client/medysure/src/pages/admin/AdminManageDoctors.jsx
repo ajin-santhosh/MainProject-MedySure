@@ -77,19 +77,73 @@ export const getColumns = (deleteDoctor) => [
 
   {
     accessorKey: "active",
-    header: "active",
+    header: ({ column }) => {
+    const activeOptions = [true,false];
+    const currentFilter = column.getFilterValue();
+
+    return (
+      <div className="flex items-center gap-2">
+        {/* FILTER DROPDOWN */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Status <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            {activeOptions.map((active) => (
+              <DropdownMenuCheckboxItem
+                key={active}
+                checked={currentFilter === active}
+                onCheckedChange={(selected) => {
+                  if (selected) {
+                    column.setFilterValue(active);
+                  } else {
+                    column.setFilterValue(undefined);
+                  }
+                }}
+                className="capitalize"
+              >
+                {active?"acitve": "inactive"}
+              </DropdownMenuCheckboxItem>
+            ))}
+
+            {/* CLEAR FILTER */}
+            <DropdownMenuCheckboxItem
+              checked={!currentFilter}
+              onCheckedChange={() => column.setFilterValue(undefined)}
+            >
+              Clear Filter
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* SORT BUTTON */}
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    );
+  },
+    
     cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
   },
 
   {
     accessorKey: "email",
     header: ({ column }) => (
+      
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Email <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
+      
     ),
     cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
@@ -121,20 +175,130 @@ export const getColumns = (deleteDoctor) => [
   },
 
   {
-    accessorKey: "gender",
-    header: "Gender",
-    cell: ({ row }) => <div>{row.getValue("gender")}</div>,
+  accessorKey: "gender",
+  header: ({ column }) => {
+    const genderOptions = ["male", "female", "other"];
+    const currentFilter = column.getFilterValue();
+
+    return (
+      <div className="flex items-center gap-2">
+        {/* FILTER DROPDOWN */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Gender <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            {genderOptions.map((gender) => (
+              <DropdownMenuCheckboxItem
+                key={gender}
+                checked={currentFilter === gender}
+                onCheckedChange={(selected) => {
+                  if (selected) {
+                    column.setFilterValue(gender);
+                  } else {
+                    column.setFilterValue(undefined);
+                  }
+                }}
+                className="capitalize"
+              >
+                {gender}
+              </DropdownMenuCheckboxItem>
+            ))}
+
+            {/* CLEAR FILTER */}
+            <DropdownMenuCheckboxItem
+              checked={!currentFilter}
+              onCheckedChange={() => column.setFilterValue(undefined)}
+            >
+              Clear Filter
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* SORT BUTTON */}
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    );
   },
+  cell: ({ row }) => <div>{row.getValue("gender")}</div>,
+},
+
 
   {
     accessorKey: "experiance",
-    header: "Experience",
+   header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Experiance<ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => <div>{row.getValue("experiance")}</div>,
   },
 
   {
     accessorKey: "department",
-    header: "Department",
+    header: ({ column }) => {
+    const departmentOptions = ["generalMedicine","pediatrics","gynecology","cardiology","dermatology","orthopedics","neurology"];
+    const currentFilter = column.getFilterValue();
+
+    return (
+      <div className="flex items-center gap-2">
+        {/* FILTER DROPDOWN */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Department <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            {departmentOptions.map((department) => (
+              <DropdownMenuCheckboxItem
+                key={department}
+                checked={currentFilter === department}
+                onCheckedChange={(selected) => {
+                  if (selected) {
+                    column.setFilterValue(department);
+                  } else {
+                    column.setFilterValue(undefined);
+                  }
+                }}
+                className="capitalize"
+              >
+                {department}
+              </DropdownMenuCheckboxItem>
+            ))}
+
+            {/* CLEAR FILTER */}
+            <DropdownMenuCheckboxItem
+              checked={!currentFilter}
+              onCheckedChange={() => column.setFilterValue(undefined)}
+            >
+              Clear Filter
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* SORT BUTTON */}
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    );
+  },
     cell: ({ row }) => <div>{row.getValue("department")}</div>,
   },
 

@@ -24,7 +24,7 @@ function LoginPage() {
   };
   const handleSubtmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     setWarning('')
     try {
         

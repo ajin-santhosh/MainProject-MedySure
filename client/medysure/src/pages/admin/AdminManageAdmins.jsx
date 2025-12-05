@@ -75,7 +75,58 @@ export const getColumns = (deleteAdmin) => [
 
   {
     accessorKey: "active",
-    header: "active",
+    header: ({ column }) => {
+        const activeOptions = [true,false];
+        const currentFilter = column.getFilterValue();
+    
+        return (
+          <div className="flex items-center gap-2">
+            {/* FILTER DROPDOWN */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="ml-auto">
+                  Status <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+    
+              <DropdownMenuContent align="end">
+                {activeOptions.map((active) => (
+                  <DropdownMenuCheckboxItem
+                    key={active}
+                    checked={currentFilter === active}
+                    onCheckedChange={(selected) => {
+                      if (selected) {
+                        column.setFilterValue(active);
+                      } else {
+                        column.setFilterValue(undefined);
+                      }
+                    }}
+                    className="capitalize"
+                  >
+                    {active?"acitve": "inactive"}
+                  </DropdownMenuCheckboxItem>
+                ))}
+    
+                {/* CLEAR FILTER */}
+                <DropdownMenuCheckboxItem
+                  checked={!currentFilter}
+                  onCheckedChange={() => column.setFilterValue(undefined)}
+                >
+                  Clear Filter
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+    
+            {/* SORT BUTTON */}
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
     cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
   },
 
