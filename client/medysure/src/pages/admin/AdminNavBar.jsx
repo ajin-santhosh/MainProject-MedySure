@@ -108,6 +108,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/* Resports */}
 
       <div>
+        <Link to= "report" >
         <button
           onClick={() => toggleMenu("profile")}
           className="
@@ -120,6 +121,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
             {!collapsed && <span>Reports</span>}
           </div>
         </button>
+        </Link>
       </div>
       {/* Calender */}
 

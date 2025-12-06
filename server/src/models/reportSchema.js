@@ -14,12 +14,19 @@ const reportSchema = new mongoose.Schema(
           required: true,
           index:true
         },
+        
     title: {
       type: String,
       required: true
     },
     description: {
       type: String
+    },
+    reportType: {
+      type: String,
+      required: true,
+      index: true,
+      enum: ["lab report","prescription"]
     },
     fileUrl: [
       {

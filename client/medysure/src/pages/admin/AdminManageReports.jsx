@@ -1,6 +1,6 @@
-
 ("use client");
-// component import
+// // component import
+
 import { toast } from "sonner";
 import {
   flexRender,
@@ -41,21 +41,15 @@ import {
 } from "@/components/ui/button-group";
 import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-
-//pages import
-// import { Sample } from "./Sample";
-import ThemeToggle from "@/components/Theme/theme-toggle";
-import { AdminAddDoctorSheet } from "./AdminAddDoctorSheet";
-
 // library import
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
-
 // logic from here
-export const getColumns = (deleteDoctor) => [
+
+export const getColumns = (deleteReport) => [
   {
-    accessorKey: "userId",
+    accessorKey: "_id",
     header: ({ table }) => (
       <Checkbox
         checked={
@@ -74,238 +68,198 @@ export const getColumns = (deleteDoctor) => [
     enableSorting: false,
     enableHiding: false,
   },
-
+//   {
+//     accessorKey: "fileUrl",
+//     header: ({ table }) => (
+//       <Checkbox
+//         className="hidden"
+//         checked={
+//           table.getIsAllPageRowsSelected() ||
+//           (table.getIsSomePageRowsSelected() && "indeterminate")
+//         }
+//         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+//       />
+//     ),
+//     cell: ({ row }) => (
+//       <Checkbox
+//         className="hidden"
+//         checked={row.getIsSelected()}
+//         onCheckedChange={(value) => row.toggleSelected(!!value)}
+//       />
+//     ),
+//     enableSorting: false,
+//     enableHiding: false,
+//   },
   {
-    accessorKey: "active",
+    accessorKey: "title",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Title <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("title")}</div>,
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("createdAt")}</div>,
+  },
+  {
+    accessorKey: "reportType",
     header: ({ column }) => {
-    const activeOptions = [true,false];
-    const currentFilter = column.getFilterValue();
+      const paymentOptions = ["lab report", "prescription"];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Status <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Report Type <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {activeOptions.map((active) => (
+            <DropdownMenuContent align="end">
+              {paymentOptions.map((payment) => (
+                <DropdownMenuCheckboxItem
+                  key={payment}
+                  checked={currentFilter === payment}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(payment);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {payment}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={active}
-                checked={currentFilter === active}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(active);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {active?"acitve": "inactive"}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
 
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
+    cell: ({ row }) => <div>{row.getValue("reportType")}</div>,
   },
-    
-    cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
-  },
-
   {
-    accessorKey: "email",
-    header: ({ column }) => (
-      
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Email <ArrowUpDown className="ml-1 h-4 w-4" />
-      </Button>
-      
-    ),
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-
-  {
-    accessorKey: "firstName",
+    accessorKey: "patientName",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        First Name <ArrowUpDown className="ml-2 h-4 w-4" />
+        Patient Name <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("firstName")}</div>,
+    cell: ({ row }) => <div>{row.getValue("patientName")}</div>,
   },
 
   {
-    accessorKey: "lastName",
+    accessorKey: "doctorName",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Last Name <ArrowUpDown className="ml-2 h-4 w-4" />
+        Doctor Name <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("lastName")}</div>,
+    cell: ({ row }) => <div>{row.getValue("doctorName")}</div>,
   },
 
   {
-  accessorKey: "gender",
-  header: ({ column }) => {
-    const genderOptions = ["male", "female", "other"];
-    const currentFilter = column.getFilterValue();
-
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Gender <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="end">
-            {genderOptions.map((gender) => (
-              <DropdownMenuCheckboxItem
-                key={gender}
-                checked={currentFilter === gender}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(gender);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
-              >
-                {gender}
-              </DropdownMenuCheckboxItem>
-            ))}
-
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  },
-  cell: ({ row }) => <div>{row.getValue("gender")}</div>,
-},
-
-
-  {
-    accessorKey: "experiance",
-   header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Experiance<ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("experiance")}</div>,
-  },
-
-  {
-    accessorKey: "department",
+    accessorKey: "doctorDepartment",
     header: ({ column }) => {
-    const departmentOptions = ["generalMedicine","pediatrics","gynecology","cardiology","dermatology","orthopedics","neurology"];
-    const currentFilter = column.getFilterValue();
+      const departmentOptions = [
+        "generalMedicine",
+        "pediatrics",
+        "gynecology",
+        "cardiology",
+        "dermatology",
+        "orthopedics",
+        "neurology",
+      ];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Department <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Department <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {departmentOptions.map((department) => (
+            <DropdownMenuContent align="end">
+              {departmentOptions.map((department) => (
+                <DropdownMenuCheckboxItem
+                  key={department}
+                  checked={currentFilter === department}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(department);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {department}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={department}
-                checked={currentFilter === department}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(department);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {department}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  },
-    cell: ({ row }) => <div>{row.getValue("department")}</div>,
-  },
-
-  {
-    accessorKey: "qualification",
-    header: "Qualification",
-    cell: ({ row }) => <div>{row.getValue("qualification")}</div>,
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("doctorDepartment")}</div>,
   },
 
   // ACTIONS COLUMN
@@ -314,7 +268,7 @@ export const getColumns = (deleteDoctor) => [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const doctor = row.original;
+      const reports = row.original;
 
       return (
         <DropdownMenu>
@@ -326,27 +280,15 @@ export const getColumns = (deleteDoctor) => [
 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Sheet>
-              <SheetTrigger asChild>
-                
-                  <DropdownMenuItem className="text-green-700"
-                    onSelect={(e) => e.preventDefault()}>
-                    Update
-                  </DropdownMenuItem>
-                
-              </SheetTrigger  >
-              <AdminAddDoctorSheet mode="update" 
-                initialData={doctor} />
-            </Sheet>
 
             <DropdownMenuItem
               className="text-red-700"
               onClick={() =>
-                toast.warning("Delete doctor?", {
+                toast.warning("Delete Appointment?", {
                   description: "This action cannot be undone.",
                   action: {
                     label: "Confirm",
-                    onClick: () => deleteDoctor(doctor.userId),
+                    onClick: () => deleteReport(reports._id),
                   },
                 })
               }
@@ -356,9 +298,10 @@ export const getColumns = (deleteDoctor) => [
 
             <DropdownMenuItem
               className="text-blue-700"
-              onClick={() => navigator.clipboard.writeText(doctor.email)}
+              onClick={() => downloadFile(reports._id)}
             >
-              Copy Email
+              {" "}
+              Download
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -366,8 +309,36 @@ export const getColumns = (deleteDoctor) => [
     },
   },
 ];
+// download file
+const downloadFile = async (reportId) => {
+  try {
+    const res = await axios.get(`${api_url}/report/dowReport/${reportId}`, {
+      responseType: "blob", // important!
+      withCredentials: true,
+    });
 
-function AdminManageDoctors() {
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(
+      new Blob([res.data], { type: "application/pdf" })
+    );
+
+    // Create a temporary link to trigger download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `report_${reportId}.pdf`); // file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url); // clean up
+    console.log("Download succeeded");
+  } catch (err) {
+    console.error("Error downloading report", err);
+  }
+};
+
+import ThemeToggle from "@/components/Theme/theme-toggle";
+function AdminManageReports() {
   const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
@@ -375,42 +346,42 @@ function AdminManageDoctors() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
-  // fetch doctors
-  const doc = async () => {
+  // fetch report
+  const repo = async () => {
     try {
-      const res = await axios.get(`${api_url}/doctor/getdoctor`, {
+      const res = await axios.get(`${api_url}/report/getReport`, {
         withCredentials: true,
       });
       setData(res.data.data);
     } catch (err) {
-      console.error("Error loading doctors", err);
+      console.error("Error loading appointments", err);
     }
   };
 
-  // delete doctor + reload list
-  const deleteDoctor = async (userId) => {
+  // delete Appointment + reload list
+  const deleteReport = async (_id) => {
     try {
-      await axios.delete(`${api_url}/doctor/deleteDoctor/${userId}`, {
+      await axios.delete(`${api_url}/appointment/deleteAppointment/${_id}`, {
         withCredentials: true,
       });
 
-      console.log("Doctor deleted:", userId);
+      console.log("Appointment deleted:", userId);
 
       // re-fetch data
-      doc();
+      repo();
     } catch (error) {
-      console.error("Error deleting doctor", error);
+      console.error("Error deleting Appointment", error);
     }
   };
 
   // load once
   useEffect(() => {
-    doc();
+    repo();
   }, []);
 
   const table = useReactTable({
     data,
-    columns: getColumns(deleteDoctor),
+    columns: getColumns(deleteReport),
     state: {
       sorting,
       columnFilters,
@@ -426,6 +397,7 @@ function AdminManageDoctors() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
   return (
     <>
       <div className={`flex-1 flex flex-col`}>
@@ -435,7 +407,7 @@ function AdminManageDoctors() {
             {/* Hamburger for mobile */}
 
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-              Doctors
+              Reports
             </h1>
           </div>
 
@@ -443,31 +415,24 @@ function AdminManageDoctors() {
             <ThemeToggle />
           </div>
         </header>
+
         <div className="p-5">
           <div className="w-full">
             {/* FILTER BAR */}
             <div className="flex items-end py-4">
               <Input
-                placeholder="Filter emails..."
-                value={table.getColumn("email")?.getFilterValue() || ""}
+                placeholder="Filter by title"
+                value={
+                  table.getColumn("title")?.getFilterValue() ||
+                  ""
+                }
                 onChange={(e) =>
-                  table.getColumn("email")?.setFilterValue(e.target.value)
+                  table
+                    .getColumn("title",)
+                    ?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
-
-              <ButtonGroup className="pl-5">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline">Add Doctor</Button>
-                  </SheetTrigger>
-                  <AdminAddDoctorSheet  />
-                </Sheet>
-                <ButtonGroupSeparator />
-                <Button size="icon" variant="outline">
-                  <UserRoundPlus />
-                </Button>
-              </ButtonGroup>
 
               <ButtonGroup className="pl-5">
                 <Button variant="outline">Export CSV</Button>
@@ -581,4 +546,4 @@ function AdminManageDoctors() {
   );
 }
 
-export default AdminManageDoctors;
+export default AdminManageReports;

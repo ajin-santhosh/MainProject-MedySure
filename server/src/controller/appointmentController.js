@@ -1,6 +1,7 @@
 const Appointment = require("../models/appointmentSchema");
 
 
+
 //Create 
 const createAppointment = async (req, res) => {
   const {
@@ -104,7 +105,47 @@ const deleteAppointment = async (req, res) => {
 //Get
 const getAppointment = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
+    const appointments = await Appointment.aggregate([
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientId",
+          foreignField: "userId",
+          as: "patient",
+        },
+        
+      },
+      {
+    $lookup: {
+      from: "doctors",
+      localField: "doctorId",
+      foreignField: "userId",
+      as: "doctor"
+    }
+  },
+      { $unwind: "$patient", },
+      { $unwind: "$doctor", },
+      {
+        $project: {
+          _id: 1,
+          reportId:1,
+          appointmentDate: {
+  $dateToString: {
+    format: "%Y-%m-%d %H:%M",
+    date: "$appointmentDate",
+    timezone: "Asia/Kolkata"   // optional
+  }
+},
+          title:1,
+          description:1,
+          status:1,
+          payment:1,
+          patientName: {$concat: ["$patient.firstName", " ", "$patient.lastName"]},
+          doctorName: {$concat:["$doctor.firstName"," ","$doctor.lastName"]},
+          doctorDepartment :"$doctor.department"
+        },
+      },
+    ]);
 
     return res.status(201).json({
       success: true,

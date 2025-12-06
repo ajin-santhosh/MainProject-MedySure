@@ -14,6 +14,7 @@ import AdminAppointment from "./pages/admin/AdminAppointment";
 import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
 import AdminManagePatients from "./pages/admin/AdminManagePatients";
 import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
+import AdminManageReports from "./pages/admin/AdminManageReports";
 function App() {
   return (
     <>
@@ -49,6 +50,8 @@ function App() {
           <Route path="patients" element={<AdminManagePatients />} />
           <Route path="admins" element={<AdminManageAdmins />} />
           <Route path="appointment" element={<AdminAppointment />} />
+          <Route path="report" element={<AdminManageReports />} />
+
 
         </Route>
 
