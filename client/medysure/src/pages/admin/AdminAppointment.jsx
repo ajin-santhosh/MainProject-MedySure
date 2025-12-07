@@ -77,72 +77,72 @@ export const getColumns = (deleteAppointment) => [
   {
     accessorKey: "status",
     header: ({ column }) => {
-    const statusOptions = ["pending", "scheduled", "rescheduled", "cancelled", "completed"];
-    const currentFilter = column.getFilterValue();
+      const statusOptions = ["pending", "scheduled", "rescheduled", "cancelled", "completed"];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Status <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Status <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {statusOptions.map((status) => (
+            <DropdownMenuContent align="end">
+              {statusOptions.map((status) => (
+                <DropdownMenuCheckboxItem
+                  key={status}
+                  checked={currentFilter === status}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(status);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {status}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={status}
-                checked={currentFilter === status}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(status);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {status}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
 
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  },
-    
     cell: ({ row }) => <div>{row.getValue("status")}</div>,
   },
 
   {
     accessorKey: "patientName",
     header: ({ column }) => (
-      
+
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Patient Name <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
-      
+
     ),
     cell: ({ row }) => <div>{row.getValue("patientName")}</div>,
   },
@@ -164,57 +164,57 @@ export const getColumns = (deleteAppointment) => [
   {
     accessorKey: "doctorDepartment",
     header: ({ column }) => {
-    const departmentOptions = ["generalMedicine","pediatrics","gynecology","cardiology","dermatology","orthopedics","neurology"];
-    const currentFilter = column.getFilterValue();
+      const departmentOptions = ["generalMedicine", "pediatrics", "gynecology", "cardiology", "dermatology", "orthopedics", "neurology"];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Department <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Department <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {departmentOptions.map((department) => (
+            <DropdownMenuContent align="end">
+              {departmentOptions.map((department) => (
+                <DropdownMenuCheckboxItem
+                  key={department}
+                  checked={currentFilter === department}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(department);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {department}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={department}
-                checked={currentFilter === department}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(department);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {department}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  },
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => <div>{row.getValue("doctorDepartment")}</div>,
   },
 
@@ -225,7 +225,7 @@ export const getColumns = (deleteAppointment) => [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-         Appointment Date <ArrowUpDown className="ml-2 h-4 w-4" />
+        Appointment Date <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("appointmentDate")}</div>,
@@ -237,7 +237,7 @@ export const getColumns = (deleteAppointment) => [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-         Title <ArrowUpDown className="ml-2 h-4 w-4" />
+        Title <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("title")}</div>,
@@ -249,7 +249,7 @@ export const getColumns = (deleteAppointment) => [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-          Description <ArrowUpDown className="ml-2 h-4 w-4" />
+        Description <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("description")}</div>,
@@ -257,61 +257,61 @@ export const getColumns = (deleteAppointment) => [
   {
     accessorKey: "payment",
     header: ({ column }) => {
-    const paymentOptions = [true,false];
-    const currentFilter = column.getFilterValue();
+      const paymentOptions = [true, false];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Payment <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Payment <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {paymentOptions.map((payment) => (
+            <DropdownMenuContent align="end">
+              {paymentOptions.map((payment) => (
+                <DropdownMenuCheckboxItem
+                  key={payment}
+                  checked={currentFilter === payment}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(payment);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {payment ? "Yes" : "No"}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={payment}
-                checked={currentFilter === payment}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(payment);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {payment?"Yes": "No"}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
 
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
+    cell: ({ row }) => <div>{row.getValue("payment") ? "Yes" : "No"}</div>,
   },
-    
-    cell: ({ row }) => <div>{row.getValue("payment")?"Yes":"No"}</div>,
-  },
-   
+
   // ACTIONS COLUMN
   {
     id: "actions",
@@ -330,7 +330,7 @@ export const getColumns = (deleteAppointment) => [
 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            
+
             <DropdownMenuItem
               className="text-red-700"
               onClick={() =>
@@ -419,36 +419,36 @@ function AdminAppointment() {
   });
   return (
     <>
-    <div className={`flex-1 flex flex-col`}>
-            {/* Header */}
-            <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-              <div className="flex items-center space-x-2">
-                {/* Hamburger for mobile */}
-    
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-                  Appointments
-                </h1>
-              </div>
-    
-              <div className="flex items-center space-x-4">
-                <ThemeToggle />
-              </div>
-            </header>
-<div className="p-5">
+      <div className={`flex-1 flex flex-col`}>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
+
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              Appointments
+            </h1>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
+        <div className="p-5">
           <div className="w-full">
             {/* FILTER BAR */}
             <div className="flex items-end py-4">
               <Input
                 placeholder="Filter by names"
-                value={table.getColumn("patientName")?.getFilterValue() ||table.getColumn("doctorName")?.getFilterValue() ||""}
+                value={table.getColumn("patientName")?.getFilterValue() || table.getColumn("doctorName")?.getFilterValue() || ""}
                 onChange={(e) =>
-                  table.getColumn("patientName","doctorName")?.setFilterValue(e.target.value)
-                 
+                  table.getColumn("patientName", "doctorName")?.setFilterValue(e.target.value)
+
                 }
                 className="max-w-sm"
               />
 
-             
+
 
               <ButtonGroup className="pl-5">
                 <Button variant="outline">Export CSV</Button>
@@ -496,9 +496,9 @@ function AdminAppointment() {
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                         </TableHead>
                       ))}
                     </TableRow>
@@ -558,7 +558,7 @@ function AdminAppointment() {
           </div>
         </div>
 
-            </div>
+      </div>
     </>
   )
 }

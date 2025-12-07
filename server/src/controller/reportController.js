@@ -8,7 +8,6 @@ const { title } = require("process");
 const https = require("https");
 const cloudinary = require("cloudinary").v2;
 
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -125,13 +124,13 @@ const getReport = async (req, res) => {
           title: 1,
           reportType: 1,
           fileUrl: 1,
-          createdAt:{
-  $dateToString: {
-    format: "%Y-%m-%d %H:%M",
-    date: "$createdAt",
-    timezone: "Asia/Kolkata"   // optional
-  }
-}
+          createdAt: {
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
         },
       },
     ]);
@@ -148,21 +147,20 @@ const getReport = async (req, res) => {
   }
 };
 
-const deleteReport = async (req,res) => {
-
-}
-const downloadReport = async (req,res) => {
-     try {
-const reportId = req.params.reportId;
+const deleteReport = async (req, res) => {};
+const downloadReport = async (req, res) => {
+  try {
+    const reportId = req.params.reportId;
     if (!reportId) {
       return res.status(400).send("Missing file URL");
     }
-    const repo = await Report.findById(reportId)
+    const repo = await Report.findById(reportId);
     if (!repo) {
-        return res.status(409).json({ success:false, message: "no report in db" });
-      }
-      fileUrl = repo.fileUrl[0]
-    
+      return res
+        .status(409)
+        .json({ success: false, message: "no report in db" });
+    }
+    fileUrl = repo.fileUrl[0];
 
     // Set headers for download
     res.setHeader("Content-Type", "application/pdf");
@@ -171,21 +169,22 @@ const reportId = req.params.reportId;
       "attachment; filename=cloudinary_report.pdf"
     );
 
-    https.get(fileUrl, (cloudRes) => {
-      if (cloudRes.statusCode !== 200) {
-        console.error("Cloudinary returned:", cloudRes.statusCode);
-        return res.status(500).send("Failed to download file");
-      }
+    https
+      .get(fileUrl, (cloudRes) => {
+        if (cloudRes.statusCode !== 200) {
+          console.error("Cloudinary returned:", cloudRes.statusCode);
+          return res.status(500).send("Failed to download file");
+        }
 
-      cloudRes.pipe(res);
-    }).on("error", (err) => {
-      console.error("HTTPS error:", err);
-      return res.status(500).send("Error during file download");
-    });
-
+        cloudRes.pipe(res);
+      })
+      .on("error", (err) => {
+        console.error("HTTPS error:", err);
+        return res.status(500).send("Error during file download");
+      });
   } catch (error) {
     console.error("Server error:", error);
     return res.status(500).send("Internal server error");
   }
-}
-module.exports = { createReport, getReport,downloadReport };
+};
+module.exports = { createReport, getReport, downloadReport };
