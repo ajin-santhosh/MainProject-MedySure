@@ -381,13 +381,11 @@ function AdminManageFeedback() {
                 placeholder="Filter by doctor or appointment"
                 value={
                   table.getColumn("appointment")?.getFilterValue() ||
-                //   table.getColumn("doctorName")?.getFilterValue() ||
+                  //   table.getColumn("doctorName")?.getFilterValue() ||
                   ""
                 }
                 onChange={(e) =>
-                  table
-                    .getColumn("appointment",)
-                    ?.setFilterValue(e.target.value)
+                  table.getColumn("appointment")?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
