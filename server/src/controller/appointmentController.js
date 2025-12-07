@@ -1,8 +1,7 @@
 const Appointment = require("../models/appointmentSchema");
+const { Temporal } = require('@js-temporal/polyfill');
 
-
-
-//Create 
+//Create
 const createAppointment = async (req, res) => {
   const {
     patientId,
@@ -79,7 +78,7 @@ const updateAppointment = async (req, res) => {
 
 //Delete
 const deleteAppointment = async (req, res) => {
-  const {appointmentId} = req.params;
+  const { appointmentId } = req.params;
   try {
     const deletedAppointment = await Appointment.findByIdAndDelete(
       appointmentId
@@ -113,36 +112,39 @@ const getAppointment = async (req, res) => {
           foreignField: "userId",
           as: "patient",
         },
-        
       },
       {
-    $lookup: {
-      from: "doctors",
-      localField: "doctorId",
-      foreignField: "userId",
-      as: "doctor"
-    }
-  },
-      { $unwind: "$patient", },
-      { $unwind: "$doctor", },
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$patient" },
+      { $unwind: "$doctor" },
       {
         $project: {
           _id: 1,
-          reportId:1,
+          reportId: 1,
           appointmentDate: {
-  $dateToString: {
-    format: "%Y-%m-%d %H:%M",
-    date: "$appointmentDate",
-    timezone: "Asia/Kolkata"   // optional
-  }
-},
-          title:1,
-          description:1,
-          status:1,
-          payment:1,
-          patientName: {$concat: ["$patient.firstName", " ", "$patient.lastName"]},
-          doctorName: {$concat:["$doctor.firstName"," ","$doctor.lastName"]},
-          doctorDepartment :"$doctor.department"
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          title: 1,
+          description: 1,
+          status: 1,
+          payment: 1,
+          patientName: {
+            $concat: ["$patient.firstName", " ", "$patient.lastName"],
+          },
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+          doctorDepartment: "$doctor.department",
         },
       },
     ]);
@@ -159,4 +161,73 @@ const getAppointment = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
-module.exports = { createAppointment, updateAppointment, deleteAppointment,getAppointment };
+const getAppointmentForCalanadar = async (req, res) => {
+  try {
+    const appointments = await Appointment.aggregate([
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientId",
+          foreignField: "userId",
+          as: "patient",
+        },
+      },
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$patient" },
+      { $unwind: "$doctor" },
+      {
+        $project: {
+          _id: 1,
+          start: {
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          end: {
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+           title: 1,
+           patientName: {
+            $concat: ["$patient.firstName", " ", "$patient.lastName"],
+          },
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+
+        },
+      },
+    ]);
+    
+
+    return res.status(201).json({
+      success: true,
+      message: "appointments ",
+      data: appointments,
+    });
+  } catch (error) {
+    console.error("Error in getting appointments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+module.exports = {
+  createAppointment,
+  updateAppointment,
+  deleteAppointment,
+  getAppointment,
+  getAppointmentForCalanadar
+};

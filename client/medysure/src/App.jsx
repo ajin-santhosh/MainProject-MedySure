@@ -15,6 +15,8 @@ import AdminManageDoctors from "./pages/admin/AdminManageDoctors";
 import AdminManagePatients from "./pages/admin/AdminManagePatients";
 import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
 import AdminManageReports from "./pages/admin/AdminManageReports";
+import AdminCalandar from "./pages/admin/AdminCalandar";
+import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
 function App() {
   return (
     <>
@@ -51,6 +53,10 @@ function App() {
           <Route path="admins" element={<AdminManageAdmins />} />
           <Route path="appointment" element={<AdminAppointment />} />
           <Route path="report" element={<AdminManageReports />} />
+          <Route path="calandar" element={<AdminCalandar />} />
+          <Route path="feedback" element={<AdminManageFeedback />} />
+
+
 
 
         </Route>

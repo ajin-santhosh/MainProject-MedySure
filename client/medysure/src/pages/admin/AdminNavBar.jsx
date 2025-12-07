@@ -11,6 +11,7 @@ import {
   TicketsPlane,
   CalendarCheck,
   Landmark,
+  MessageSquareMore,
 } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -126,6 +127,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/* Calender */}
 
       <div>
+        <Link to="calandar">
         <button
           onClick={() => toggleMenu("profile")}
           className="
@@ -138,6 +140,24 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
             {!collapsed && <span>Calender</span>}
           </div>
         </button>
+        </Link>
+      </div>
+      {/* Feedback*/}
+      <div>
+        <Link to="feedback">
+        <button
+          onClick={() => toggleMenu("profile")}
+          className="
+            w-full flex items-center justify-between p-2 rounded-md 
+            hover:bg-gray-100 dark:hover:bg-gray-800
+          "
+        >
+          <div className="flex items-center gap-2">
+            <MessageSquareMore className="h-4 w-4" />
+            {!collapsed && <span>Feedback</span>}
+          </div>
+        </button>
+        </Link>
       </div>
       {/* Payements */}
 

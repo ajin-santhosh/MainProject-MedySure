@@ -6,4 +6,5 @@ router.post('/createAppointment',appointmentController.createAppointment)
 router.put('/updateAppointment/:appointmentId',appointmentController.updateAppointment)
 router.delete('/deleteAppointment/:appointmentId',appointmentController.deleteAppointment)
 router.get('/getAppointment',appointmentController.getAppointment)
+router.get('/getAppointmentForCalanadar',appointmentController.getAppointmentForCalanadar)
 module.exports = router
