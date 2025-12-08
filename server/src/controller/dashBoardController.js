@@ -3,7 +3,7 @@ const Appointment = require("../models/appointmentSchema");
 const Feedback = require("../models/feedbackSchema");
 const Report = require("../models/reportSchema");
 const Patient = require("../models/patientSchema");
-
+const mongoose = require("mongoose");
 
 const totalDoctors = async (req, res) => {     // for getting total doctor count
   try {
@@ -212,7 +212,95 @@ try {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
-
+const totalAppointmentByPatient = async (req,res) => {
+  const {id} = req.params
+    try {
+    const totalCount = await Appointment.countDocuments({
+      patientId: new mongoose.Types.ObjectId(id)
+    })
+   return res.status(201).json({
+      success: true,
+      message: "Patient apointment count",
+      data: totalCount  
+    })
+  } catch (error) {
+    console.error("Error fetching patient appointment count:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+const totalFeedbackByPatient = async (req,res) => {
+  const {id} = req.params
+    try {
+    const totalCount = await Feedback.countDocuments({
+      patientId: new mongoose.Types.ObjectId(id)
+    })
+   return res.status(201).json({
+      success: true,
+      message: "Patient feedback count",
+      data: totalCount  
+    })
+  } catch (error) {
+    console.error("Error fetching patient feedback count:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+const totalReportsByPatient = async (req,res) => {
+  const {id} = req.params
+    try {
+    const totalCount = await Report.countDocuments({
+      patientId: new mongoose.Types.ObjectId(id)
+    })
+   return res.status(201).json({
+      success: true,
+      message: "Patient report count",
+      data: totalCount  
+    })
+  } catch (error) {
+    console.error("Error fetching patient report count:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+// for getting patinet appointmet status count
+const patientAppintmentStatusReport = async (req, res) => { 
+   const {userId} = req.params
+  try {
+    const total = await Appointment.aggregate([
+      {
+      $match: {
+        patientId: new mongoose.Types.ObjectId(userId)  // filter by patient
+      }
+    },
+      {
+    $facet: {
+      byStatus: [
+        {
+          $group: {
+            _id: "$status",
+            total: { $sum: 1 }
+          }
+        }
+      ]
+    }
+  }
+    ]);
+    return res.status(201).json({
+      success: true,
+      message: "appointment status",
+      status: total[0].byStatus
+    });
+  } catch (error) {
+    console.error("Error fetching appointment status:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
 module.exports = {
   totalDoctors,
   totalPatients,
@@ -222,5 +310,9 @@ module.exports = {
   appintmentStatusReport,
   appointmentWeekReport,
   patientWeekReport,
-  acivePatientCount
+  acivePatientCount,
+  totalAppointmentByPatient,
+  totalFeedbackByPatient,
+  totalReportsByPatient,
+  patientAppintmentStatusReport,
 };

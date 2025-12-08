@@ -7,7 +7,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import OtpVerifyPage from "./pages/auth/OtpVerifyPage";
 import PatientRegistration from "./pages/auth/PatientRegistration";
-// Admin Components
+// Admin pages
 import AdminNavBar from "./pages/admin/AdminNavBar";
 import AdminDashBoard from "./pages/admin/AdminDashBoard";
 import AdminAppointment from "./pages/admin/AdminAppointment";
@@ -17,6 +17,11 @@ import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
 import AdminManageReports from "./pages/admin/AdminManageReports";
 import AdminCalandar from "./pages/admin/AdminCalandar";
 import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
+
+// Patient pages
+import PatientNavBar from "./pages/patient/PatientNavBar";
+import PSample from "./pages/patient/PSample";
+import PatientDashBoard from "./pages/patient/PatientDashBoard";
 function App() {
   return (
     <>
@@ -55,12 +60,17 @@ function App() {
           <Route path="report" element={<AdminManageReports />} />
           <Route path="calandar" element={<AdminCalandar />} />
           <Route path="feedback" element={<AdminManageFeedback />} />
-
-
-
-
         </Route>
 
+
+
+        {/* patient Routes */}
+        <Route path="/patient" element={<PatientNavBar />} >
+           {/* Default redirect: /admin → /admin/dashboard */}
+           <Route index element={<Navigate to="dashboard" replace />} />
+           <Route path="dashboard" element={<PatientDashBoard />} />
+
+        </Route>
       </Routes>
       </Router>
     </>

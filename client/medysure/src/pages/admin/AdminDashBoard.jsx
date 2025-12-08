@@ -124,7 +124,7 @@ function AdminDashBoard() {
           {" "}
           Appintment Dashboard
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg ">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg bg-white dark:bg-gray-800">
           <div className="justify-items-center">
             <h2 className="font-sans text-xl font-bold text-center">
               Appointment Statics
@@ -144,7 +144,7 @@ function AdminDashBoard() {
           {" "}
           Patient Dashboard
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg ">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg bg-white dark:bg-gray-800">
           <div className="justify-items-center">
             <h2 className="font-sans text-xl font-bold text-center">
               Patient Registration Statics (Last 7 days)

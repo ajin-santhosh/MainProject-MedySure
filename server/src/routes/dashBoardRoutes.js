@@ -12,4 +12,11 @@ router.get('/appintmentStatusReport',dashBoardController.appintmentStatusReport)
 router.get('/appointmentWeekReport',dashBoardController.appointmentWeekReport)
 router.get('/patientWeekReport',dashBoardController.patientWeekReport)
 router.get('/acivePatientCount',dashBoardController.acivePatientCount)
+router.get('/totalAppointmentByPatient/:id',dashBoardController.totalAppointmentByPatient)
+router.get('/totalFeedbackByPatient/:id',dashBoardController.totalFeedbackByPatient)
+router.get('/totalReportsByPatient/:id',dashBoardController.totalReportsByPatient)
+router.get('/patientAppintmentStatusReport/:userId',dashBoardController.patientAppintmentStatusReport)
+
+
+
 module.exports = router
