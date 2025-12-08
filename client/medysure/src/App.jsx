@@ -22,6 +22,7 @@ import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
 import PatientNavBar from "./pages/patient/PatientNavBar";
 import PSample from "./pages/patient/PSample";
 import PatientDashBoard from "./pages/patient/PatientDashBoard";
+import PatientBookAppointment from "./pages/patient/PatientBookAppointment";
 function App() {
   return (
     <>
@@ -69,6 +70,7 @@ function App() {
            {/* Default redirect: /admin → /admin/dashboard */}
            <Route index element={<Navigate to="dashboard" replace />} />
            <Route path="dashboard" element={<PatientDashBoard />} />
+           <Route path="book-appointment" element={<PatientBookAppointment />} />
 
         </Route>
       </Routes>

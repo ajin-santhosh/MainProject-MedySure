@@ -61,7 +61,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
     {/* book appointment */}
 
       <div>
-        <Link to="">
+        <Link to="book-appointment" >
         <button
           onClick={() => toggleMenu("bookAppointment")}
           className="
