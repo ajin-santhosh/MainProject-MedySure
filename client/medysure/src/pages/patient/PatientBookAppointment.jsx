@@ -31,32 +31,104 @@ import {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea,
-} from "@/components/ui/input-group"
+} from "@/components/ui/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 import { Label } from "@/components/ui/label";
-import { ChevronDownIcon } from "lucide-react"
-
+import { ChevronDownIcon } from "lucide-react";
 
 //
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRef } from "react";
+
 
 //
 import ThemeToggle from "@/components/Theme/theme-toggle";
 function PatientBookAppointment() {
   const api_url = import.meta.env.VITE_API_URL;
-  const [doctors, setDoctors] = useState([]);
-  const [search, setSearch] = useState("");
-  const [department, setDepartment] = useState("");
-  const [status, setStatus] = useState("");
-   const [open, setOpen] = useState(false)
-  const [date, setDate] = useState(null)
+  const [doctors, setDoctors] = useState([]); // for dco
+  const [search, setSearch] = useState(""); // for search input
+  const [department, setDepartment] = useState(""); // for department select
+  const [open, setOpen] = useState(false); // for calander close
+  const [date, setDate] = useState(null); // for calandar
+  const [errors, setErrors] = useState({}); // for error
+  const dialogCloseRef = useRef(null);  // for modal close
+
+
+  const [formData, setFormData] = useState(
+    {
+      title: "",
+      description: "",
+      time: "10:30:00",
+      id: "",
+    } // for form data
+  );
+  const handleChange = (e) => {
+    // for formdata
+    const { id, value } = e.target;
+    // console.log(id, value);
+
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+  const handleSubmit = async (e, doctorId) => {
+    const userId = sessionStorage.getItem("user_id");
+    e.preventDefault();
+    // console.log("hai")
+    // console.log(formData);
+    let validationErrors = {};
+    if (!date) validationErrors.date = "date is required";
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return; // stop submission
+    }
+    setErrors({});
+    const datePart = date.toISOString().split("T")[0]; // '2025-02-02'
+    const datetime = `${datePart}T${formData.time}`;
+    // console.log(datetime)
+    // console.log(id)
+
+    const payload = {
+      patientId: userId,
+      doctorId: doctorId,
+      appointmentDate: datetime,
+      title: formData.title,
+      description: formData.description,
+    };
+    try {
+      const res = await axios.post(
+        `${api_url}/appointment/createAppointment`,
+        payload,
+        { withCredentials: true }
+      );
+      // console.log("Server response:", res.data.data);
+      alert("Appointment booked successfully");
+
+      if (dialogCloseRef.current) dialogCloseRef.current.click();
+
+    // Reset form
+    setFormData({ title: "", description: "", time: "10:30:00", id: "" });
+    setDate(null);
+    } catch (error) {
+      if (error.response) {
+        // Backend returned error (like 401)
+        validationErrors.err = error.response.data.message || "failed";
+      } else if (error.request) {
+        validationErrors.err = "Server not responding. Try again later.";
+      } else {
+        validationErrors.err = "Something went wrong: " + error.message;
+      }
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+      }
+    }
+  };
+
   const handleDeptChange = (value) => {
     if (value === "__reset") {
       setDepartment("");
@@ -81,12 +153,14 @@ function PatientBookAppointment() {
   }, []);
   // console.log(doctors)
   const filter = doctors.filter((d) => {
-    const matchesSearch = d.firstName
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchDepartment = department ? d.department === department : true;
-    const matchStatus = status ? d.active === true : true;
-    return matchesSearch && matchDepartment && matchStatus;
+    if (d.active) {
+      const matchesSearch = d.firstName
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      const matchDepartment = department ? d.department === department : true;
+
+      return matchesSearch && matchDepartment;
+    }
   });
 
   return (
@@ -214,14 +288,11 @@ function PatientBookAppointment() {
                 </div>
 
                 <Dialog>
-                  <form>
-                    <DialogTrigger asChild>
-                      <Button className="m-3 py-4 px-3">
-                        {" "}
-                        Book Appointment
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+                  <DialogTrigger asChild>
+                    <Button className="m-3 py-4 px-3">Book Appointment</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <form onSubmit={(e) => handleSubmit(e, d.userId)}>
                       <DialogHeader>
                         <DialogTitle>Book Appoinment</DialogTitle>
                         <DialogDescription>
@@ -231,13 +302,25 @@ function PatientBookAppointment() {
                       <div className="grid gap-4">
                         <div className="grid gap-3">
                           <Label htmlFor="title">Title</Label>
-                          <Input id="title" name="title" defaultValue="....." />
+                          <Input
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            required
+                          />
                         </div>
                         <div className="grid gap-3">
-                          <Label htmlFor="descrption">Descrption</Label>
+                          <Label htmlFor="description">Descrption</Label>
                           <InputGroup>
-                            <InputGroupTextarea placeholder="Enter your descrption"
-                            id="descrption" name="descrption" />
+                            <InputGroupTextarea
+                              placeholder="Enter your descrption"
+                              id="description"
+                              name="description"
+                              value={formData.description}
+                              onChange={handleChange}
+                              required
+                            />
                             <InputGroupAddon align="block-end">
                               <InputGroupText className="text-muted-foreground text-xs">
                                 60 characters
@@ -246,57 +329,73 @@ function PatientBookAppointment() {
                           </InputGroup>
                         </div>
                         <div className="flex gap-4">
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="date-picker" className="px-1">
-          Date
-        </Label>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              id="date-picker"
-              className="w-32 justify-between font-normal"
-            >
-              {date ? date.toLocaleDateString() : "Select date"}
-              <ChevronDownIcon />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={date}
-              captionLayout="dropdown"
-              onSelect={(date) => {
-                setDate(date)
-                setOpen(false)
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="time-picker" className="px-1">
-          Time
-        </Label>
-        <Input
-          type="time"
-          id="time-picker"
-          step="1"
-          defaultValue="10:30:00"
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-        />
-      </div>
-    </div>
-
+                          <div className="flex flex-col gap-3">
+                            <Label htmlFor="date-picker" className="px-1">
+                              Date
+                            </Label>
+                            <Popover open={open} onOpenChange={setOpen}>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  id="date-picker"
+                                  className="w-32 justify-between font-normal"
+                                >
+                                  {date
+                                    ? date.toLocaleDateString()
+                                    : "Select date"}
+                                  <ChevronDownIcon />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto overflow-hidden p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={date}
+                                  captionLayout="dropdown"
+                                  required
+                                  onSelect={(date) => {
+                                    setDate(date);
+                                    setOpen(false);
+                                  }}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                          <div className="flex flex-col gap-3">
+                            <Label htmlFor="time-picker" className="px-1">
+                              Time
+                            </Label>
+                            <Input
+                              type="time"
+                              id="time"
+                              value={formData.time}
+                              onChange={handleChange}
+                              step="1"
+                              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                            />
+                          </div>
+                        </div>
                       </div>
+                      {errors.date && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.date}
+                        </p>
+                      )}
+                      {errors.err && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.err}
+                        </p>
+                      )}
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
+                          <Button ref={dialogCloseRef} variant="outline">Cancel</Button>
                         </DialogClose>
                         <Button type="submit">Save changes</Button>
                       </DialogFooter>
-                    </DialogContent>
-                  </form>
+                    </form>
+                  </DialogContent>
                 </Dialog>
               </div>
             ))}

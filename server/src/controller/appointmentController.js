@@ -21,6 +21,14 @@ const createAppointment = async (req, res) => {
         .status(409)
         .json({ success: false, message: "mandatory fields are missing" });
     }
+    const appointmentDateTime = new Date(appointmentDate); // convert to Date
+
+    if (appointmentDateTime < new Date()) {
+        console.log("Selected date & time is in the past")
+        return res
+        .status(409)
+        .json({ success: false, message: "please select a present data" });
+}
 
     const newAppointment = await Appointment.create({
       patientId,
