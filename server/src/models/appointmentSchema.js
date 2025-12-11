@@ -5,61 +5,56 @@ const appointmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       required: true,
-      index:true
+      index: true,
     },
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       required: true,
-      index:true
-
+      index: true,
     },
     reportId: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Report",
-        default:null,
-        index:true
-
-      }
+        default: null,
+        index: true,
+      },
     ],
-        paymentId: {
+    paymentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Payment",
-      index:true
-
+      index: true,
     },
     appointmentDate: {
       type: Date,
       required: true,
-//       validate: {
-// validator: (v) => new Date(v).getTime() > Date.now(),
-//         message: "Appointment date must be in the future."
-//       },
+      //       validate: {
+      // validator: (v) => new Date(v).getTime() > Date.now(),
+      //         message: "Appointment date must be in the future."
+      //       },
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
-      type: String
+      type: String,
     },
     status: {
       type: String,
       enum: ["pending", "scheduled", "rescheduled", "cancelled", "completed"],
       default: "pending",
       required: true,
-      index:true
-
+      index: true,
     },
     notes: {
-      type: String
+      type: String,
     },
     payment: {
       type: Boolean,
       default: false,
-      index:true
-
+      index: true,
     },
   },
   { timestamps: true }

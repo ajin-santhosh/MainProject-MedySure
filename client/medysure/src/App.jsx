@@ -23,6 +23,7 @@ import PatientNavBar from "./pages/patient/PatientNavBar";
 import PSample from "./pages/patient/PSample";
 import PatientDashBoard from "./pages/patient/PatientDashBoard";
 import PatientBookAppointment from "./pages/patient/PatientBookAppointment";
+import PatientViewAppointment from "./pages/patient/PatientViewAppointment";
 function App() {
   return (
     <>
@@ -71,6 +72,8 @@ function App() {
            <Route index element={<Navigate to="dashboard" replace />} />
            <Route path="dashboard" element={<PatientDashBoard />} />
            <Route path="book-appointment" element={<PatientBookAppointment />} />
+          <Route path="view-appointment" element={<PatientViewAppointment />} />
+
 
         </Route>
       </Routes>

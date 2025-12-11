@@ -1,6 +1,6 @@
 const Appointment = require("../models/appointmentSchema");
-const { Temporal } = require('@js-temporal/polyfill');
-
+const { Temporal } = require("@js-temporal/polyfill");
+const mongoose = require("mongoose");
 //Create
 const createAppointment = async (req, res) => {
   const {
@@ -24,11 +24,11 @@ const createAppointment = async (req, res) => {
     const appointmentDateTime = new Date(appointmentDate); // convert to Date
 
     if (appointmentDateTime < new Date()) {
-        console.log("Selected date & time is in the past")
-        return res
+      console.log("Selected date & time is in the past");
+      return res
         .status(409)
         .json({ success: false, message: "please select a present data" });
-}
+    }
 
     const newAppointment = await Appointment.create({
       patientId,
@@ -207,18 +207,16 @@ const getAppointmentForCalanadar = async (req, res) => {
               timezone: "Asia/Kolkata", // optional
             },
           },
-           title: 1,
-           patientName: {
+          title: 1,
+          patientName: {
             $concat: ["$patient.firstName", " ", "$patient.lastName"],
           },
           doctorName: {
             $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
           },
-
         },
       },
     ]);
-    
 
     return res.status(201).json({
       success: true,
@@ -232,10 +230,72 @@ const getAppointmentForCalanadar = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+// appointment for patient individual
+
+const getAppointmentForPatient = async (req,res) => {
+  const {userId} = req.params
+     try {
+    const appointments = await Appointment.aggregate([
+       {
+    $match: { patientId: new mongoose.Types.ObjectId(userId) }
+    },
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$doctor" },
+      {
+        $project: {
+          _id: 1,
+          reportId: 1,
+          createdAt:{
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          appointmentDate: {
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          title: 1,
+          description: 1,
+          notes:1,
+          status: 1,
+          payment: 1,
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+          doctorDepartment: "$doctor.department",
+        },
+      },
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "appointments ",
+      data: appointments,
+    });
+  } catch (error) {
+    console.error("Error in getting appointments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
 module.exports = {
   createAppointment,
   updateAppointment,
   deleteAppointment,
   getAppointment,
-  getAppointmentForCalanadar
+  getAppointmentForCalanadar,
+  getAppointmentForPatient
 };

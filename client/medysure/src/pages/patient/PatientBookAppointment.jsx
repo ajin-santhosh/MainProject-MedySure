@@ -47,7 +47,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
 
-
 //
 import ThemeToggle from "@/components/Theme/theme-toggle";
 function PatientBookAppointment() {
@@ -58,8 +57,7 @@ function PatientBookAppointment() {
   const [open, setOpen] = useState(false); // for calander close
   const [date, setDate] = useState(null); // for calandar
   const [errors, setErrors] = useState({}); // for error
-  const dialogCloseRef = useRef(null);  // for modal close
-
+  const dialogCloseRef = useRef(null); // for modal close
 
   const [formData, setFormData] = useState(
     {
@@ -111,9 +109,9 @@ function PatientBookAppointment() {
 
       if (dialogCloseRef.current) dialogCloseRef.current.click();
 
-    // Reset form
-    setFormData({ title: "", description: "", time: "10:30:00", id: "" });
-    setDate(null);
+      // Reset form
+      setFormData({ title: "", description: "", time: "10:30:00", id: "" });
+      setDate(null);
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)
@@ -390,7 +388,9 @@ function PatientBookAppointment() {
                       )}
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button ref={dialogCloseRef} variant="outline">Cancel</Button>
+                          <Button ref={dialogCloseRef} variant="outline">
+                            Cancel
+                          </Button>
                         </DialogClose>
                         <Button type="submit">Save changes</Button>
                       </DialogFooter>

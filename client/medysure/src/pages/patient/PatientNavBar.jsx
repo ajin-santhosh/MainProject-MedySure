@@ -80,7 +80,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/*My Appointments */}
 
       <div>
-        <Link to="">
+        <Link to="view-appointment">
         <button
           onClick={() => toggleMenu("myAppointments")}
           className="
