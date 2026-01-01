@@ -24,6 +24,8 @@ import PSample from "./pages/patient/PSample";
 import PatientDashBoard from "./pages/patient/PatientDashBoard";
 import PatientBookAppointment from "./pages/patient/PatientBookAppointment";
 import PatientViewAppointment from "./pages/patient/PatientViewAppointment";
+import PatientViewReports from "./pages/patient/PatientViewReports";
+import PatientHealthBoard from "./pages/patient/PatientHealthBoard";
 function App() {
   return (
     <>
@@ -73,7 +75,8 @@ function App() {
            <Route path="dashboard" element={<PatientDashBoard />} />
            <Route path="book-appointment" element={<PatientBookAppointment />} />
           <Route path="view-appointment" element={<PatientViewAppointment />} />
-
+           <Route path="view-reports" element={<PatientViewReports />} />
+           <Route path="health-board" element={<PatientHealthBoard />} />
 
         </Route>
       </Routes>

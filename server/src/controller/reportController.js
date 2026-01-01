@@ -5,6 +5,7 @@ const uploadPdfBuffer = require("../utils/cloudinaryUpload");
 const reportMailSender = require("../utils/reportMailSender");
 const Report = require("../models/reportSchema");
 const { title } = require("process");
+const mongoose = require("mongoose");
 const https = require("https");
 const cloudinary = require("cloudinary").v2;
 
@@ -187,4 +188,66 @@ const downloadReport = async (req, res) => {
     return res.status(500).send("Internal server error");
   }
 };
-module.exports = { createReport, getReport, downloadReport };
+const getReportForPatient = async (req, res) => {
+    const {userId} = req.params
+
+  try {
+    const report = await Report.aggregate([
+      {
+        $match: { patientId: new mongoose.Types.ObjectId(userId) }
+      },
+
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientId",
+          foreignField: "userId",
+          as: "patient",
+        },
+      },
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$patient" },
+      { $unwind: "$doctor" },
+      {
+        $project: {
+          _id: 1,
+          patientName: {
+            $concat: ["$patient.firstName", " ", "$patient.lastName"],
+          },
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+          doctorDepartment: "$doctor.department",
+          title: 1,
+          reportType: 1,
+          fileUrl: 1,
+          createdAt: {
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+        },
+      },
+    ]);
+    return res.status(201).json({
+      success: true,
+      message: "report data",
+      data: report,
+    });
+  } catch (error) {
+    console.error("Error fetching repots:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+module.exports = { createReport, getReport, downloadReport,getReportForPatient };

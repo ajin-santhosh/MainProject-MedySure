@@ -24,7 +24,32 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+
+import { MoreHorizontal, ChevronDownIcon } from "lucide-react";
 import { Description } from "@radix-ui/react-dialog";
 
 import ThemeToggle from "@/components/Theme/theme-toggle";
@@ -32,6 +57,8 @@ import PSample from "./PSample";
 
 //
 import { useState, useEffect } from "react";
+import { useRef } from "react";
+
 import axios from "axios";
 
 // const tasks = [
@@ -67,20 +94,56 @@ function PatientViewAppointment() {
   const userId = sessionStorage.getItem("user_id");
   const api_url = import.meta.env.VITE_API_URL;
   const [data, setData] = useState([]);
+  const [search, setSearch] = useState(""); // for search input
+  const [department, setDepartment] = useState(""); // for department select
+  const [status, setStatus] = useState(""); // for status select
+  // const [open, setOpen] = useState(false); // for calander close
+  // const [date, setDate] = useState(null); // for calandar
+  const [errors, setErrors] = useState({}); // for error
+  const dialogCloseRef = useRef(null); // for modal close
+
+  const [formData, setFormData] = useState(
+    {
+      title: "",
+      description: "",
+    } // for form data
+  );
   const statusColors = {
-  pending: "bg-yellow-500",
-  scheduled: "bg-blue-500",
-  rescheduled: "bg-purple-500",
-  cancelled: "bg-red-500",
-  completed: "bg-green-500",
-}
-const statusProgress = {
-  pending: "10",
-  scheduled: "75",
-  rescheduled: "50",
-  cancelled: "0",
-  completed: "100",
-}
+    pending: "bg-yellow-500",
+    scheduled: "bg-blue-500",
+    rescheduled: "bg-purple-500",
+    cancelled: "bg-red-500",
+    completed: "bg-green-500",
+  };
+  const statusProgress = {
+    pending: "10",
+    scheduled: "75",
+    rescheduled: "50",
+    cancelled: "0",
+    completed: "100",
+  };
+
+  const handleDeptChange = (value) => {
+    if (value === "__reset") {
+      setDepartment("");
+    } else {
+      setDepartment(value);
+    }
+  };
+  const handleStatustChange = (value) => {
+    if (value === "__reset") {
+      setStatus("");
+    } else {
+      setStatus(value);
+    }
+  };
+  const handleChange = (e) => {
+    // for formdata
+    const { id, value } = e.target;
+    // console.log(id, value);
+
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
 
   // fetch appoointments
   const appointment = async () => {
@@ -96,23 +159,86 @@ const statusProgress = {
       console.error("Error loading appointments", err);
     }
   };
+  // update appointment
+  const handleEdit = async (e, _id, status) => {
+    e.preventDefault();
+    let validationErrors = {};
+    if (status === "cancelled" || status === "completed") {
+      validationErrors.err =
+        "You are selected non editable status, please choose other";
+       if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return; // stop submission
+    }
+    }
+    setErrors({});
 
-  function handleEdit(id) {
-    // TODO: replace with real edit logic (open modal / navigate)
-    // Example:
-    alert("Edit task id: " + id);
-  }
+    try {
+      const updatedAppointment = {
+        title: formData.title,
+        description: formData.description
+      }
+      // console.log(updatedAppointment)
+     const res = await axios.put(
+        `${api_url}/appointment/updateAppointment/${_id}`,
+        updatedAppointment,
+        { withCredentials: true }
+      );
+      dialogCloseRef.current.click();
+              appointment();
 
-  function handleDelete(id) {
+
+      // console.log("Server response:", res.data.data);
+      alert("Appointment updated successfully");
+    } catch (error) {
+      if (error.response) {
+        // Backend returned error (like 401)
+        validationErrors.err = error.response.data.message || "failed";
+      } else if (error.request) {
+        validationErrors.err = "Server not responding. Try again later.";
+      } else {
+        validationErrors.err = "Something went wrong: " + error.message;
+      }
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+      }
+    }
+  };
+
+  const handleDelete = async (_id) => {
     // Simple delete confirmation + remove from list
     if (confirm("Delete this task?")) {
-      setData((prev) => prev.filter((t) => t.id !== id));
+      //  console.log(id)
+      try {
+        await axios.delete(`${api_url}/appointment/deleteAppointment/${_id}`, {
+          withCredentials: true,
+        });
+
+        console.log("Appointment deleted:", _id);
+
+        // re-fetch data
+        appointment();
+      } catch (error) {
+        console.error("Error deleting Appointment", error);
+      }
     }
-  }
+  };
   // load once
   useEffect(() => {
     appointment();
   }, []);
+  const filter = data.filter((d) => {
+    const matchesSearch = d.doctorName
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const matchDepartment = department
+      ? d.doctorDepartment === department
+      : true;
+    const matchStatus = status ? d.status === status : true;
+
+    return matchesSearch && matchDepartment && matchStatus;
+  });
+
   return (
     <>
       <div className={`flex-1 flex flex-col`}>
@@ -130,11 +256,11 @@ const statusProgress = {
             <ThemeToggle />
           </div>
         </header>
-        <div className="p-5">
+        <div className="p-5 ">
           {/* searchbar */}
 
-          <Card className="shadow-lg ">
-            <div className="p-2 grid grid-cols-3 gap-5 items-center">
+          <Card className="shadow-lg bg-zinc-100 dark:bg-slate-950">
+            <div className="p-2 grid grid-cols-4 gap-5 items-center">
               <div className="w-full max-w-md">
                 <FieldSet>
                   <FieldGroup>
@@ -143,8 +269,8 @@ const statusProgress = {
                         id="username"
                         type="text"
                         placeholder="Search doctor"
-                        // value={search}
-                        // onChange={(e) => setSearch(e.target.value)}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                       />
                     </Field>
                   </FieldGroup>
@@ -153,9 +279,7 @@ const statusProgress = {
               {/* selectbox */}
               <div className="w-full max-w-md">
                 <Field>
-                  <Select
-                  //   value={department} onValueChange={handleDeptChange}
-                  >
+                  <Select value={department} onValueChange={handleDeptChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="Choose department" />
                     </SelectTrigger>
@@ -170,6 +294,23 @@ const statusProgress = {
                       <SelectItem value="dermatology">Dermatology</SelectItem>
                       <SelectItem value="orthopedics">Orthopedics</SelectItem>
                       <SelectItem value="neurology"> Neurology</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+              <div className="w-full max-w-md">
+                <Field>
+                  <Select value={status} onValueChange={handleStatustChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__reset">All</SelectItem>
+                      <SelectItem value="pending">Pending </SelectItem>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="rescheduled">Rescheduled</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </Field>
@@ -210,7 +351,7 @@ const statusProgress = {
                   </thead>
 
                   <tbody>
-                    {data.map((d) => (
+                    {filter.map((d) => (
                       <tr
                         key={d._id}
                         className="bg-gray-100 dark:bg-neutral-800 shadow-sm rounded-xl"
@@ -247,9 +388,12 @@ const statusProgress = {
                           {d.description}
                         </td>
                         <td className="p-3 w-40">
-                          <Progress value={statusProgress[d.status]} className="h-2" />
+                          <Progress
+                            value={statusProgress[d.status]}
+                            className="h-2"
+                          />
                           <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 block">
-                           {statusProgress[d.status]}%
+                            {statusProgress[d.status]}%
                           </span>
                         </td>
 
@@ -271,13 +415,94 @@ const statusProgress = {
                               className="w-36"
                             >
                               <DropdownMenuItem
-                                onClick={() => handleEdit(d.id)}
+                                onSelect={(e) => e.preventDefault()}
                               >
-                                Edit
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <button
+                                      onClick={() => {
+                                        setErrors({})
+                                        setFormData({
+                                          title: d.title,
+                                          description: d.description,
+                                        });
+                                      }}
+                                    >
+                                      Edit
+                                    </button>
+                                  </DialogTrigger>
+                                  <DialogContent className="sm:max-w-[425px]">
+                                    <form
+                                      onSubmit={(e) =>
+                                        handleEdit(e, d._id, d.status)
+                                      }
+                                    >
+                                      <DialogHeader>
+                                        <DialogTitle>
+                                          Update Appoinment
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                          Update title and description
+                                        </DialogDescription>
+                                      </DialogHeader>
+                                      <div className="grid gap-4">
+                                        <div className="grid gap-3">
+                                          <Label htmlFor="title">Title</Label>
+                                          <Input
+                                            id="title"
+                                            name="title"
+                                            value={formData.title}
+                                            onChange={handleChange}
+                                            required
+                                          />
+                                        </div>
+                                        <div className="grid gap-3">
+                                          <Label htmlFor="description">
+                                            Descrption
+                                          </Label>
+                                          <InputGroup>
+                                            <InputGroupTextarea
+                                              placeholder="Enter your descrption"
+                                              id="description"
+                                              name="description"
+                                              value={formData.description}
+                                              onChange={handleChange}
+                                              required
+                                            />
+                                            <InputGroupAddon align="block-end">
+                                              <InputGroupText className="text-muted-foreground text-xs">
+                                                60 characters
+                                              </InputGroupText>
+                                            </InputGroupAddon>
+                                          </InputGroup>
+                                        </div>
+                                      </div>
+
+                                      {errors.err && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                          {errors.err}
+                                        </p>
+                                      )}
+                                      <DialogFooter>
+                                        <DialogClose asChild>
+                                          <Button
+                                            ref={dialogCloseRef}
+                                            variant="outline"
+                                          >
+                                            Cancel
+                                          </Button>
+                                        </DialogClose>
+                                        <Button type="submit">
+                                          Save changes
+                                        </Button>
+                                      </DialogFooter>
+                                    </form>
+                                  </DialogContent>
+                                </Dialog>
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="text-red-600"
-                                onClick={() => handleDelete(d.id)}
+                                onClick={() => handleDelete(d._id)}
                               >
                                 Delete
                               </DropdownMenuItem>

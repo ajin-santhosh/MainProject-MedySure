@@ -114,7 +114,7 @@ const userId = sessionStorage.getItem("user_id");
             </div>
           </header>
            <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4 mt-6
+          className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4 mt-6
 "
         >
           {totalCardData.map((item) => (

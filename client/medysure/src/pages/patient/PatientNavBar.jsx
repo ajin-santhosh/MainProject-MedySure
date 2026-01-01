@@ -98,7 +98,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/* Resports */}
 
       <div>
-        <Link to= "" >
+        <Link to= "view-reports" >
         <button
           onClick={() => toggleMenu("myReports")}
           className="
@@ -116,7 +116,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
             {/* my heath boradr */}
 
       <div>
-        <Link to= "" >
+        <Link to= "health-board" >
         <button
           onClick={() => toggleMenu("myHealth")}
           className="
