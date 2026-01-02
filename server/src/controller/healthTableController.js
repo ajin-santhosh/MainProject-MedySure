@@ -152,7 +152,7 @@ const getHelathTablePatient = async (req, res) => {
           Blood_sugar: 1,
           createdAt: {
             $dateToString: {
-              format: "%Y-%m-%d %H:%M",
+              format: "%Y-%m-%d",
               date: "$createdAt",
               timezone: "Asia/Kolkata", // optional
             },

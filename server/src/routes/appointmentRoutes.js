@@ -8,4 +8,6 @@ router.delete('/deleteAppointment/:appointmentId',appointmentController.deleteAp
 router.get('/getAppointment',appointmentController.getAppointment)
 router.get('/getAppointmentForCalanadar',appointmentController.getAppointmentForCalanadar)
 router.get('/getAppointmentForPatient/:userId',appointmentController.getAppointmentForPatient)
+router.get('/getAppointmentForPatientHealthBoard/:userId',appointmentController.getAppointmentForPatientHelathBoard)
+
 module.exports = router

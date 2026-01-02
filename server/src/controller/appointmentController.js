@@ -291,11 +291,53 @@ const getAppointmentForPatient = async (req,res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+const getAppointmentForPatientHelathBoard = async (req,res) => {
+  const {userId} = req.params
+     try {
+    const appointments = await Appointment.aggregate([
+       {
+    $match: 
+    { patientId: new mongoose.Types.ObjectId(userId),
+      status: "completed"
+
+     },
+    
+    },
+     { $sort: { appointmentDate: -1 } },
+  { $limit: 5 },
+      {
+        $project: {
+          _id: 1,
+          appointmentDate: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          title: 1,
+        },
+      },
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "appointments ",
+      data: appointments,
+    });
+  } catch (error) {
+    console.error("Error in getting appointments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
 module.exports = {
   createAppointment,
   updateAppointment,
   deleteAppointment,
   getAppointment,
   getAppointmentForCalanadar,
-  getAppointmentForPatient
+  getAppointmentForPatient,
+  getAppointmentForPatientHelathBoard
 };

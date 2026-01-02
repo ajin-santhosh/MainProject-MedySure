@@ -1,5 +1,6 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,28 +12,52 @@ import {
   Calendar,
   Pill,
   AlertTriangle,
-  Moon,
-  Sun,
+  ScanHeart,
+  HandHeart,
 } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  PieChart,
-  Pie,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+
 import ThemeToggle from "@/components/Theme/theme-toggle";
 import SugarChart from "../charts/SugarChart";
+const api_url = import.meta.env.VITE_API_URL;
+
 function PatientHealthBoard() {
-  const res = [
-    { name1: "Normal", value: 65 },
-    { name2: "Pre-Diabetic", value: 25 },
-    { name3: "High", value: 10 },
-  ];
+  const userId = sessionStorage.getItem("user_id");
+  const [data, setData] = useState(null);
+  const [apmnt, setApmnt] = useState([]);
+  // fetch appoointments
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `${api_url}/health/getHealthTablePatient/${userId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res);
+      setData(res.data.data[0]);
+    } catch (err) {
+      console.error("Error loading health data", err);
+    }
+  };
+  const appoointment = async () => {
+    const userId = sessionStorage.getItem("user_id");
+    try {
+      const apm = await axios.get(
+        `${api_url}/appointment/getAppointmentForPatientHealthBoard/${userId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      // console.log(apm);
+      setApmnt(apm.data.data);
+    } catch (err) {
+      console.error("Error loading appointment", err);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+    appoointment();
+  }, []);
   return (
     <>
       <div className={`flex-1 flex flex-col`}>
@@ -60,10 +85,18 @@ function PatientHealthBoard() {
               <Card className="lg:col-span-4">
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="md:col-span-2 p-2">
-                    <h2 className="text-xl font-semibold">John Doe</h2>
+                    <h2 className="text-2xl font-semibold">
+                      {data?.patientName}
+                    </h2>
+
                     <p className="text-sm text-muted-foreground">
-                      Male • 45 yrs • Blood Type O+
+                      Approved By : {data?.doctorName} -{" "}
+                      {data?.doctorDepartment}{" "}
                     </p>
+                    <p className="text-sm text-muted-foreground">
+                      Date: {data?.createdAt}
+                    </p>
+
                     {/* <div className="flex gap-2 mt-2">
                       <Badge variant="secondary">Diabetes</Badge>
                       <Badge variant="secondary">Hypertension</Badge>
@@ -77,11 +110,11 @@ function PatientHealthBoard() {
                       📏 Height: <strong>172 cm</strong>
                     </p>
                     <p>
-                      📊 BMI: <strong>26.4</strong> (Overweight)
+                      
                     </p>
                   </div> */}
                   <div className="flex items-center justify-end">
-                    <Button>Download Report</Button>
+                    {/* <Button>Download Report</Button> */}
                   </div>
                 </CardContent>
               </Card>
@@ -89,11 +122,23 @@ function PatientHealthBoard() {
               {/* Vitals */}
               <Card>
                 <CardHeader>
-                  <CardTitle>🫁 Oxygen Saturation</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <ScanHeart className="w-5 h-5" /> Oxygen Saturation
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold">97%</p>
-                  <p className="text-xs text-muted-foreground">Normal</p>
+                  <p className="text-3xl font-bold">
+                    {data?.Oxygen_saturation}%
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {data?.Oxygen_saturation >= 95
+                      ? "Normal"
+                      : data?.Oxygen_saturation >= 91
+                      ? "Low-normal"
+                      : data?.Oxygen_saturation >= 85
+                      ? "Low"
+                      : "Critical"}
+                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -103,8 +148,14 @@ function PatientHealthBoard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold">72 bpm</p>
-                  <p className="text-xs text-muted-foreground">Normal</p>
+                  <p className="text-3xl font-bold">{data?.Heart_rate} bpm</p>
+                  <p className="text-xs text-muted-foreground"> {data?.Heart_rate < 60
+                      ? "Low"
+                      : data?.Heart_rate <= 100
+                      ? "Normal"
+                      
+                      : "High"
+                      }</p>
                 </CardContent>
               </Card>
 
@@ -115,8 +166,16 @@ function PatientHealthBoard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold">36.8 °C</p>
-                  <p className="text-xs text-muted-foreground">Stable</p>
+                  <p className="text-3xl font-bold">
+                    {data?.Body_temperature}°C
+                  </p>
+                  <p className="text-xs text-muted-foreground">{data?.Body_temperature < 35
+                      ? "Low (Hypothermia)⬇️"
+                      : data?.Body_temperature <= 37.5
+                      ? "Stable / Normal ✅"
+                      
+                      : "High ⬆️"
+                      }</p>
                 </CardContent>
               </Card>
 
@@ -127,8 +186,8 @@ function PatientHealthBoard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold">120/80</p>
-                  <p className="text-xs text-muted-foreground">Controlled</p>
+                  <p className="text-3xl font-bold">{data?.Blood_pressure}</p>
+                  {/* <p className="text-xs text-muted-foreground">Controlled</p> */}
                 </CardContent>
               </Card>
 
@@ -139,8 +198,16 @@ function PatientHealthBoard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold">98 mg/dL</p>
-                  <p className="text-xs text-muted-foreground">Fasting</p>
+                  <p className="text-3xl font-bold">
+                    {data?.Blood_sugar} mg/dL
+                  </p>
+                  <p className="text-xs text-muted-foreground">{data?.Blood_sugar < 70
+                      ? "Low⬇️"
+                      : data?.Blood_sugar <= 140
+                      ? "Stable / Normal ✅"
+                      
+                      : "High ⬆️"
+                      }</p>
                 </CardContent>
               </Card>
 
@@ -150,8 +217,7 @@ function PatientHealthBoard() {
                   <CardTitle>Sugar Distribution</CardTitle>
                 </CardHeader>
                 <CardContent className="h-64 w-full p-1 ">
-                    
-                   <SugarChart />                    
+                  <SugarChart />
                 </CardContent>
               </Card>
 
@@ -159,19 +225,23 @@ function PatientHealthBoard() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5" /> Alerts
+                    <HandHeart className="w-5 h-5" />
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="text-sm space-y-2">
-                    <li>⚠ Lab test overdue</li>
-                    <li>⚠ BP follow-up needed</li>
+                  <ul className="text-sm font-semibold space-y-2">
+                    <li>Gender : <strong>{data?.gender}</strong></li>
+                    <li>Age : <strong>{data?.age} yrs </strong></li>
+                    <li>Blood Group : <strong>{data?.blood_group}</strong> </li>
+                    <li>Weight : <strong>{data?.weight} Kg</strong></li>
+                    <li>Hieght : <strong>{data?.height} cm</strong></li>
+                    <li>📊 BMI: <strong>{data?.weight / (data?.height/100*data?.height/100)}</strong></li>
                   </ul>
                 </CardContent>
               </Card>
 
               {/* Medications */}
-              <Card className="lg:col-span-2">
+              {/* <Card className="lg:col-span-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Pill className="w-5 h-5" /> Medications
@@ -183,7 +253,7 @@ function PatientHealthBoard() {
                     <li>Amlodipine — 5mg (PM)</li>
                   </ul>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Appointments */}
               <Card className="lg:col-span-2">
@@ -191,18 +261,24 @@ function PatientHealthBoard() {
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="w-5 h-5" /> Appointments
                   </CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Last Five Completed
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <ul className="text-sm space-y-2">
-                    <li>Jan 15 — Cardiology</li>
-                    <li>Jan 20 — Lab Tests</li>
-                    <li>Feb 2 — Nutritionist</li>
+                    {apmnt.map((a) => (
+                      <li key={a._id}>
+                        {" "}
+                        # {a.title} - {a.appointmentDate}
+                      </li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
 
               {/* Lifestyle */}
-              <Card className="lg:col-span-4">
+              {/* <Card className="lg:col-span-4">
                 <CardHeader>
                   <CardTitle>Lifestyle Summary</CardTitle>
                 </CardHeader>
@@ -220,7 +296,7 @@ function PatientHealthBoard() {
                     💧 Hydration: <strong>2.2 L</strong>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </div>
