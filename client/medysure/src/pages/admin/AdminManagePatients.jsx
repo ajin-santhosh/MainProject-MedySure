@@ -576,8 +576,8 @@ function AdminManagePatients() {
 
         <div className={`flex-1 flex flex-col`}>
           <div></div>
-          <div className="p-5">
-            <div className="w-full">
+          <div className="p-3">
+            <div className="p-2 w-full bg-zinc-100 dark:bg-slate-950">
               {/* FILTER BAR */}
               <div className="flex items-end py-4">
                 <Input
