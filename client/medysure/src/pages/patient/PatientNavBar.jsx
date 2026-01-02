@@ -134,7 +134,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/* Calender */}
 
       <div>
-        <Link to="">
+        <Link to="calandar">
         <button
           onClick={() => toggleMenu("calandar")}
           className="
@@ -151,7 +151,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       </div>
       {/* Feedback*/}
       <div>
-        <Link to="">
+        <Link to="feedback">
         <button
           onClick={() => toggleMenu("feedback")}
           className="

@@ -317,7 +317,7 @@ function AdminManageFeedback() {
     }
   };
 
-  // delete Appointment + reload list
+  // delete feedback + reload list
   const deleteFeedback = async (_id) => {
     try {
       await axios.delete(`${api_url}/feedback/deleteFeedback/${_id}`, {

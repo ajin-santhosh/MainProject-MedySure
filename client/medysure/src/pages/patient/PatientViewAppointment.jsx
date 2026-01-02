@@ -42,54 +42,17 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 
 import { MoreHorizontal, ChevronDownIcon } from "lucide-react";
-import { Description } from "@radix-ui/react-dialog";
 
 import ThemeToggle from "@/components/Theme/theme-toggle";
-import PSample from "./PSample";
-
+import { PatientAddFeedback } from "./PatientAddFeedback";
 //
 import { useState, useEffect } from "react";
 import { useRef } from "react";
 
 import axios from "axios";
 
-// const tasks = [
-//   {
-//     id: 1,
-//     title: "Update calendar and schedule",
-//     created: "20 Jun 2025",
-//     status: "Completed",
-//     due: "25 Jun 2025",
-//     doctor:"abcd",
-//     department:"234",
-//     notes:"1234567890",
-//     description:"zxcvbnlkjhgfdfgh",
-//     progress: 80,
-//     statusColor: "bg-green-600",
-//   },
-//   {
-//     id: 2,
-//     title: "Update calendar and schedule",
-//     created: "20 Jun 2025",
-//     status: "Completed",
-//     due: "25 Jun 2025",
-//     doctor:"abcd",
-//         department:"234",
-
-//     notes:"1234567890 wsdasw qeer ewre re rerew rewr weettes",
-//     description:"zxcvbnlkjhgfdfgh aedae ef ewrewrew rewrewr esrerer ewerer erere reer er er erer ere rer",
-//     progress: 80,
-//     statusColor: "bg-green-600",
-//   },
-// ]
 function PatientViewAppointment() {
   const userId = sessionStorage.getItem("user_id");
   const api_url = import.meta.env.VITE_API_URL;
@@ -97,11 +60,9 @@ function PatientViewAppointment() {
   const [search, setSearch] = useState(""); // for search input
   const [department, setDepartment] = useState(""); // for department select
   const [status, setStatus] = useState(""); // for status select
-  // const [open, setOpen] = useState(false); // for calander close
-  // const [date, setDate] = useState(null); // for calandar
   const [errors, setErrors] = useState({}); // for error
   const dialogCloseRef = useRef(null); // for modal close
-
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(
     {
       title: "",
@@ -166,27 +127,26 @@ function PatientViewAppointment() {
     if (status === "cancelled" || status === "completed") {
       validationErrors.err =
         "You are selected non editable status, please choose other";
-       if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return; // stop submission
-    }
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return; // stop submission
+      }
     }
     setErrors({});
 
     try {
       const updatedAppointment = {
         title: formData.title,
-        description: formData.description
-      }
+        description: formData.description,
+      };
       // console.log(updatedAppointment)
-     const res = await axios.put(
+      const res = await axios.put(
         `${api_url}/appointment/updateAppointment/${_id}`,
         updatedAppointment,
         { withCredentials: true }
       );
       dialogCloseRef.current.click();
-              appointment();
-
+      appointment();
 
       // console.log("Server response:", res.data.data);
       alert("Appointment updated successfully");
@@ -421,7 +381,7 @@ function PatientViewAppointment() {
                                   <DialogTrigger asChild>
                                     <button
                                       onClick={() => {
-                                        setErrors({})
+                                        setErrors({});
                                         setFormData({
                                           title: d.title,
                                           description: d.description,
@@ -500,6 +460,23 @@ function PatientViewAppointment() {
                                   </DialogContent>
                                 </Dialog>
                               </DropdownMenuItem>
+                              {d.status === "completed" && (
+                                <DropdownMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                >
+                                  <button onClick={() => setOpen(true)}>
+                                    Feedback
+                                  </button>
+
+                                  <PatientAddFeedback
+                                    open={open}
+                                    setOpen={setOpen}
+                                    _id = {d._id}
+                                    doctorId = {d.doctorId}
+                                  />
+                                </DropdownMenuItem>
+                              )}
+
                               <DropdownMenuItem
                                 className="text-red-600"
                                 onClick={() => handleDelete(d._id)}

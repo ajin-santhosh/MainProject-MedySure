@@ -26,6 +26,8 @@ import PatientBookAppointment from "./pages/patient/PatientBookAppointment";
 import PatientViewAppointment from "./pages/patient/PatientViewAppointment";
 import PatientViewReports from "./pages/patient/PatientViewReports";
 import PatientHealthBoard from "./pages/patient/PatientHealthBoard";
+import PatientFeedback from "./pages/patient/PatientFeedback";
+import PatientCalendar from "./pages/patient/PatientCalendar";
 function App() {
   return (
     <>
@@ -77,6 +79,8 @@ function App() {
           <Route path="view-appointment" element={<PatientViewAppointment />} />
            <Route path="view-reports" element={<PatientViewReports />} />
            <Route path="health-board" element={<PatientHealthBoard />} />
+           <Route path="feedback" element={<PatientFeedback />} />
+          <Route path="calandar" element={<PatientCalendar />} />
 
         </Route>
       </Routes>

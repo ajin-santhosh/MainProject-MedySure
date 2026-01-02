@@ -275,6 +275,7 @@ const getAppointmentForPatient = async (req,res) => {
             $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
           },
           doctorDepartment: "$doctor.department",
+          doctorId : 1
         },
       },
     ]);

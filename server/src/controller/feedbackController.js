@@ -1,4 +1,5 @@
 const Feedback = require("../models/feedbackSchema");
+const mongoose = require("mongoose");
 
 const createFeedback = async (req, res) => {
   const { patientId, doctorId, appointmentId, description, rating } = req.body;
@@ -64,7 +65,7 @@ const getFeedback = async (req, res) => {
           _id: 1,
           date: {
             $dateToString: {
-              format: "%Y-%m-%d %H:%M",
+              format: "%Y-%m-%d",
               date: "$createdAt",
               timezone: "Asia/Kolkata", // optional
             },
@@ -115,4 +116,65 @@ const deleteFeedback = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
-module.exports = { createFeedback, getFeedback, deleteFeedback };
+const getFeedbackForPatient = async (req, res) => {
+  const {userId} = req.params
+  try {
+    const feedbacks = await Feedback.aggregate([
+      {
+      $match: 
+          { patientId: new mongoose.Types.ObjectId(userId)
+          }
+        },
+      
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      {
+        $lookup: {
+          from: "appointments",
+          localField: "appointmentId",
+          foreignField: "_id",
+          as: "appointment",
+        },
+      },
+      { $unwind: "$doctor" },
+      { $unwind: "$appointment" },
+
+      {
+        $project: {
+          _id: 1,
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          rating:1,
+          description: 1,
+          appointment:"$appointment.title",
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+           doctorDepartment: "$doctor.department",
+        },
+      },
+    ])
+    return res.status(201).json({
+      success: true,
+      message: "feedback ",
+      data: feedbacks,
+    });
+  } catch (error) {
+    console.error("Error in getting feedbacks:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+module.exports = { createFeedback, getFeedback, deleteFeedback, getFeedbackForPatient };

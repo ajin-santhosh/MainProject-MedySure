@@ -4,6 +4,8 @@ const feedbackController = require("../controller/feedbackController")
 
 router.post('/createFeedback',feedbackController.createFeedback)
 router.get('/getFeedback',feedbackController.getFeedback)
+router.get('/getFeedbackForPatient/:userId',feedbackController.getFeedbackForPatient)
+
 router.delete('/deleteFeedback/:feedbackId',feedbackController.deleteFeedback)
 
 module.exports = router
