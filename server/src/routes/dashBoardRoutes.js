@@ -16,6 +16,13 @@ router.get('/totalAppointmentByPatient/:id',dashBoardController.totalAppointment
 router.get('/totalFeedbackByPatient/:id',dashBoardController.totalFeedbackByPatient)
 router.get('/totalReportsByPatient/:id',dashBoardController.totalReportsByPatient)
 router.get('/patientAppintmentStatusReport/:userId',dashBoardController.patientAppintmentStatusReport)
+router.get('/totalAppointmentForDoctor/:userId',dashBoardController.totalAppointmentForDoctor)
+router.get('/totalFeedbackForDoctor/:userId',dashBoardController.totalFeedbackForDoctor)
+router.get('/totalReportsByDoctor/:userId',dashBoardController.totalReportsByDoctor)
+router.get('/doctorAppintmentStatusReport/:userId',dashBoardController.doctorAppintmentStatusReport)
+router.get('/appointmentWeekReportDoctor/:userId',dashBoardController.appointmentWeekReportDoctor)
+
+
 
 
 

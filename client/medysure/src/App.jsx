@@ -18,6 +18,12 @@ import AdminManageReports from "./pages/admin/AdminManageReports";
 import AdminCalandar from "./pages/admin/AdminCalandar";
 import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
 
+// Doctor pages
+import DoctorNavbar from "./pages/doctor/DoctorNavbar";
+import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+
+
+
 // Patient pages
 import PatientNavBar from "./pages/patient/PatientNavBar";
 import PSample from "./pages/patient/PSample";
@@ -66,6 +72,16 @@ function App() {
           <Route path="report" element={<AdminManageReports />} />
           <Route path="calandar" element={<AdminCalandar />} />
           <Route path="feedback" element={<AdminManageFeedback />} />
+        </Route>
+
+        {/* Doctor parent route */}
+        <Route path="/doctor" element={<DoctorNavbar />}>
+          {/* Default redirect: /doctor → /doctor/dashboard */}
+          <Route index element={<Navigate to="dashboard" replace />} />
+
+          {/* Doctor child routes */}
+          <Route path="dashboard" element={<DoctorDashboard />} />
+          
         </Route>
 
 

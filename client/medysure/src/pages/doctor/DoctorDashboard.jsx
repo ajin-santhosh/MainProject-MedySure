@@ -7,50 +7,43 @@ import { ShieldCheck, ShieldOff } from "lucide-react";
 import AppointmentPieChart from "../charts/AppointmentPieChart";
 import AppointmentWeekReport from "../charts/AppointmentWeekReport";
 import PatientChart from "../charts/PatientChart";
-function AdminDashBoard() {
-  const api_url = import.meta.env.VITE_API_URL;
+function DoctorDashboard() {
+   const api_url = import.meta.env.VITE_API_URL;
+ const userId = sessionStorage.getItem("user_id");
+
   const [totalpatients, setTotalpatients] = useState(0);
-  const [totaldoctors, setTotaldoctors] = useState(0);
   const [totalappointment, setTotalappointment] = useState(0);
   const [totalfeedback, setTotalfeedback] = useState(0);
   const [totalreport, setTotalreport] = useState(0);
-  const [totalactivepatient, setTotalactivepatient] = useState(0);
   const [res1, setRes1] = useState([]);
-  const [res2, setRes2] = useState([]);
-
-
+    const [res2, setRes2] = useState([]);
   const fetchCount = async () => {
     try {
-      const [p_count, d_cont, a_count, f_count, r_count, p_status_count] =
+      const [p_count, a_count, f_count, r_count, p_status_count] =
         await Promise.all([
           axios.get(`${api_url}/dashboard/totalPatients`, {
             withCredentials: true,
           }),
-          axios.get(`${api_url}/dashboard/totalDoctors`, {
+          axios.get(`${api_url}/dashboard/totalAppointmentForDoctor/${userId}`, {
             withCredentials: true,
           }),
-          axios.get(`${api_url}/dashboard/totalappointments`, {
+          axios.get(`${api_url}/dashboard/totalFeedbackForDoctor/${userId}`, {
             withCredentials: true,
           }),
-          axios.get(`${api_url}/dashboard/totalfeedback`, {
-            withCredentials: true,
-          }),
-          axios.get(`${api_url}/dashboard/totalreports`, {
+          axios.get(`${api_url}/dashboard/totalReportsByDoctor/${userId}`, {
             withCredentials: true,
           }),
           axios.get(`${api_url}/dashboard/acivePatientCount`),
         ]);
       setTotalpatients(p_count.data.total);
-      setTotaldoctors(d_cont.data.total);
       setTotalappointment(a_count.data.data);
       setTotalfeedback(f_count.data.data);
       setTotalreport(r_count.data.data);
-      setTotalactivepatient(p_status_count.data.total);
     } catch (error) {
       console.error("Error in API calls for counts:", error);
     }
   };
-  // console.log(totalappointment);
+  console.log(totalappointment);
   useEffect(() => {
     fetchCount(); // load immediately
 
@@ -62,13 +55,7 @@ function AdminDashBoard() {
   }, []);
 
   const totalCardData = [
-    {
-      id: 1,
-      cardH: "Total Doctors",
-      total_count: totaldoctors,
-      th2: "MedySure Doctors",
-      th3: "total number of doctors resgisterd so far",
-    },
+   
     {
       id: 12,
       cardH: "Total Patients",
@@ -97,17 +84,17 @@ function AdminDashBoard() {
       th2: "MedySure Reports",
       th3: "total number of Reports created so far",
     },
-  ];
-   useEffect(() => {
+  ]
+     useEffect(() => {
   const fetchStatus = async () => {
     try {
       const [result1,result2] = await Promise.all([
         axios.get(
-        `${api_url}/dashboard/appintmentStatusReport`,
+        `${api_url}/dashboard/doctorAppintmentStatusReport/${userId}`,
         { withCredentials: true }
       ),
        axios.get(
-        `${api_url}/dashboard/appointmentWeekReport`,
+        `${api_url}/dashboard/appointmentWeekReportDoctor/${userId}`,
         { withCredentials: true }
       )
     ])
@@ -124,7 +111,7 @@ function AdminDashBoard() {
   fetchStatus();
 }, []);
   return (
-    <>
+<>
       <div className={`flex-1 flex flex-col`}>
         {/* Header */}
         <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
@@ -158,67 +145,19 @@ function AdminDashBoard() {
             <h2 className="font-sans text-xl font-bold text-center">
               Appointment Statics
             </h2>
-            <AppointmentPieChart items ={res1}/>
+            <AppointmentPieChart items={res1} />
           </div>
           <div className="justify-items-center">
             <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">
               Appointments by days (Last 7 days)
             </h2>
 
-            <AppointmentWeekReport items ={res2}/>
+            <AppointmentWeekReport items={res2}/>
           </div>
         </div>
-        {/* Patient dashboard */}
-        <h3 className="font-sans text-xl font-bold pl-4 pt-4 font-pfont_2">
-          {" "}
-          Patient Dashboard
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 p-4 gap-4 border m-4 shadow-lg bg-white dark:bg-gray-800">
-          <div className="justify-items-center">
-            <h2 className="font-sans text-xl font-bold text-center">
-              Patient Registration Statics (Last 7 days)
-            </h2>
-            <PatientChart />
-          </div>
-          <div className="justify-items-center ">
-            <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">
-              {" "}
-              Patient Count
-            </h2>
-            <div className="border shadow-xl rounded-sm p-6 bg-white dark:bg-gray-950 hover:shadow-2xl transition-shadow duration-300 w-1/2 ">
-              {/* <h2 className="text-2xl font-bold font-sans underline decoration-gray-300 mb-4 text-center">
-                Patients Count
-              </h2> */}
-
-              <div className="grid gap-4 mt-4">
-                <div className="flex items-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
-                  <span>
-                    <ShieldCheck />
-                  </span>
-                  <p className="text-lg font-medium p-1 ">Active Patients:</p>
-                  <span className="text-xl font-bold">
-                    {totalactivepatient}
-                  </span>
-                </div>
-
-                <div className="flex items-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
-                  <span>
-                    <ShieldOff />
-                  </span>
-                  <p className="text-lg font-medium p-1">Inactive Patients:</p>
-                  <span className="text-xl font-bold">
-                    {totalpatients - totalactivepatient}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/*   patient dashboard end */}
-        
+       
       </div>
-    </>
-  );
+    </>  )
 }
 
-export default AdminDashBoard;
+export default DoctorDashboard

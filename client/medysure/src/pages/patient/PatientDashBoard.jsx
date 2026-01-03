@@ -7,8 +7,6 @@ import DataCards from '@/components/cards/DataCards'
 import AppointmentByPatientPieChart from '../charts/AppointmentByPatientPieChart';
 import AppointmentWeekReport from "../charts/AppointmentWeekReport";
 function PatientDashBoard() {
-
-
     const id = sessionStorage.getItem("user_id");
     const api_url = import.meta.env.VITE_API_URL;
   const [totalappointment, setTotalappointment] = useState(0);

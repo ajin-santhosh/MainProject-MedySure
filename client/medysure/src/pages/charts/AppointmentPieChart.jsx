@@ -1,18 +1,7 @@
-import axios from "axios";
 import { Cell, Pie, PieChart } from "recharts";
-import { useState, useEffect } from "react";
 
 const api_url = import.meta.env.VITE_API_URL;
-// #region Sample data
-// const data = [
-//   { name: "Group A", value: 400 },
-//   { name: "Group B", value: 300 },
-//   { name: "Group C", value: 300 },
-//   { name: "Group D", value: 200 },
-//   { name: "Group E", value: 200 },
-// ];
 
-// #endregion
 const RADIAN = Math.PI / 180;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#e40000ff"];
 
@@ -46,26 +35,10 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function AppointmentPieChart({ isAnimationActive = true }) {
-  const [res, setRes] = useState([]);
-  useEffect(() => {
-  const fetchStatus = async () => {
-    try {
-      const result = await axios.get(
-        `${api_url}/dashboard/appintmentStatusReport`,
-        { withCredentials: true }
-      );
-
-      console.log("STATUS DATA:", result.data.status);  // logs only once
-
-      setRes(result.data.status);
-    } catch (error) {
-      console.error("Error in API calls for appointment status:", error);
-    }
-  };
-
-  fetchStatus();
-}, []);
+export default function AppointmentPieChart({
+  isAnimationActive = true,
+  items = [],
+}) {
   return (
     <PieChart
       style={{
@@ -77,14 +50,14 @@ export default function AppointmentPieChart({ isAnimationActive = true }) {
       responsive
     >
       <Pie
-        data={res}
+        data={items}
         labelLine={false}
         label={renderCustomizedLabel}
         fill="#8884d8"
         dataKey="total"
         isAnimationActive={isAnimationActive}
       >
-        {res.map((entry, index) => (
+        {items.map((entry, index) => (
           <Cell
             key={`cell-${entry._id}`}
             fill={COLORS[index % COLORS.length]}
