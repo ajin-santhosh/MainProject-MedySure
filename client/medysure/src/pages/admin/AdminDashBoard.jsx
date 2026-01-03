@@ -18,7 +18,6 @@ function AdminDashBoard() {
   const [res1, setRes1] = useState([]);
   const [res2, setRes2] = useState([]);
 
-
   const fetchCount = async () => {
     try {
       const [p_count, d_cont, a_count, f_count, r_count, p_status_count] =
@@ -98,31 +97,28 @@ function AdminDashBoard() {
       th3: "total number of Reports created so far",
     },
   ];
-   useEffect(() => {
-  const fetchStatus = async () => {
-    try {
-      const [result1,result2] = await Promise.all([
-        axios.get(
-        `${api_url}/dashboard/appintmentStatusReport`,
-        { withCredentials: true }
-      ),
-       axios.get(
-        `${api_url}/dashboard/appointmentWeekReport`,
-        { withCredentials: true }
-      )
-    ])
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const [result1, result2] = await Promise.all([
+          axios.get(`${api_url}/dashboard/appintmentStatusReport`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/appointmentWeekReport`, {
+            withCredentials: true,
+          }),
+        ]);
 
-      // console.log("STATUS DATA2:", result2.data.data);  // logs only once
-      setRes1(result1.data.status);
-      setRes2(result2.data.data);
+        // console.log("STATUS DATA2:", result2.data.data);  // logs only once
+        setRes1(result1.data.status);
+        setRes2(result2.data.data);
+      } catch (error) {
+        console.error("Error in API calls for appointment status:", error);
+      }
+    };
 
-    } catch (error) {
-      console.error("Error in API calls for appointment status:", error);
-    }
-  };
-
-  fetchStatus();
-}, []);
+    fetchStatus();
+  }, []);
   return (
     <>
       <div className={`flex-1 flex flex-col`}>
@@ -158,14 +154,14 @@ function AdminDashBoard() {
             <h2 className="font-sans text-xl font-bold text-center">
               Appointment Statics
             </h2>
-            <AppointmentPieChart items ={res1}/>
+            <AppointmentPieChart items={res1} />
           </div>
           <div className="justify-items-center">
             <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">
               Appointments by days (Last 7 days)
             </h2>
 
-            <AppointmentWeekReport items ={res2}/>
+            <AppointmentWeekReport items={res2} />
           </div>
         </div>
         {/* Patient dashboard */}
@@ -215,7 +211,6 @@ function AdminDashBoard() {
           </div>
         </div>
         {/*   patient dashboard end */}
-        
       </div>
     </>
   );

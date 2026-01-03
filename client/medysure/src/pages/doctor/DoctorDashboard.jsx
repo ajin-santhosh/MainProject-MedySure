@@ -8,15 +8,15 @@ import AppointmentPieChart from "../charts/AppointmentPieChart";
 import AppointmentWeekReport from "../charts/AppointmentWeekReport";
 import PatientChart from "../charts/PatientChart";
 function DoctorDashboard() {
-   const api_url = import.meta.env.VITE_API_URL;
- const userId = sessionStorage.getItem("user_id");
+  const api_url = import.meta.env.VITE_API_URL;
+  const userId = sessionStorage.getItem("user_id");
 
   const [totalpatients, setTotalpatients] = useState(0);
   const [totalappointment, setTotalappointment] = useState(0);
   const [totalfeedback, setTotalfeedback] = useState(0);
   const [totalreport, setTotalreport] = useState(0);
   const [res1, setRes1] = useState([]);
-    const [res2, setRes2] = useState([]);
+  const [res2, setRes2] = useState([]);
   const fetchCount = async () => {
     try {
       const [p_count, a_count, f_count, r_count, p_status_count] =
@@ -24,9 +24,12 @@ function DoctorDashboard() {
           axios.get(`${api_url}/dashboard/totalPatients`, {
             withCredentials: true,
           }),
-          axios.get(`${api_url}/dashboard/totalAppointmentForDoctor/${userId}`, {
-            withCredentials: true,
-          }),
+          axios.get(
+            `${api_url}/dashboard/totalAppointmentForDoctor/${userId}`,
+            {
+              withCredentials: true,
+            }
+          ),
           axios.get(`${api_url}/dashboard/totalFeedbackForDoctor/${userId}`, {
             withCredentials: true,
           }),
@@ -55,7 +58,6 @@ function DoctorDashboard() {
   }, []);
 
   const totalCardData = [
-   
     {
       id: 12,
       cardH: "Total Patients",
@@ -84,34 +86,33 @@ function DoctorDashboard() {
       th2: "MedySure Reports",
       th3: "total number of Reports created so far",
     },
-  ]
-     useEffect(() => {
-  const fetchStatus = async () => {
-    try {
-      const [result1,result2] = await Promise.all([
-        axios.get(
-        `${api_url}/dashboard/doctorAppintmentStatusReport/${userId}`,
-        { withCredentials: true }
-      ),
-       axios.get(
-        `${api_url}/dashboard/appointmentWeekReportDoctor/${userId}`,
-        { withCredentials: true }
-      )
-    ])
+  ];
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const [result1, result2] = await Promise.all([
+          axios.get(
+            `${api_url}/dashboard/doctorAppintmentStatusReport/${userId}`,
+            { withCredentials: true }
+          ),
+          axios.get(
+            `${api_url}/dashboard/appointmentWeekReportDoctor/${userId}`,
+            { withCredentials: true }
+          ),
+        ]);
 
-      // console.log("STATUS DATA2:", result2.data.data);  // logs only once
-      setRes1(result1.data.status);
-      setRes2(result2.data.data);
+        // console.log("STATUS DATA2:", result2.data.data);  // logs only once
+        setRes1(result1.data.status);
+        setRes2(result2.data.data);
+      } catch (error) {
+        console.error("Error in API calls for appointment status:", error);
+      }
+    };
 
-    } catch (error) {
-      console.error("Error in API calls for appointment status:", error);
-    }
-  };
-
-  fetchStatus();
-}, []);
+    fetchStatus();
+  }, []);
   return (
-<>
+    <>
       <div className={`flex-1 flex flex-col`}>
         {/* Header */}
         <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
@@ -152,12 +153,12 @@ function DoctorDashboard() {
               Appointments by days (Last 7 days)
             </h2>
 
-            <AppointmentWeekReport items={res2}/>
+            <AppointmentWeekReport items={res2} />
           </div>
         </div>
-       
       </div>
-    </>  )
+    </>
+  );
 }
 
-export default DoctorDashboard
+export default DoctorDashboard;

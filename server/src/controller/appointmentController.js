@@ -333,6 +333,62 @@ const getAppointmentForPatientHelathBoard = async (req,res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+const getAppointmentForDoctor = async (req, res) => {
+    const {userId} = req.params
+  try {
+    const appointments = await Appointment.aggregate([
+       {
+    $match: { doctorId: new mongoose.Types.ObjectId(userId) }
+    },
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientId",
+          foreignField: "userId",
+          as: "patient",
+        },
+      },
+      { $unwind: "$patient" },
+      {
+        $project: {
+          _id: 1,
+          reportId: 1,
+          appointmentDate: {
+            $dateToString: {
+              format: "%Y-%m-%d %H:%M",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          title: 1,
+          description: 1,
+          status: 1,
+          payment: 1,
+          
+createdAt:{$dateToString: {
+              format: "%Y-%m-%d",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },},
+          patientName: {
+            $concat: ["$patient.firstName", " ", "$patient.lastName"],
+          },
+        },
+      },
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "appointments ",
+      data: appointments,
+    });
+  } catch (error) {
+    console.error("Error in getting appointments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
 module.exports = {
   createAppointment,
   updateAppointment,
@@ -340,5 +396,6 @@ module.exports = {
   getAppointment,
   getAppointmentForCalanadar,
   getAppointmentForPatient,
-  getAppointmentForPatientHelathBoard
+  getAppointmentForPatientHelathBoard,
+  getAppointmentForDoctor,
 };

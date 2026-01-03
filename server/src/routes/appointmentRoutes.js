@@ -9,5 +9,6 @@ router.get('/getAppointment',appointmentController.getAppointment)
 router.get('/getAppointmentForCalanadar',appointmentController.getAppointmentForCalanadar)
 router.get('/getAppointmentForPatient/:userId',appointmentController.getAppointmentForPatient)
 router.get('/getAppointmentForPatientHealthBoard/:userId',appointmentController.getAppointmentForPatientHelathBoard)
+router.get('/getAppointmentForDoctor/:userId',appointmentController.getAppointmentForDoctor)
 
 module.exports = router

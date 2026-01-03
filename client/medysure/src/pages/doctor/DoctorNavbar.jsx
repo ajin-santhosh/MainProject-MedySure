@@ -48,13 +48,6 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
         </button>
         </Link>
 
-        {/* {openMenus.dashboard && !collapsed && (
-          <div className="ml-8 mt-2 flex flex-col gap-2">
-            <button className="text-sm hover:underline">Overview</button>
-            <button className="text-sm hover:underline">Analytics</button>
-            <button className="text-sm hover:underline">Reports</button>
-          </div>
-        )} */}
       </div>
 
       {/* Appointments */}

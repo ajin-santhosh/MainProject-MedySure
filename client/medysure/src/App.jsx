@@ -21,7 +21,7 @@ import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
 // Doctor pages
 import DoctorNavbar from "./pages/doctor/DoctorNavbar";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
-
+import DoctorViewAppointment from "./pages/doctor/DoctorViewAppointment";
 
 
 // Patient pages
@@ -81,6 +81,7 @@ function App() {
 
           {/* Doctor child routes */}
           <Route path="dashboard" element={<DoctorDashboard />} />
+          <Route path="appointment" element={<DoctorViewAppointment />} />
           
         </Route>
 
