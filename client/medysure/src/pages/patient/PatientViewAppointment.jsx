@@ -277,9 +277,9 @@ function PatientViewAppointment() {
               </div>
               <div>
                 {" "}
-                <Badge variant="secondary" className="text-sm px-2 py-1">
-                  {data.length}
-                </Badge>{" "}
+                <Badge className="h-5 min-w-5 rounded-full p-2 font-mono tabular-nums">
+                                  {data.length}
+                                </Badge>
               </div>
             </div>
 
@@ -380,6 +380,7 @@ function PatientViewAppointment() {
                                 <Dialog>
                                   <DialogTrigger asChild>
                                     <button
+                                     className="text-green-600 font-medium "
                                       onClick={() => {
                                         setErrors({});
                                         setFormData({
