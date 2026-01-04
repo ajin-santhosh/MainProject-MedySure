@@ -364,6 +364,7 @@ const getAppointmentForDoctor = async (req, res) => {
           description: 1,
           status: 1,
           payment: 1,
+          notes:1,
           
 createdAt:{$dateToString: {
               format: "%Y-%m-%d",
@@ -389,6 +390,59 @@ createdAt:{$dateToString: {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+const doctorAddNotes = async (req, res) => {
+  const { appointmentId } = req.params
+  const {notes} = req.body;
+  try {
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "appointment not found" });
+    }
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+  appointmentId,
+  { $set: { notes } }
+);
+    return res.status(201).json({
+      success: true,
+      message: "Note Added succecfully ",
+      data: updatedAppointment,
+    });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+const doctorUpdateAppointment = async (req, res) => {
+  const { appointmentId } = req.params
+const { appointmentDate, status } = req.body
+  try {
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "appointment not found" });
+    }
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+    appointmentId,
+    { $set: { appointmentDate, status } },
+    { new: true }
+  );
+    return res.status(201).json({
+      success: true,
+      message: "appointment updated successfully",
+      data: updatedAppointment,
+    });
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
 module.exports = {
   createAppointment,
   updateAppointment,
@@ -398,4 +452,6 @@ module.exports = {
   getAppointmentForPatient,
   getAppointmentForPatientHelathBoard,
   getAppointmentForDoctor,
+  doctorAddNotes,
+  doctorUpdateAppointment,
 };
