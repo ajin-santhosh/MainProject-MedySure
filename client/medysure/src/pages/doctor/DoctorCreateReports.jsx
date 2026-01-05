@@ -116,11 +116,13 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
           return;
         }
 
-        await axios.patch(
-          `${api_url}/appointment/doctorAddPrescription/${appointmentId}`,
+        await axios.post(
+          `${api_url}/report/createPrescription`,
           {
             title: formData.title,
-            prescription: formData.prescription,
+            prescription:formData.prescription,
+            patientId,
+            doctorId,
           },
           { withCredentials: true }
         );

@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const https = require("https");
 const cloudinary = require("cloudinary").v2;
 const Patient = require("../models/patientSchema");
+const Doctor = require("../models/docterSchema");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -72,6 +73,68 @@ console.log(formattedDate);
       doctorId,
       title,
       reportType:"lab report",
+      fileUrl: result.secure_url,
+      public_id: result.public_id,
+    });
+    return res.json({
+      message: "PDF uploaded successfully  and saved to db",
+      url: result.secure_url,
+      public_id: result.public_id,
+      data: saveReport,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error generating PDF");
+  }
+}
+
+const createPrescription = async (req, res) => {
+  const { patientId, doctorId, title, prescription, } = req.body;
+   
+    userId =  doctorId 
+    const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+const dd = String(today.getDate()).padStart(2, "0");
+
+const formattedDate = `${yyyy}-${mm}-${dd}`;
+console.log(formattedDate); 
+  try {
+     const getUser = await Doctor.findOne({ userId });
+    if (!getUser) {
+      return res.status(404).json({ message: "doctor not found" });
+    }
+    const ejsFilePath = path.join(
+      __dirname,
+      "../utils",
+      "prescriptionTemplate.ejs"
+    )
+    const data = {
+      logo: "https://res.cloudinary.com/dvlal7skv/image/upload/v1763488647/Green_and_White_Modern_Medical_Logo_1__page-0001_jujlbb.jpg",
+
+      doctorName: `${getUser.firstName}" "${getUser.lastName}`,
+      department:getUser.department,
+      qualification:getUser.qualification,
+      date: formattedDate,
+      description:prescription,
+      title,
+     
+    };
+    const { buffer } = await createPdf(ejsFilePath, data);
+    await reportMailSender(buffer);
+
+    const customPublicId = `report_${Date.now()}`; // need to customise while creating frontend
+    const result = await uploadPdfBuffer(buffer, customPublicId);
+
+    // res.set({
+    //   "Content-Type": "application/pdf",
+    //   "Content-Disposition": "attachment; filename=example.pdf",
+    // });
+    const saveReport = await Report.create({
+      patientId,
+      doctorId,
+      title,
+      reportType:"prescription",
       fileUrl: result.secure_url,
       public_id: result.public_id,
     });
@@ -246,4 +309,4 @@ const getReportForPatient = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
-module.exports = { createReport, getReport, downloadReport,getReportForPatient };
+module.exports = { createReport, getReport, downloadReport,getReportForPatient,createPrescription };

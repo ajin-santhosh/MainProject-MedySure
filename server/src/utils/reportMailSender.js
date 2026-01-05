@@ -12,7 +12,7 @@ const reportMailSender = async (pdfBuffer) => {
     const info = await transporter.sendMail({
       from: process.env.email,
       to: "ajindemo555@gmail.com",
-      subject: "MedySure Medical report",
+      subject: "MedySure  report",
       html: `
     <div style="font-family: Arial, sans-serif; padding: 10px;">
       <p>Your Report :</p>
