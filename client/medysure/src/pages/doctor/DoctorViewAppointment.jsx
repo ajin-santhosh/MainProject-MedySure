@@ -52,6 +52,7 @@ import { useState, useEffect } from "react";
 import { useRef } from "react";
 
 import axios from "axios";
+import DoctorCreateReports from "./DoctorCreateReports";
 
 function DoctorViewAppointment() {
   const userId = sessionStorage.getItem("user_id");
@@ -265,7 +266,7 @@ function DoctorViewAppointment() {
                                   onClick={() => setActiveModal("appointment")}
                                   className="text-green-600 font-medium "
                                 >
-                                  Update 
+                                  Update
                                 </button>
 
                                 <DoctorUpdateAppointment
@@ -282,12 +283,11 @@ function DoctorViewAppointment() {
                               <DropdownMenuItem
                                 onSelect={(e) => e.preventDefault()}
                               >
-                                <button onClick={() => setActiveModal("notes")}
-                                                                    className="text-blue-600 font-medium "
->
-                                  
+                                <button
+                                  onClick={() => setActiveModal("notes")}
+                                  className="text-blue-600 font-medium "
+                                >
                                   {d.notes ? "Update Notes" : "Add Notes"}
-                                  
                                 </button>
 
                                 <DoctorAddNotes
@@ -300,6 +300,25 @@ function DoctorViewAppointment() {
                                   onUpdate={appointment}
                                 />
                               </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                              >
+                                <button
+                                  onClick={() => setActiveModal("report")}
+                                  className="text-red-600 font-medium "
+                                >
+                                  Send Report
+                                </button>
+
+                                <DoctorCreateReports
+                                  open={activeModal === "report"}
+                                  setOpen={(isOpen) => {
+                                    if (!isOpen) setActiveModal(null);
+                                  }}
+                                  patientId={d.patientId}
+                                  onUpdate={appointment}
+                                />
+                              </DropdownMenuItem>{" "}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </td>

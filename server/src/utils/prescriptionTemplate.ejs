@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prescription Report</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    background: #ffffff;
+}
+
+.report-container {
+    width: 800px;
+ min-height: calc(100% - 40px);
+     padding: 20px;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #0a6b6b, #f2b321) 1;
+    border-radius: 12px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    max-width: 150px;
+    height: auto;
+}
+
+.patient-info {
+    margin-bottom: 20px;
+}
+
+.patient-info p {
+    margin: 6px 0;
+}
+
+.report-title {
+           font-size: 22px;
+           font-weight: bold;
+           color: #0a6b6b;
+           margin-bottom: 10px;
+           border-bottom: 2px solid #f2b321;
+           display: inline-block;
+           padding-bottom: 4px;
+       }
+
+       .report-description {
+           font-size: 16px;
+           line-height: 1.6;
+           color: #333;
+           margin-bottom: 20px;
+           padding-left: 10px;
+           border-left: 4px solid #0a6b6b;
+           background: #f9f9f9;
+       }
+    </style>
+</head>
+<body>
+<div class="report-container">
+
+    <div class="header">
+        <img src="<%= logo %>" alt="Lab Logo">
+        <h1>MedySure</h1>
+        <p>Your Medical Partner</p>
+    </div>
+
+    <div class="patient-info">
+        <p><strong>Doctor Name:</strong> <%= doctorName %></p>
+        <p><strong>Department:</strong> <%= department %></p>
+        <p><strong>Specialise</strong> <%= qualification %></p>
+        
+
+    </div>
+
+    <!-- Title -->
+    <div class="report-title">
+        <%= title %>
+    </div>
+
+    <!-- Description -->
+    <div class="report-description">
+        <%= description %>
+    </div>
+
+</div>
+</body>
+
+</html>

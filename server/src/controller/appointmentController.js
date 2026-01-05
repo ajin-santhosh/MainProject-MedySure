@@ -232,13 +232,13 @@ const getAppointmentForCalanadar = async (req, res) => {
 };
 // appointment for patient individual
 
-const getAppointmentForPatient = async (req,res) => {
-  const {userId} = req.params
-     try {
+const getAppointmentForPatient = async (req, res) => {
+  const { userId } = req.params;
+  try {
     const appointments = await Appointment.aggregate([
-       {
-    $match: { patientId: new mongoose.Types.ObjectId(userId) }
-    },
+      {
+        $match: { patientId: new mongoose.Types.ObjectId(userId) },
+      },
       {
         $lookup: {
           from: "doctors",
@@ -252,7 +252,7 @@ const getAppointmentForPatient = async (req,res) => {
         $project: {
           _id: 1,
           reportId: 1,
-          createdAt:{
+          createdAt: {
             $dateToString: {
               format: "%Y-%m-%d %H:%M",
               date: "$createdAt",
@@ -268,14 +268,14 @@ const getAppointmentForPatient = async (req,res) => {
           },
           title: 1,
           description: 1,
-          notes:1,
+          notes: 1,
           status: 1,
           payment: 1,
           doctorName: {
             $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
           },
           doctorDepartment: "$doctor.department",
-          doctorId : 1
+          doctorId: 1,
         },
       },
     ]);
@@ -291,21 +291,19 @@ const getAppointmentForPatient = async (req,res) => {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
-const getAppointmentForPatientHelathBoard = async (req,res) => {
-  const {userId} = req.params
-     try {
+};
+const getAppointmentForPatientHelathBoard = async (req, res) => {
+  const { userId } = req.params;
+  try {
     const appointments = await Appointment.aggregate([
-       {
-    $match: 
-    { patientId: new mongoose.Types.ObjectId(userId),
-      status: "completed"
-
-     },
-    
-    },
-     { $sort: { appointmentDate: -1 } },
-  { $limit: 5 },
+      {
+        $match: {
+          patientId: new mongoose.Types.ObjectId(userId),
+          status: "completed",
+        },
+      },
+      { $sort: { appointmentDate: -1 } },
+      { $limit: 5 },
       {
         $project: {
           _id: 1,
@@ -332,14 +330,14 @@ const getAppointmentForPatientHelathBoard = async (req,res) => {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 const getAppointmentForDoctor = async (req, res) => {
-    const {userId} = req.params
+  const { userId } = req.params;
   try {
     const appointments = await Appointment.aggregate([
-       {
-    $match: { doctorId: new mongoose.Types.ObjectId(userId) }
-    },
+      {
+        $match: { doctorId: new mongoose.Types.ObjectId(userId) },
+      },
       {
         $lookup: {
           from: "patients",
@@ -353,6 +351,7 @@ const getAppointmentForDoctor = async (req, res) => {
         $project: {
           _id: 1,
           reportId: 1,
+          patientId: 1,
           appointmentDate: {
             $dateToString: {
               format: "%Y-%m-%d %H:%M",
@@ -364,13 +363,15 @@ const getAppointmentForDoctor = async (req, res) => {
           description: 1,
           status: 1,
           payment: 1,
-          notes:1,
-          
-createdAt:{$dateToString: {
+          notes: 1,
+
+          createdAt: {
+            $dateToString: {
               format: "%Y-%m-%d",
               date: "$appointmentDate",
               timezone: "Asia/Kolkata", // optional
-            },},
+            },
+          },
           patientName: {
             $concat: ["$patient.firstName", " ", "$patient.lastName"],
           },
@@ -389,10 +390,10 @@ createdAt:{$dateToString: {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 const doctorAddNotes = async (req, res) => {
-  const { appointmentId } = req.params
-  const {notes} = req.body;
+  const { appointmentId } = req.params;
+  const { notes } = req.body;
   try {
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
@@ -401,9 +402,9 @@ const doctorAddNotes = async (req, res) => {
         .json({ success: false, message: "appointment not found" });
     }
     const updatedAppointment = await Appointment.findByIdAndUpdate(
-  appointmentId,
-  { $set: { notes } }
-);
+      appointmentId,
+      { $set: { notes } }
+    );
     return res.status(201).json({
       success: true,
       message: "Note Added succecfully ",
@@ -415,10 +416,10 @@ const doctorAddNotes = async (req, res) => {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 const doctorUpdateAppointment = async (req, res) => {
-  const { appointmentId } = req.params
-const { appointmentDate, status } = req.body
+  const { appointmentId } = req.params;
+  const { appointmentDate, status } = req.body;
   try {
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
@@ -427,10 +428,10 @@ const { appointmentDate, status } = req.body
         .json({ success: false, message: "appointment not found" });
     }
     const updatedAppointment = await Appointment.findByIdAndUpdate(
-    appointmentId,
-    { $set: { appointmentDate, status } },
-    { new: true }
-  );
+      appointmentId,
+      { $set: { appointmentDate, status } },
+      { new: true }
+    );
     return res.status(201).json({
       success: true,
       message: "appointment updated successfully",
@@ -442,7 +443,7 @@ const { appointmentDate, status } = req.body
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 module.exports = {
   createAppointment,
   updateAppointment,

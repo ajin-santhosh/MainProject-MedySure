@@ -8,6 +8,7 @@ const { title } = require("process");
 const mongoose = require("mongoose");
 const https = require("https");
 const cloudinary = require("cloudinary").v2;
+const Patient = require("../models/patientSchema");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -16,22 +17,35 @@ cloudinary.config({
 });
 
 const createReport = async (req, res) => {
-  const { patientId, doctorId, title, description, reportType } = req.body;
+  const { patientId, doctorId, title, tableData, } = req.body;
+   
+    userId = patientId  
+    const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+const dd = String(today.getDate()).padStart(2, "0");
+
+const formattedDate = `${yyyy}-${mm}-${dd}`;
+console.log(formattedDate); 
   try {
+     const getUser = await Patient.findOne({ userId });
+    if (!getUser) {
+      return res.status(404).json({ message: "patient not found" });
+    }
     const ejsFilePath = path.join(
       __dirname,
       "../utils",
       "labReportTemplate.ejs"
-    );
+    )
     const data = {
       logo: "https://res.cloudinary.com/dvlal7skv/image/upload/v1763488647/Green_and_White_Modern_Medical_Logo_1__page-0001_jujlbb.jpg",
 
-      firstName: "John",
-      lastName: "Doe",
-      phone: "+1 555-123-4567",
-      gender: "Male",
+      firstName: getUser.firstName,
+      lastName: getUser.lastName,
+      phone: getUser.phone,
+      gender: getUser.gender,
       amount: "250 USD",
-      date: "2025-01-15",
+      date: formattedDate,
 
       tableFields: [
         { label: "Test Name", key: "testName" },
@@ -40,26 +54,8 @@ const createReport = async (req, res) => {
         { label: "Reference Range", key: "reference" },
       ],
 
-      tableData: [
-        {
-          testName: "Hemoglobin",
-          result: "14.2",
-          unit: "g/dL",
-          reference: "13.0 - 17.0",
-        },
-        {
-          testName: "WBC Count",
-          result: "6.5",
-          unit: "×10^9/L",
-          reference: "4.0 - 11.0",
-        },
-        {
-          testName: "Platelet Count",
-          result: "220",
-          unit: "×10^9/L",
-          reference: "150 - 400",
-        },
-      ],
+      tableData
+     
     };
     const { buffer } = await createPdf(ejsFilePath, data);
     await reportMailSender(buffer);
@@ -75,7 +71,7 @@ const createReport = async (req, res) => {
       patientId,
       doctorId,
       title,
-      reportType,
+      reportType:"lab report",
       fileUrl: result.secure_url,
       public_id: result.public_id,
     });
