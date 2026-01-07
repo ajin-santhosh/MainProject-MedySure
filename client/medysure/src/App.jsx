@@ -23,7 +23,7 @@ import DoctorNavbar from "./pages/doctor/DoctorNavbar";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorViewAppointment from "./pages/doctor/DoctorViewAppointment";
 import DoctorViewReports from "./pages/doctor/DoctorViewReports";
-
+import DoctorCalendar from "./pages/doctor/DoctorCalendar";
 // Patient pages
 import PatientNavBar from "./pages/patient/PatientNavBar";
 import PSample from "./pages/patient/PSample";
@@ -83,6 +83,7 @@ function App() {
           <Route path="dashboard" element={<DoctorDashboard />} />
           <Route path="appointment" element={<DoctorViewAppointment />} />
           <Route path="view-reports" element={<DoctorViewReports />} />
+          <Route path="calandar" element={<DoctorCalendar />} />
 
         </Route>
 
