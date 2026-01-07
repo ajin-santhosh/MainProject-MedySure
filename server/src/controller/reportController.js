@@ -18,18 +18,18 @@ cloudinary.config({
 });
 
 const createReport = async (req, res) => {
-  const { patientId, doctorId, title, tableData, } = req.body;
-   
-    userId = patientId  
-    const today = new Date();
-const yyyy = today.getFullYear();
-const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-const dd = String(today.getDate()).padStart(2, "0");
+  const { patientId, doctorId, title, tableData } = req.body;
 
-const formattedDate = `${yyyy}-${mm}-${dd}`;
-console.log(formattedDate); 
+  userId = patientId;
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const dd = String(today.getDate()).padStart(2, "0");
+
+  const formattedDate = `${yyyy}-${mm}-${dd}`;
+  console.log(formattedDate);
   try {
-     const getUser = await Patient.findOne({ userId });
+    const getUser = await Patient.findOne({ userId });
     if (!getUser) {
       return res.status(404).json({ message: "patient not found" });
     }
@@ -37,7 +37,7 @@ console.log(formattedDate);
       __dirname,
       "../utils",
       "labReportTemplate.ejs"
-    )
+    );
     const data = {
       logo: "https://res.cloudinary.com/dvlal7skv/image/upload/v1763488647/Green_and_White_Modern_Medical_Logo_1__page-0001_jujlbb.jpg",
 
@@ -55,8 +55,7 @@ console.log(formattedDate);
         { label: "Reference Range", key: "reference" },
       ],
 
-      tableData
-     
+      tableData,
     };
     const { buffer } = await createPdf(ejsFilePath, data);
     await reportMailSender(buffer);
@@ -72,7 +71,7 @@ console.log(formattedDate);
       patientId,
       doctorId,
       title,
-      reportType:"lab report",
+      reportType: "lab report",
       fileUrl: result.secure_url,
       public_id: result.public_id,
     });
@@ -86,21 +85,21 @@ console.log(formattedDate);
     console.error(err);
     res.status(500).send("Error generating PDF");
   }
-}
+};
 
 const createPrescription = async (req, res) => {
-  const { patientId, doctorId, title, prescription, } = req.body;
-   
-    userId =  doctorId 
-    const today = new Date();
-const yyyy = today.getFullYear();
-const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-const dd = String(today.getDate()).padStart(2, "0");
+  const { patientId, doctorId, title, prescription } = req.body;
 
-const formattedDate = `${yyyy}-${mm}-${dd}`;
-console.log(formattedDate); 
+  userId = doctorId;
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const dd = String(today.getDate()).padStart(2, "0");
+
+  const formattedDate = `${yyyy}-${mm}-${dd}`;
+  console.log(formattedDate);
   try {
-     const getUser = await Doctor.findOne({ userId });
+    const getUser = await Doctor.findOne({ userId });
     if (!getUser) {
       return res.status(404).json({ message: "doctor not found" });
     }
@@ -108,17 +107,16 @@ console.log(formattedDate);
       __dirname,
       "../utils",
       "prescriptionTemplate.ejs"
-    )
+    );
     const data = {
       logo: "https://res.cloudinary.com/dvlal7skv/image/upload/v1763488647/Green_and_White_Modern_Medical_Logo_1__page-0001_jujlbb.jpg",
 
       doctorName: `${getUser.firstName}" "${getUser.lastName}`,
-      department:getUser.department,
-      qualification:getUser.qualification,
+      department: getUser.department,
+      qualification: getUser.qualification,
       date: formattedDate,
-      description:prescription,
+      description: prescription,
       title,
-     
     };
     const { buffer } = await createPdf(ejsFilePath, data);
     await reportMailSender(buffer);
@@ -134,7 +132,7 @@ console.log(formattedDate);
       patientId,
       doctorId,
       title,
-      reportType:"prescription",
+      reportType: "prescription",
       fileUrl: result.secure_url,
       public_id: result.public_id,
     });
@@ -248,12 +246,12 @@ const downloadReport = async (req, res) => {
   }
 };
 const getReportForPatient = async (req, res) => {
-    const {userId} = req.params
+  const { userId } = req.params;
 
   try {
     const report = await Report.aggregate([
       {
-        $match: { patientId: new mongoose.Types.ObjectId(userId) }
+        $match: { patientId: new mongoose.Types.ObjectId(userId) },
       },
 
       {
@@ -309,4 +307,71 @@ const getReportForPatient = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
-module.exports = { createReport, getReport, downloadReport,getReportForPatient,createPrescription };
+const getReportForDoctor = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const report = await Report.aggregate([
+      {
+        $match: { doctorId: new mongoose.Types.ObjectId(userId) },
+      },
+
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientId",
+          foreignField: "userId",
+          as: "patient",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$patient" },
+      { $unwind: "$user" },
+
+      {
+        $project: {
+          _id: 1,
+          patientName: {
+            $concat: ["$patient.firstName", " ", "$patient.lastName"],
+          },
+          email: "$user.email",
+          title: 1,
+          reportType: 1,
+          fileUrl: 1,
+          createdAt: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+        },
+      },
+    ]);
+    return res.status(201).json({
+      success: true,
+      message: "report data",
+      data: report,
+    });
+  } catch (error) {
+    console.error("Error fetching repots:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+module.exports = {
+  createReport,
+  getReport,
+  downloadReport,
+  getReportForPatient,
+  createPrescription,
+  getReportForDoctor,
+};

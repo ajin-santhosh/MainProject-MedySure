@@ -88,7 +88,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/* Resports */}
 
       <div>
-        <Link to= "report" >
+        <Link to= "view-reports" >
         <button
           onClick={() => toggleMenu("profile")}
           className="

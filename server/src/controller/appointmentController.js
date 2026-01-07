@@ -354,7 +354,14 @@ const getAppointmentForDoctor = async (req, res) => {
           patientId: 1,
           appointmentDate: {
             $dateToString: {
-              format: "%Y-%m-%d %H:%M",
+              format: "%Y-%m-%d",
+              date: "$appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+           appointmentTime: {
+            $dateToString: {
+              format: "%H:%M",
               date: "$appointmentDate",
               timezone: "Asia/Kolkata", // optional
             },

@@ -22,7 +22,7 @@ import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
 import DoctorNavbar from "./pages/doctor/DoctorNavbar";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorViewAppointment from "./pages/doctor/DoctorViewAppointment";
-
+import DoctorViewReports from "./pages/doctor/DoctorViewReports";
 
 // Patient pages
 import PatientNavBar from "./pages/patient/PatientNavBar";
@@ -82,7 +82,8 @@ function App() {
           {/* Doctor child routes */}
           <Route path="dashboard" element={<DoctorDashboard />} />
           <Route path="appointment" element={<DoctorViewAppointment />} />
-          
+          <Route path="view-reports" element={<DoctorViewReports />} />
+
         </Route>
 
 

@@ -191,10 +191,11 @@ function DoctorViewAppointment() {
 
                       <th className="p-2">Booked Date</th>
                       <th className="p-2">Scheduled Date</th>
+                                           <th className="p-2">Time</th>
 
                       <th className="p-2">Notes</th>
                       <th className="p-2">Description</th>
-                      <th className="p-2">Report</th>
+                      {/* <th className="p-2">Report</th> */}
                       <th className="p-2">Payment</th>
                     </tr>
                   </thead>
@@ -203,7 +204,7 @@ function DoctorViewAppointment() {
                     {filter.map((d) => (
                       <tr
                         key={d._id}
-                        className="bg-gray-100 dark:bg-neutral-800 shadow-sm rounded-xl"
+                        className="bg-gray-100 dark:bg-neutral-900 shadow-sm rounded-xl"
                       >
                         <td className="p-3 font-medium  dark:text-white">
                           {d.patientName}
@@ -227,6 +228,9 @@ function DoctorViewAppointment() {
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.appointmentDate}
                         </td>
+                         <td className="p-3 text-gray-600 dark:text-gray-300">
+                          {d.appointmentTime}
+                        </td>
 
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.notes}
@@ -234,9 +238,9 @@ function DoctorViewAppointment() {
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.description}
                         </td>
-                        <td className="p-3 text-gray-600 dark:text-gray-300">
+                        {/* <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.report ? "Yes" : "No"}
-                        </td>
+                        </td> */}
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.payment ? "Yes" : "No"}
                           {/* {console.log(d.Payment, typeof d.Payment) */}
