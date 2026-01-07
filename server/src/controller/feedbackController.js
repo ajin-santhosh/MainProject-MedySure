@@ -177,4 +177,71 @@ const getFeedbackForPatient = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
-module.exports = { createFeedback, getFeedback, deleteFeedback, getFeedbackForPatient };
+const getFeedbackForDoctor = async (req, res) => {
+  const {userId} = req.params
+  try {
+    const feedbacks = await Feedback.aggregate([
+      {
+      $match: 
+          { doctorId: new mongoose.Types.ObjectId(userId)
+          }
+        },
+      
+      {
+        $lookup: {
+          from: "patients",
+          localField: "patientId",
+          foreignField: "userId",
+          as: "patient",
+        },
+      },
+      {
+        $lookup: {
+          from: "appointments",
+          localField: "appointmentId",
+          foreignField: "_id",
+          as: "appointment",
+        },
+      },
+      { $unwind: "$patient" },
+      { $unwind: "$appointment" },
+
+      {
+        $project: {
+          _id: 1,
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          rating:1,
+          description: 1,
+          appointment:"$appointment.title",
+          appointmentDate: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$appointment.appointmentDate",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          patientName: {
+            $concat: ["$patient.firstName", " ", "$patient.lastName"],
+          },
+        },
+      },
+    ])
+    return res.status(201).json({
+      success: true,
+      message: "feedback ",
+      data: feedbacks,
+    });
+  } catch (error) {
+    console.error("Error in getting feedbacks:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+module.exports = { createFeedback, getFeedback, deleteFeedback, getFeedbackForPatient,getFeedbackForDoctor };
