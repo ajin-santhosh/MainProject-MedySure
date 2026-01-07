@@ -12,6 +12,7 @@ router.get('/getAppointmentForPatientHealthBoard/:userId',appointmentController.
 router.get('/getAppointmentForDoctor/:userId',appointmentController.getAppointmentForDoctor)
 router.patch('/doctorAddNotes/:appointmentId',appointmentController.doctorAddNotes)
 router.patch('/doctorUpdateAppointment/:appointmentId',appointmentController.doctorUpdateAppointment)
+router.get('/getAppointmentPatientForDoctor/:userId',appointmentController.getAppointmentPatientForDoctor)
 
 
 module.exports = router

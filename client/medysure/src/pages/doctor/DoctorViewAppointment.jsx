@@ -60,8 +60,6 @@ function DoctorViewAppointment() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState(""); // for search input
   const [status, setStatus] = useState(""); // for status select
-  const [errors, setErrors] = useState({}); // for error
-  const dialogCloseRef = useRef(null); // for modal close
   const [activeModal, setActiveModal] = useState(null);
 
   const statusColors = {

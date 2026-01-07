@@ -451,6 +451,83 @@ const doctorUpdateAppointment = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+const getAppointmentPatientForDoctor = async (req, res) => {
+  const { userId } = req.params;
+  try {
+   const appointments = await Appointment.aggregate([
+  {
+    $match: {
+      doctorId: new mongoose.Types.ObjectId(userId),
+    },
+  },
+
+  {
+    $lookup: {
+      from: "patients",
+      localField: "patientId",
+      foreignField: "userId",
+      as: "patient",
+    },
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "patientId",
+      foreignField: "_id",
+      as: "user",
+    },
+  },
+  { $unwind: "$patient" },
+  { $unwind: "$user" },
+
+  // 4️⃣ Group by patientId (THIS IS THE KEY PART)
+  {
+    $group: {
+      _id: "$patientId",                 // ✅ correct field
+      totalAppointments: { $sum: 1 },    // ✅ count per patient
+      appointment: { $first: "$$ROOT" }, // keep one appointment
+    },
+  },
+
+  {
+    $project: {
+      _id: "$appointment._id",
+      patientId: "$_id",
+      patientName: {
+        $concat: [
+          "$appointment.patient.firstName",
+          " ",
+          "$appointment.patient.lastName",
+        ],
+      },
+      age:"$appointment.patient.age",
+      gender:"$appointment.patient.gender",
+      phone:"$appointment.patient.phone",
+      place:"$appointment.patient.place",
+      emergencyContactName:"$appointment.patient.emergencyContact.name",
+      emergencyContactRelation:"$appointment.patient.emergencyContact.relation",
+      emergencyContactPhone:"$appointment.patient.emergencyContact.phone",
+      active:"$appointment.user.active",
+      email:"$appointment.user.email",
+
+      totalAppointments: 1,
+    },
+  },
+]);
+
+
+    return res.status(201).json({
+      success: true,
+      message: "appointments by patient ",
+      data: appointments,
+    });
+  } catch (error) {
+    console.error("Error in getting appointments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
 module.exports = {
   createAppointment,
   updateAppointment,
@@ -462,4 +539,5 @@ module.exports = {
   getAppointmentForDoctor,
   doctorAddNotes,
   doctorUpdateAppointment,
+  getAppointmentPatientForDoctor
 };
