@@ -7,40 +7,9 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 
-import { Label } from "@/components/ui/label";
-import { ChevronDownIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 
 //
 import axios from "axios";
@@ -67,7 +36,7 @@ const [open, setOpen] = useState(false);
           withCredentials: true,
         }
       );
-      //   console.log(res)
+        console.log(res)
       setPatients(res.data.data);
     } catch (err) {
       console.error("Error loading patients", err);
@@ -204,12 +173,14 @@ const [open, setOpen] = useState(false);
                   </div>
 
                   <Button onClick={(e) => setOpen(true) }>
-                   add
+                   {d.healthtable ?  "Update Health Data": "Add Health Data"}
                   </Button>
                    <DoctorAddHealthData
                       open = {open}
                       setOpen ={setOpen}
                       onUpdate={getPatients}
+                      patientId= {d.patientId}
+                      healthtable={d.healthtable}
                     />
                 </div>
               </div>

@@ -477,9 +477,23 @@ const getAppointmentPatientForDoctor = async (req, res) => {
       as: "user",
     },
   },
+  {
+    $lookup: {
+      from: "healthtables",
+      localField: "patientId",
+      foreignField: "patientId",
+      as: "healthtable",
+    },
+  },
+  
   { $unwind: "$patient" },
   { $unwind: "$user" },
-
+{
+  $unwind: {
+    path: "$healthtable",
+    preserveNullAndEmptyArrays: true,
+  },
+},
   // 4️⃣ Group by patientId (THIS IS THE KEY PART)
   {
     $group: {
@@ -509,8 +523,8 @@ const getAppointmentPatientForDoctor = async (req, res) => {
       emergencyContactPhone:"$appointment.patient.emergencyContact.phone",
       active:"$appointment.user.active",
       email:"$appointment.user.email",
-
       totalAppointments: 1,
+      healthtable:"$appointment.healthtable._id"
     },
   },
 ]);

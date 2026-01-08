@@ -14,7 +14,7 @@ const createHealthTable = async (req, res) => {
     Blood_sugar,
   } = req.body;
   try {
-    const existingpatient = await HealthTable.findOne({ patientId });
+    const existingpatient = await HealthTable.findById({ patientId });
     if (existingpatient) {
       return res.status(409).json({ success: false, message: "patient data exist already " });
     }
@@ -39,7 +39,34 @@ const createHealthTable = async (req, res) => {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-};
+}
+const updateHealthTable = async (req, res) => {
+  const { healthtable } = req.params;
+   const updateData = req.body;
+
+  try {
+    const existingpatient = await HealthTable.findById(healthtable);
+    if (!existingpatient) {
+      return res.status(409).json({ success: false, message: "patient data not exist " });
+    }
+    const data = await HealthTable.findByIdAndUpdate(
+      healthtable,
+      { $set: updateData },
+      { new: true }
+    )
+    return res.status(201).json({
+      success: true,
+      message: "health data updated successfully",
+      data: data,
+    });
+  } catch (error) {
+    console.error("Error updating health data:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
 const getHelathTable = async (req, res) => {
   try {
     const data = await HealthTable.aggregate([
@@ -173,4 +200,4 @@ const getHelathTablePatient = async (req, res) => {
   }
 };
 
-module.exports = { createHealthTable,getHelathTable,getHelathTablePatient };
+module.exports = { createHealthTable,getHelathTable,getHelathTablePatient,updateHealthTable };
