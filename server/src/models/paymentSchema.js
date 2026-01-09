@@ -9,12 +9,7 @@ const mongoose = require("mongoose")
         type: mongoose.Schema.Types.ObjectId,
         ref: "Appointment"
       },
-      status :{
-        type: String,
-        enum: ["pending","completed","failed"],
-        required: true,
-        default:"pending"
-      },
+     
       type :{
         type: String,
         required: true
@@ -24,11 +19,6 @@ const mongoose = require("mongoose")
       required: true,
       min: 0
     },
-    ransactionId: {
-      type: String,
-      unique: true,
-      sparse: true // allows null but unique when present
-    }
  },
   { timestamps: true }
 )

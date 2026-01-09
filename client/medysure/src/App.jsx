@@ -1,7 +1,12 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./components/Theme/theme-toggle";
-import { BrowserRouter as Router, Routes, Route,Navigate  } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
@@ -36,6 +41,9 @@ import PatientViewReports from "./pages/patient/PatientViewReports";
 import PatientHealthBoard from "./pages/patient/PatientHealthBoard";
 import PatientFeedback from "./pages/patient/PatientFeedback";
 import PatientCalendar from "./pages/patient/PatientCalendar";
+import PateintPaymentCancel from "./pages/patient/PateintPaymentCancel";
+import PatientPaymentSuccess from "./pages/patient/PatientPaymentSuccess";
+
 function App() {
   return (
     <>
@@ -54,59 +62,63 @@ function App() {
 
       <Router>
         <Routes>
-         {/* Public routes */}
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/otp-verify" element={<OtpVerifyPage />} />
-        <Route path="/patient-form" element={<PatientRegistration />} />
+          {/* Public routes */}
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/otp-verify" element={<OtpVerifyPage />} />
+          <Route path="/patient-form" element={<PatientRegistration />} />
 
-        {/* Admin parent route */}
-        <Route path="/admin" element={<AdminNavBar />}>
-          {/* Default redirect: /admin → /admin/dashboard */}
-          <Route index element={<Navigate to="dashboard" replace />} />
+          {/* Admin parent route */}
+          <Route path="/admin" element={<AdminNavBar />}>
+            {/* Default redirect: /admin → /admin/dashboard */}
+            <Route index element={<Navigate to="dashboard" replace />} />
 
-          {/* Admin child routes */}
-          <Route path="dashboard" element={<AdminDashBoard />} />
-          <Route path="doctors" element={<AdminManageDoctors />} />
-          <Route path="patients" element={<AdminManagePatients />} />
-          <Route path="admins" element={<AdminManageAdmins />} />
-          <Route path="appointment" element={<AdminAppointment />} />
-          <Route path="report" element={<AdminManageReports />} />
-          <Route path="calandar" element={<AdminCalandar />} />
-          <Route path="feedback" element={<AdminManageFeedback />} />
-        </Route>
+            {/* Admin child routes */}
+            <Route path="dashboard" element={<AdminDashBoard />} />
+            <Route path="doctors" element={<AdminManageDoctors />} />
+            <Route path="patients" element={<AdminManagePatients />} />
+            <Route path="admins" element={<AdminManageAdmins />} />
+            <Route path="appointment" element={<AdminAppointment />} />
+            <Route path="report" element={<AdminManageReports />} />
+            <Route path="calandar" element={<AdminCalandar />} />
+            <Route path="feedback" element={<AdminManageFeedback />} />
+          </Route>
 
-        {/* Doctor parent route */}
-        <Route path="/doctor" element={<DoctorNavbar />}>
-          {/* Default redirect: /doctor → /doctor/dashboard */}
-          <Route index element={<Navigate to="dashboard" replace />} />
+          {/* Doctor parent route */}
+          <Route path="/doctor" element={<DoctorNavbar />}>
+            {/* Default redirect: /doctor → /doctor/dashboard */}
+            <Route index element={<Navigate to="dashboard" replace />} />
 
-          {/* Doctor child routes */}
-          <Route path="dashboard" element={<DoctorDashboard />} />
-          <Route path="appointment" element={<DoctorViewAppointment />} />
-          <Route path="view-reports" element={<DoctorViewReports />} />
-          <Route path="calandar" element={<DoctorCalendar />} />
-          <Route path="feedback" element={<DoctorViewFeedback />} />
-          <Route path="patients" element={<DoctorViewPatients />} />
+            {/* Doctor child routes */}
+            <Route path="dashboard" element={<DoctorDashboard />} />
+            <Route path="appointment" element={<DoctorViewAppointment />} />
+            <Route path="view-reports" element={<DoctorViewReports />} />
+            <Route path="calandar" element={<DoctorCalendar />} />
+            <Route path="feedback" element={<DoctorViewFeedback />} />
+            <Route path="patients" element={<DoctorViewPatients />} />
+          </Route>
 
-        </Route>
-
-
-
-        {/* patient Routes */}
-        <Route path="/patient" element={<PatientNavBar />} >
-           {/* Default redirect: /admin → /admin/dashboard */}
-           <Route index element={<Navigate to="dashboard" replace />} />
-           <Route path="dashboard" element={<PatientDashBoard />} />
-           <Route path="book-appointment" element={<PatientBookAppointment />} />
-          <Route path="view-appointment" element={<PatientViewAppointment />} />
-           <Route path="view-reports" element={<PatientViewReports />} />
-           <Route path="health-board" element={<PatientHealthBoard />} />
-           <Route path="feedback" element={<PatientFeedback />} />
-          <Route path="calandar" element={<PatientCalendar />} />
-
-        </Route>
-      </Routes>
+          {/* patient Routes */}
+          <Route path="/patient" element={<PatientNavBar />}>
+            {/* Default redirect: /admin → /admin/dashboard */}
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<PatientDashBoard />} />
+            <Route
+              path="book-appointment"
+              element={<PatientBookAppointment />}
+            />
+            <Route
+              path="view-appointment"
+              element={<PatientViewAppointment />}
+            />
+            <Route path="view-reports" element={<PatientViewReports />} />
+            <Route path="health-board" element={<PatientHealthBoard />} />
+            <Route path="feedback" element={<PatientFeedback />} />
+            <Route path="calandar" element={<PatientCalendar />} />
+            <Route path="payment-success" element={<PatientPaymentSuccess />} />
+            <Route path="payment-cancel" element={<PateintPaymentCancel />} />
+          </Route>
+        </Routes>
       </Router>
     </>
   );

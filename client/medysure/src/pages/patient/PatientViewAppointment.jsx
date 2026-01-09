@@ -183,6 +183,20 @@ function PatientViewAppointment() {
       }
     }
   };
+  const handlePayment = async () => {
+    try {
+      const response = await axios.post(
+        `${api_url}/payment/create-checkout-session`,
+        { withCredentials: true }
+      );
+
+      // Redirect to Stripe Checkout
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Payment failed");
+    }
+  };
   // load once
   useEffect(() => {
     appointment();
@@ -278,8 +292,8 @@ function PatientViewAppointment() {
               <div>
                 {" "}
                 <Badge className="h-5 min-w-5 rounded-full p-2 font-mono tabular-nums">
-                                  {data.length}
-                                </Badge>
+                  {data.length}
+                </Badge>
               </div>
             </div>
 
@@ -380,7 +394,7 @@ function PatientViewAppointment() {
                                 <Dialog>
                                   <DialogTrigger asChild>
                                     <button
-                                     className="text-green-600 font-medium "
+                                      className="text-green-600 font-medium "
                                       onClick={() => {
                                         setErrors({});
                                         setFormData({
@@ -472,12 +486,17 @@ function PatientViewAppointment() {
                                   <PatientAddFeedback
                                     open={open}
                                     setOpen={setOpen}
-                                    _id = {d._id}
-                                    doctorId = {d.doctorId}
+                                    _id={d._id}
+                                    doctorId={d.doctorId}
                                   />
                                 </DropdownMenuItem>
                               )}
-
+                              <DropdownMenuItem
+                                className="text-blue-600"
+                                onClick={() => handlePayment()}
+                              >
+                                Pay Now
+                              </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="text-red-600"
                                 onClick={() => handleDelete(d._id)}
