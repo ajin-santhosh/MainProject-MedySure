@@ -5,9 +5,21 @@ const mongoose = require("mongoose")
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users"
       },
+      paymentIntentId: {
+         type: String,
+        required: true
+      },
+      sessionId: {
+        type: String,
+        required: true
+      },
       appointmentId :{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Appointment"
+      },
+      doctorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users"
       },
      
       type :{

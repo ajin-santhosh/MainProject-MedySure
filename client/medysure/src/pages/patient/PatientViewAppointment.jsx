@@ -183,10 +183,16 @@ function PatientViewAppointment() {
       }
     }
   };
-  const handlePayment = async () => {
+  const handlePayment = async (doctorId,_id) => {
+    
     try {
       const response = await axios.post(
         `${api_url}/payment/create-checkout-session`,
+        {
+        userId,
+        appointmentId: _id,
+        doctorId,
+      },
         { withCredentials: true }
       );
 
@@ -318,6 +324,7 @@ function PatientViewAppointment() {
 
                       <th className="p-2">Notes</th>
                       <th className="p-2">Description</th>
+                      <th className="p-2">Payment</th>
 
                       <th className="p-2">Progress</th>
                       <th></th>
@@ -360,6 +367,9 @@ function PatientViewAppointment() {
                         </td>
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.description}
+                        </td>
+                        <td className="p-3 text-gray-600 dark:text-gray-300">
+                          {d.payment ? "Yes" : "No"}
                         </td>
                         <td className="p-3 w-40">
                           <Progress
@@ -491,12 +501,15 @@ function PatientViewAppointment() {
                                   />
                                 </DropdownMenuItem>
                               )}
-                              <DropdownMenuItem
+                              {!d.payment && (
+                                <DropdownMenuItem
                                 className="text-blue-600"
-                                onClick={() => handlePayment()}
+                                onClick={() => handlePayment(d.doctorId,d._id)}
                               >
                                 Pay Now
                               </DropdownMenuItem>
+                              )}
+                              
                               <DropdownMenuItem
                                 className="text-red-600"
                                 onClick={() => handleDelete(d._id)}
