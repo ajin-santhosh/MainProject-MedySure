@@ -93,7 +93,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       <div>
         <Link to="appointment">
         <button
-          onClick={() => toggleMenu("profile")}
+          onClick={() => toggleMenu("appointments")}
           className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
@@ -111,7 +111,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       <div>
         <Link to= "report" >
         <button
-          onClick={() => toggleMenu("profile")}
+          onClick={() => toggleMenu("report")}
           className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
@@ -129,7 +129,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       <div>
         <Link to="calandar">
         <button
-          onClick={() => toggleMenu("profile")}
+          onClick={() => toggleMenu("calender")}
           className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
@@ -146,7 +146,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       <div>
         <Link to="feedback">
         <button
-          onClick={() => toggleMenu("profile")}
+          onClick={() => toggleMenu("feedback")}
           className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
@@ -164,7 +164,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       <div>
         <Link to="payment">
         <button
-          onClick={() => toggleMenu("profile")}
+          onClick={() => toggleMenu("payment")}
           className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
