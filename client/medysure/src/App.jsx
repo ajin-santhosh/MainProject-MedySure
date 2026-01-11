@@ -43,7 +43,7 @@ import PatientFeedback from "./pages/patient/PatientFeedback";
 import PatientCalendar from "./pages/patient/PatientCalendar";
 import PateintPaymentCancel from "./pages/patient/PateintPaymentCancel";
 import PatientPaymentSuccess from "./pages/patient/PatientPaymentSuccess";
-
+import PatientViewPayments from "./pages/patient/PatientViewPayments";
 function App() {
   return (
     <>
@@ -117,6 +117,8 @@ function App() {
             <Route path="calandar" element={<PatientCalendar />} />
             <Route path="payment-success" element={<PatientPaymentSuccess />} />
             <Route path="payment-cancel" element={<PateintPaymentCancel />} />
+            <Route path="view-payments" element={<PatientViewPayments />} />
+
           </Route>
         </Routes>
       </Router>

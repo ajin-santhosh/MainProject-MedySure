@@ -169,6 +169,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
       {/* Payements */}
 
       <div>
+       <Link to="view-payments">
         <button
           onClick={() => toggleMenu("payment")}
           className="
@@ -181,6 +182,7 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
             {!collapsed && <span>Payments</span>}
           </div>
         </button>
+       </Link>
       </div>
 
       {/* Settings */}

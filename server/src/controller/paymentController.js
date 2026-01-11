@@ -1,5 +1,6 @@
 const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const mongoose = require("mongoose");
 const Payment = require("../models/paymentSchema");
 const Appointment = require("../models/appointmentSchema");
 
@@ -80,5 +81,72 @@ const verifyAndSavePayment = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+const getPayementForPatient = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const payments = await Payment.aggregate([
+      {
+        $match: { patientId: new mongoose.Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: "appointments",
+          localField: "appointmentId",
+          foreignField: "_id",
+          as: "appointment",
+        },
+      },
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$appointment" },
+      { $unwind: "$doctor" },
 
-module.exports = {createCheckoutSession,verifyAndSavePayment}
+      {
+        $project: {
+          _id: 1,
+          type:1,
+          amount:1,
+          title: "$appointment.title",
+          status: "$appointment.status",
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+          doctorDepartment: "$doctor.department",
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          time: {
+            $dateToString: {
+              format: "%H:%M",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+        },
+      },
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "Payments ",
+      data: payments,
+    });
+  } catch (error) {
+    console.error("Error in getting payments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+module.exports = {createCheckoutSession,verifyAndSavePayment,getPayementForPatient}
