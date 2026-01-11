@@ -148,5 +148,68 @@ const getPayementForPatient = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+const getPayement = async (req, res) => {
+  try {
+    const payments = await Payment.aggregate([
+      
+      {
+        $lookup: {
+          from: "appointments",
+          localField: "appointmentId",
+          foreignField: "_id",
+          as: "appointment",
+        },
+      },
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "doctorId",
+          foreignField: "userId",
+          as: "doctor",
+        },
+      },
+      { $unwind: "$appointment" },
+      { $unwind: "$doctor" },
 
+      {
+        $project: {
+          _id: 1,
+          type:1,
+          amount:1,
+          title: "$appointment.title",
+          status: "$appointment.status",
+          doctorName: {
+            $concat: ["$doctor.firstName", " ", "$doctor.lastName"],
+          },
+          doctorDepartment: "$doctor.department",
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+          time: {
+            $dateToString: {
+              format: "%H:%M",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+        },
+      },
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "Payments ",
+      data: payments,
+    });
+  } catch (error) {
+    console.error("Error in getting payments:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
 module.exports = {createCheckoutSession,verifyAndSavePayment,getPayementForPatient}
