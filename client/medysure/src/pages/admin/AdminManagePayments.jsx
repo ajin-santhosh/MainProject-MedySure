@@ -1,6 +1,4 @@
 ("use client");
-// // component import
-
 import { toast } from "sonner";
 import {
   flexRender,
@@ -39,15 +37,14 @@ import {
   ButtonGroup,
   ButtonGroupSeparator,
 } from "@/components/ui/button-group";
-import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 // library import
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
+import ThemeToggle from '@/components/Theme/theme-toggle'
 // logic from here
 
-export const getColumns = (deleteReport) => [
+export const getColumns = (deletePayment) => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -68,28 +65,7 @@ export const getColumns = (deleteReport) => [
     enableSorting: false,
     enableHiding: false,
   },
-//   {
-//     accessorKey: "fileUrl",
-//     header: ({ table }) => (
-//       <Checkbox
-//         className="hidden"
-//         checked={
-//           table.getIsAllPageRowsSelected() ||
-//           (table.getIsSomePageRowsSelected() && "indeterminate")
-//         }
-//         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-//       />
-//     ),
-//     cell: ({ row }) => (
-//       <Checkbox
-//         className="hidden"
-//         checked={row.getIsSelected()}
-//         onCheckedChange={(value) => row.toggleSelected(!!value)}
-//       />
-//     ),
-//     enableSorting: false,
-//     enableHiding: false,
-//   },
+
   {
     accessorKey: "title",
     header: ({ column }) => (
@@ -97,27 +73,21 @@ export const getColumns = (deleteReport) => [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Title <ArrowUpDown className="ml-2 h-4 w-4" />
+        Appointment Title <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("title")}</div>,
   },
   {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Date <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("createdAt")}</div>,
-  },
-  {
-    accessorKey: "reportType",
+    accessorKey: "status",
     header: ({ column }) => {
-      const paymentOptions = ["lab report", "prescription"];
+      const statusOptions = [
+        "pending",
+        "scheduled",
+        "rescheduled",
+        "cancelled",
+        "completed",
+      ];
       const currentFilter = column.getFilterValue();
 
       return (
@@ -126,25 +96,25 @@ export const getColumns = (deleteReport) => [
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Report Type <ChevronDown className="ml-2 h-4 w-4" />
+                Status <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-              {paymentOptions.map((payment) => (
+              {statusOptions.map((status) => (
                 <DropdownMenuCheckboxItem
-                  key={payment}
-                  checked={currentFilter === payment}
+                  key={status}
+                  checked={currentFilter === status}
                   onCheckedChange={(selected) => {
                     if (selected) {
-                      column.setFilterValue(payment);
+                      column.setFilterValue(status);
                     } else {
                       column.setFilterValue(undefined);
                     }
                   }}
                   className="capitalize"
                 >
-                  {payment}
+                  {status}
                 </DropdownMenuCheckboxItem>
               ))}
 
@@ -168,20 +138,55 @@ export const getColumns = (deleteReport) => [
         </div>
       );
     },
-
-    cell: ({ row }) => <div>{row.getValue("reportType")}</div>,
+    cell: ({ row }) => <div>{row.getValue("status")}</div>,
   },
   {
-    accessorKey: "patientName",
+    accessorKey: "amount",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Patient Name <ArrowUpDown className="ml-1 h-4 w-4" />
+        Amount <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("patientName")}</div>,
+    cell: ({ row }) => <div>{row.getValue("amount")}{"₹"}</div>,
+  },
+  {
+    accessorKey: "type",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Payment Type <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("type")}</div>,
+  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("date")}</div>,
+  },
+  {
+    accessorKey: "time",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Time <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("time")}</div>,
   },
 
   {
@@ -280,28 +285,19 @@ export const getColumns = (deleteReport) => [
 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-            <DropdownMenuItem
+ <DropdownMenuItem
               className="text-red-700"
               onClick={() =>
-                toast.warning("Delete report?", {
+                toast.warning("Delete Payment?", {
                   description: "This action cannot be undone.",
                   action: {
                     label: "Confirm",
-                    onClick: () => deleteReport(reports._id),
+                    onClick: () => deletePayment(reports._id),
                   },
                 })
               }
             >
               Delete
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              className="text-blue-700"
-              onClick={() => downloadFile(reports._id)}
-            >
-              {" "}
-              Download
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -309,79 +305,49 @@ export const getColumns = (deleteReport) => [
     },
   },
 ];
-// download file
-const downloadFile = async (reportId) => {
-  try {
-    const res = await axios.get(`${api_url}/report/dowReport/${reportId}`, {
-      responseType: "blob", // important!
-      withCredentials: true,
-    });
-
-    // Create a URL for the blob
-    const url = window.URL.createObjectURL(
-      new Blob([res.data], { type: "application/pdf" })
-    );
-
-    // Create a temporary link to trigger download
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `report_${reportId}.pdf`); // file name
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    window.URL.revokeObjectURL(url); // clean up
-    console.log("Download succeeded");
-  } catch (err) {
-    console.error("Error downloading report", err);
-  }
-};
-
-import ThemeToggle from "@/components/Theme/theme-toggle";
-function AdminManageReports() {
-  const [data, setData] = useState([]);
+function AdminManagePayments() {
+    const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
-
+ 
   // fetch report
-  const repo = async () => {
+  const payments = async () => {
     try {
-      const res = await axios.get(`${api_url}/report/getReport`, {
+      const res = await axios.get(`${api_url}/payment/getPayment`, {
         withCredentials: true,
       });
       setData(res.data.data);
     } catch (err) {
-      console.error("Error loading appointments", err);
+      console.error("Error loading payment", err);
     }
   };
-
-  // delete Appointment + reload list
-  const deleteReport = async (_id) => {
+// delete Payment
+  const deletePayment = async (_id) => {
     try {
-      await axios.delete(`${api_url}/appointment/deleteAppointment/${_id}`, {
+      await axios.delete(`${api_url}/payment/deletePayment/${_id}`, {
         withCredentials: true,
       });
 
-      console.log("Appointment deleted:", userId);
+      console.log("Payment deleted:");
 
       // re-fetch data
-      repo();
+      payments();
     } catch (error) {
-      console.error("Error deleting Appointment", error);
+      console.error("Error deleting Payment", error);
     }
   };
 
   // load once
   useEffect(() => {
-    repo();
+    payments();
   }, []);
 
   const table = useReactTable({
     data,
-    columns: getColumns(deleteReport),
+    columns: getColumns(deletePayment),
     state: {
       sorting,
       columnFilters,
@@ -397,27 +363,26 @@ function AdminManageReports() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-
   return (
-    <>
+<>
       <div className={`flex-1 flex flex-col`}>
-        {/* Header */}
-        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-          <div className="flex items-center space-x-2">
-            {/* Hamburger for mobile */}
+              {/* Header */}
+              <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+                <div className="flex items-center space-x-2">
+                  {/* Hamburger for mobile */}
+      
+                  <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+                    My Reports
+                  </h1>
+                </div>
+      
+                <div className="flex items-center space-x-4">
+                  <ThemeToggle />
+                </div>
+              </header>
 
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-              Reports
-            </h1>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <ThemeToggle />
-          </div>
-        </header>
-
-        <div className="p-3">
-          <div className="p-2 w-full bg-zinc-100 dark:bg-slate-950">
+             <div className="p-5 bg-zinc-100 dark:bg-slate-950">
+          <div className="w-full">
             {/* FILTER BAR */}
             <div className="flex items-end py-4">
               <Input
@@ -434,13 +399,13 @@ function AdminManageReports() {
                 className="max-w-sm"
               />
 
-              <ButtonGroup className="pl-5">
+              {/* <ButtonGroup className="pl-5">
                 <Button variant="outline">Export CSV</Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />
                 </Button>
-              </ButtonGroup>
+              </ButtonGroup> */}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -541,9 +506,9 @@ function AdminManageReports() {
             </div>
           </div>
         </div>
-      </div>
-    </>
-  );
+
+              </div>
+   </>  )
 }
 
-export default AdminManageReports;
+export default AdminManagePayments

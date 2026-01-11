@@ -22,7 +22,7 @@ import AdminManageAdmins from "./pages/admin/AdminManageAdmins";
 import AdminManageReports from "./pages/admin/AdminManageReports";
 import AdminCalandar from "./pages/admin/AdminCalandar";
 import AdminManageFeedback from "./pages/admin/AdminManageFeedback";
-
+import AdminManagePayments from "./pages/admin/AdminManagePayments";
 // Doctor pages
 import DoctorNavbar from "./pages/doctor/DoctorNavbar";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
@@ -82,6 +82,8 @@ function App() {
             <Route path="report" element={<AdminManageReports />} />
             <Route path="calandar" element={<AdminCalandar />} />
             <Route path="feedback" element={<AdminManageFeedback />} />
+            <Route path="payment" element={<AdminManagePayments />} />
+
           </Route>
 
           {/* Doctor parent route */}

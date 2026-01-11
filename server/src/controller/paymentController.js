@@ -148,10 +148,9 @@ const getPayementForPatient = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
-const getPayement = async (req, res) => {
+const getPayment = async (req, res) => {
   try {
     const payments = await Payment.aggregate([
-      
       {
         $lookup: {
           from: "appointments",
@@ -212,4 +211,28 @@ const getPayement = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
-module.exports = {createCheckoutSession,verifyAndSavePayment,getPayementForPatient}
+const deletePayment = async (req, res) => {
+  const { paymentId } = req.params;
+  try {
+    const deletedPayment = await Payment.findByIdAndDelete(
+      paymentId
+    );
+    if (!deletedPayment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Payment not found" });
+    }
+    return res.status(201).json({
+      success: true,
+      message: "Payment deleted successfully",
+      data: deletedPayment,
+    });
+  } catch (error) {
+    console.error("Error deleting payment:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+module.exports = {createCheckoutSession,verifyAndSavePayment,getPayementForPatient,getPayment,deletePayment}
