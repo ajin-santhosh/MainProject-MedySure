@@ -375,7 +375,8 @@ function PatientBookAppointment() {
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> 
+                      <p className="p-1 text-sm text-blue-500">Make Sure Your Payment from My Appointments...</p>
                       {errors.date && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.date}

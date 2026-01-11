@@ -63,6 +63,8 @@ function PatientViewAppointment() {
   const [errors, setErrors] = useState({}); // for error
   const dialogCloseRef = useRef(null); // for modal close
   const [open, setOpen] = useState(false);
+  const [on, setOn] = useState(false);
+
   const [formData, setFormData] = useState(
     {
       title: "",
@@ -183,16 +185,15 @@ function PatientViewAppointment() {
       }
     }
   };
-  const handlePayment = async (doctorId,_id) => {
-    
+  const handlePayment = async (doctorId, _id) => {
     try {
       const response = await axios.post(
         `${api_url}/payment/create-checkout-session`,
         {
-        userId,
-        appointmentId: _id,
-        doctorId,
-      },
+          userId,
+          appointmentId: _id,
+          doctorId,
+        },
         { withCredentials: true }
       );
 
@@ -215,8 +216,8 @@ function PatientViewAppointment() {
       ? d.doctorDepartment === department
       : true;
     const matchStatus = status ? d.status === status : true;
-
-    return matchesSearch && matchDepartment && matchStatus;
+    const matchPayment = on ? d.payment === false : true;
+    return matchesSearch && matchDepartment && matchStatus && matchPayment;
   });
 
   return (
@@ -240,7 +241,7 @@ function PatientViewAppointment() {
           {/* searchbar */}
 
           <Card className="shadow-lg bg-zinc-100 dark:bg-slate-950">
-            <div className="p-2 grid grid-cols-4 gap-5 items-center">
+            <div className="p-2 grid grid-cols-5 gap-5 items-center">
               <div className="w-full max-w-md">
                 <FieldSet>
                   <FieldGroup>
@@ -300,6 +301,28 @@ function PatientViewAppointment() {
                 <Badge className="h-5 min-w-5 rounded-full p-2 font-mono tabular-nums">
                   {data.length}
                 </Badge>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setOn(!on)}
+                    className={`
+                        relative inline-flex h-4 w-8 items-center rounded-full
+        transition-colors
+        ${on ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-700"}
+      `}
+                  >
+                    <span
+                      className={`
+          inline-block h-2 w-2 rounded-full bg-white shadow
+          transition-transform
+          ${on ? "translate-x-5" : "translate-x-1"}
+        `}
+                    />
+                  </button>{" "}
+                  <p> Payment Pending</p>
+                </div>
               </div>
             </div>
 
@@ -503,13 +526,15 @@ function PatientViewAppointment() {
                               )}
                               {!d.payment && (
                                 <DropdownMenuItem
-                                className="text-blue-600"
-                                onClick={() => handlePayment(d.doctorId,d._id)}
-                              >
-                                Pay Now
-                              </DropdownMenuItem>
+                                  className="text-blue-600"
+                                  onClick={() =>
+                                    handlePayment(d.doctorId, d._id)
+                                  }
+                                >
+                                  Pay Now
+                                </DropdownMenuItem>
                               )}
-                              
+
                               <DropdownMenuItem
                                 className="text-red-600"
                                 onClick={() => handleDelete(d._id)}
