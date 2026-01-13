@@ -1,17 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 ("use client");
 import { Mail, User, Shield } from "lucide-react";
 import ThemeToggle from "@/components/Theme/theme-toggle";
+import PatientUpdate from "./PatientUpdate";
+import PatientUpdateEmegencyContact from "./PatientUpdateEmegencyContact";
 function PatientProfile() {
-  const user = {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john@example.com",
-    role: "Admin",
-    phone: "+1 987 654 3210",
-    age: 28,
-    gender: "Male",
+  const userId = sessionStorage.getItem("user_id");
+  const api_url = import.meta.env.VITE_API_URL;
+  const [user, setUser] = useState([]);
+const [isProfileOpen, setIsProfileOpen] = useState(false);
+const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
+  const getPatient = async () => {
+    try {
+      const res = await axios.get(
+        `${api_url}/patient/getPatientById/${userId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setUser(res.data.data);
+      console.log(user);
+    } catch (err) {
+      console.error("Error loading patient", err);
+    }
   };
+  useEffect(() => {
+    getPatient();
+  }, []);
   return (
     <>
       <div className={`flex-1 flex flex-col`}>
@@ -34,8 +50,8 @@ function PatientProfile() {
           <div className="w-full max-w rounded-2xl bg-white dark:bg-gray-800 shadow-lg">
             {/* Header */}
             <div className="flex flex-col items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-700">
-              <div className="h-20 w-20 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white text-3xl font-semibold">
-                {user.firstName.charAt(0)}
+              <div className="h-20 w-20 rounded-full bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white text-3xl font-semibold ">
+                {user.firstName}
               </div>
               <h2 className="text-xl font-semibold">
                 {user.firstName} {user.lastName}
@@ -64,13 +80,16 @@ function PatientProfile() {
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <Shield className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.role}
+                  Patient:
+                </span>
+                <span className="text-sm text-gray-700 dark:text-gray-200">
+                  {user.active ? "Active" : "InActive"}
                 </span>
               </div>
 
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Phone
+                  Phone:
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
                   {user.phone}
@@ -79,7 +98,7 @@ function PatientProfile() {
 
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Age
+                  Age:
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
                   {user.age}
@@ -88,7 +107,7 @@ function PatientProfile() {
 
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Gender
+                  Gender:
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
                   {user.gender}
@@ -96,60 +115,77 @@ function PatientProfile() {
               </div>
 
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
-                <Mail className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.email}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
-                <Shield className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.role}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Palce{" "}
+                  Palce:
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.gender}
+                  {user.place}
                 </span>
               </div>
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
- Blood group                </span>
+                  Blood group:
+                </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.gender}
+                  {user.blood_group}
                 </span>
               </div>
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Hieght{" "}
+                  Hieght:
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.gender}
+                  {user.height}
                 </span>
               </div>
               <div className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Weight{" "}
+                  Weight:
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user.gender}
+                  {user.weight}
                 </span>
               </div>
             </div>
 
             {/* Actions */}
             <div className="flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
-              <button className="flex-1 rounded-lg bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition">
+              <button
+                className="flex-1 rounded-lg bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition"
+                onClick={() => setIsProfileOpen(true)}
+              >
                 Edit Profile
               </button>
-              <button className="flex-1 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                Logout
+              <PatientUpdate
+              isOpen={isProfileOpen}
+    onClose={() => setIsProfileOpen(false)}
+                initialData={user}
+                onUpdate={getPatient}
+              >
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 bg-green-600 text-white rounded"
+                >
+                  Save
+                </button>
+              </PatientUpdate>
+              
+              <button className="bg-gray-400 dark:bg-gray-600 flex-1 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+               onClick={() => setIsEmergencyOpen(true)}
+               >
+                Update Emergancy Contact
               </button>
+              <PatientUpdateEmegencyContact
+                isOpen={isEmergencyOpen}
+    onClose={() => setIsEmergencyOpen(false)}
+              >
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 bg-green-600 text-white rounded"
+                >
+                  Save
+                </button>
+              </PatientUpdateEmegencyContact>
             </div>
           </div>
         </div>

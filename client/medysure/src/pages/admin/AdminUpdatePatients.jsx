@@ -23,7 +23,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-function AdminUpdatePatients({initialData}) {
+function AdminUpdatePatients({ initialData }) {
   const api_url = import.meta.env.VITE_API_URL;
   //   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -40,7 +40,7 @@ function AdminUpdatePatients({initialData}) {
     height: initialData?.height || "",
     weight: initialData?.weight || "",
     place: initialData?.place || "",
-    paid: initialData?.paid || ""
+    paid: initialData?.paid || "",
     // emergencyContactname: initialData?.emergencyContactname || "",
     // emergencyContactrelation: initialData?.emergencyContactrelation || "",
     // emergencyContactphone: initialData?.emergencyContactphone || "",
@@ -52,30 +52,30 @@ function AdminUpdatePatients({initialData}) {
   // For custom Select components
   const handleSelectChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  }; 
+  };
   // for handle toggle
   const handleToggle = (e) => {
-    const { id, type, checked,value} = e.target;
+    const { id, type, checked, value } = e.target;
     setFormData((prev) => ({
-    ...prev,
-    [id]: type === "checkbox" ? checked : value,
-  }));
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     let validationErrors = {};
     if (!formData.gender) validationErrors.gender = "Gender is required";
-      if (!formData.blood_group)
-        validationErrors.blood_group = "blood group is required";
-      if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        return; // stop submission
-      }
-      setErrors({});
-      let payload = {
+    if (!formData.blood_group)
+      validationErrors.blood_group = "blood group is required";
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return; // stop submission
+    }
+    setErrors({});
+    let payload = {
       email: formData.email,
       password: formData.password,
-      active:formData.active,
+      active: formData.active,
       firstName: formData.firstName,
       lastName: formData.lastName,
       phone: formData.phone,
@@ -84,57 +84,55 @@ function AdminUpdatePatients({initialData}) {
       blood_group: formData.blood_group,
       height: formData.height,
       weight: formData.weight,
-      place: formData.place
-      
-    }
+      place: formData.place,
+    };
     if (!formData.password) {
-       payload = {
-      email: formData.email,
-      active:formData.active,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      phone: formData.phone,
-      gender: formData.gender,
-      age: formData.age,
-      blood_group: formData.blood_group,
-      height: formData.height,
-      weight: formData.weight,
-      place: formData.place
-    //   emergencyContact: {
-    //     name: formData.emergencyContactname,
-    //     relation: formData.emergencyContactrelation,
-    //     phone: formData.emergencyContactphone,
-    //   },
-    }
+      payload = {
+        email: formData.email,
+        active: formData.active,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        gender: formData.gender,
+        age: formData.age,
+        blood_group: formData.blood_group,
+        height: formData.height,
+        weight: formData.weight,
+        place: formData.place,
+        //   emergencyContact: {
+        //     name: formData.emergencyContactname,
+        //     relation: formData.emergencyContactrelation,
+        //     phone: formData.emergencyContactphone,
+        //   },
+      };
     }
 
- console.log(payload)
+    console.log(payload);
 
- try {
-        const res = await axios.put(
-          `${api_url}/patient/updatePatient/${initialData.userId}`,
-          payload,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("Server response:", res.data.data);
-        alert("Patient update completed successfully");
-        // navigate("/admin/doctors");
-      } catch (error) {
-        if (error.response) {
-          // Backend returned error (like 401)
-          validationErrors.err = error.response.data.message || "failed";
-        } else if (error.request) {
-          validationErrors.err = "Server not responding. Try again later.";
-        } else {
-          validationErrors.err = "Something went wrong: " + error.message;
+    try {
+      const res = await axios.put(
+        `${api_url}/patient/updatePatient/${initialData.userId}`,
+        payload,
+        {
+          withCredentials: true,
         }
-        if (Object.keys(validationErrors).length > 0) {
-          setErrors(validationErrors);
-        }
+      );
+      console.log("Server response:", res.data.data);
+      alert("Patient update completed successfully");
+      // navigate("/admin/doctors");
+    } catch (error) {
+      if (error.response) {
+        // Backend returned error (like 401)
+        validationErrors.err = error.response.data.message || "failed";
+      } else if (error.request) {
+        validationErrors.err = "Server not responding. Try again later.";
+      } else {
+        validationErrors.err = "Something went wrong: " + error.message;
       }
-
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+      }
+    }
   };
 
   return (
@@ -197,28 +195,28 @@ function AdminUpdatePatients({initialData}) {
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
-                <div className="grid gap-3">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                type="text"
-                placeholder="+91 ..."
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="place">Place</Label>
-              <Input
-                id="place"
-                type="text"
-                placeholder="...."
-                value={formData.place}
-                onChange={handleChange}
-                required
-              />
-            </div>
+              <div className="grid gap-3">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="text"
+                  placeholder="+91 ..."
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="place">Place</Label>
+                <Input
+                  id="place"
+                  type="text"
+                  placeholder="...."
+                  value={formData.place}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -274,49 +272,51 @@ function AdminUpdatePatients({initialData}) {
                 </Select>
               </div>
             </div>
-             <div className="grid grid-cols-3 gap-3">
-                  <div className="grid gap-3">
-              <Label htmlFor="phone">Age</Label>
-              <Input
-                id="age"
-                type="text"
-                placeholder=".."
-                value={formData.age}
-                onChange={handleChange}
-                required
-              />
+            <div className="grid grid-cols-3 gap-3">
+              <div className="grid gap-3">
+                <Label htmlFor="phone">Age</Label>
+                <Input
+                  id="age"
+                  type="text"
+                  placeholder=".."
+                  value={formData.age}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="height">Hieght</Label>
+                <Input
+                  id="height"
+                  type="text"
+                  placeholder=".. cm"
+                  value={formData.height}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="weight">Weight</Label>
+                <Input
+                  id="weight"
+                  type="text"
+                  placeholder=".. kg"
+                  value={formData.weight}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
-             <div className="grid gap-3">
-              <Label htmlFor="height">Hieght</Label>
-              <Input
-                id="height"
-                type="text"
-                placeholder=".. cm"
-                value={formData.height}
-                onChange={handleChange}
-                required
-              />
-            </div>
-             <div className="grid gap-2">
-              <Label htmlFor="weight">Weight</Label>
-              <Input
-                id="weight"
-                type="text"
-                placeholder=".. kg"
-                value={formData.weight}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-             </div>
-             <div // toggle
+            <div // toggle
               className="grid grid-cols-2"
             >
-              <div >
+              <div>
                 <h2 className="text-sm font-semibold">
-                  User Status: <span className="text-sm font-semibold text-blue-500" > {formData.active ? "Active" : "Inactive"}</span>
-                 
+                  User Status:{" "}
+                  <span className="text-sm font-semibold text-blue-500">
+                    {" "}
+                    {formData.active ? "Active" : "Inactive"}
+                  </span>
                 </h2>
               </div>
 
@@ -324,8 +324,8 @@ function AdminUpdatePatients({initialData}) {
               <div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
-                     type="checkbox"
-                     id="active"
+                    type="checkbox"
+                    id="active"
                     checked={formData.active}
                     onChange={handleToggle}
                     className="sr-only peer"
@@ -350,12 +350,9 @@ function AdminUpdatePatients({initialData}) {
                   ></div>
                 </label>
               </div>
-            </div>  
-             
-
+            </div>
 
             <div className="grid gap-2">
-             
               {errors.err && (
                 <p className="text-red-700 text-sm mt-1">{errors.err}</p>
               )}
