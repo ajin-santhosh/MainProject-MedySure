@@ -12,7 +12,8 @@ import {
   CalendarCheck,
   Landmark,
   MessageSquareMore,
-  Users
+  Users,
+  SquareUser
 } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -138,31 +139,24 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
         </button>
         </Link>
       </div>
-      {/* Payements */}
-
-      <div>
-        <button
-          onClick={() => toggleMenu("profile")}
-          className="
-            w-full flex items-center justify-between p-2 rounded-md 
-            hover:bg-gray-100 dark:hover:bg-gray-800
-          "
-        >
-          <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4" />
-            {!collapsed && <span>Payments</span>}
-          </div>
-        </button>
-      </div>
 
       {/* Settings */}
-      <Button
-        variant="ghost"
-        className="justify-start hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        <Settings className="h-4 w-4" />
-        {!collapsed && <span className="ml-2">Settings</span>}
-      </Button>
+      <div>
+              <Link to="profile">
+               <button
+                onClick={() => toggleMenu("")}
+                className="
+                  w-full flex items-center justify-between p-2 rounded-md 
+                  hover:bg-gray-100 dark:hover:bg-gray-800
+                "
+              >
+                <div className="flex items-center gap-2">
+                  <SquareUser className="h-4 w-4" />
+                  {!collapsed && <span>Profile</span>}
+                </div>
+              </button>
+              </Link>
+            </div>
     </nav>
   );
 }

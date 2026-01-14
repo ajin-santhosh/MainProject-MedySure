@@ -1,4 +1,5 @@
 const Doctor = require("../models/docterSchema");
+const mongoose = require("mongoose");
 
 // create doctor
 
@@ -86,5 +87,57 @@ password:"$user.password"
     return res.status(500).json({ success:false, message: "Internal Server Error" });
   }
 };
+const getDoctorById = async (req, res) => {
+    const { userId } = req.params;
 
-module.exports = { registerDoctor, updateDoctordetails, deletingDoctorDetails,getDoctors };
+  try {
+    const doctors = await Doctor.aggregate([
+      {
+              $match: { userId: new mongoose.Types.ObjectId(userId) },
+            },
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "user"
+    }
+  },
+  { $unwind: "$user" },
+  {
+    $project: {
+      
+_id:1,
+userId:1,
+firstName:1,
+lastName:1,
+gender:1,
+experiance:1,
+department:1,
+qualification:1,
+createdAt: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Kolkata", // optional
+            },
+          },
+active:"$user.active",
+email: "$user.email" ,
+password:"$user.password"
+    }
+  }
+])
+    return res.status(201).json({
+      success:true,
+      message: "doctor data",
+      data: doctors[0],
+    });
+  } catch (error) {
+    console.error("Error fetching doctors:", error);
+    return res.status(500).json({ success:false, message: "Internal Server Error" });
+  }
+};
+
+
+module.exports = { registerDoctor, updateDoctordetails, deletingDoctorDetails,getDoctors,getDoctorById };

@@ -317,5 +317,5 @@ module.exports = {
   getPatient,
   getPatientById,
   getEmergencyContactById,
-  updateEmergencyContact
+  updateEmergencyContact,
 };

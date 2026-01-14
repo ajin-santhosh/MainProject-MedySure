@@ -95,7 +95,6 @@ function PatientUpdate({ isOpen, onClose,initialData,onUpdate}) {
 onUpdate?.();
       alert("Patient update completed successfully");
       onClose()
-      // navigate("/admin/doctors");
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)
