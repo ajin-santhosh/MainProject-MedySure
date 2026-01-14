@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { useState } from "react";
 import {
   Menu,
@@ -15,14 +15,15 @@ import {
   CalendarCheck,
   Landmark,
   MessageSquareMore,
-  SquareUser
+  SquareUser,
 } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/Theme/theme-toggle";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 /* ---------------------------------------------
    SHARED SIDEBAR MENU (ONLY WRITTEN ONCE)
@@ -32,23 +33,22 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
     <nav className="flex flex-col gap-4">
       {/* Dashboard */}
       <div>
-        <Link to='dashboard'>
-        <button
-          onClick={() => toggleMenu("dashboard")}
-          className="
+        <Link to="dashboard">
+          <button
+            onClick={() => toggleMenu("dashboard")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
-            {!collapsed && <span>Dashboard</span>}
-            
-          </div>
-          {/* {!collapsed && (
+          >
+            <div className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              {!collapsed && <span>Dashboard</span>}
+            </div>
+            {/* {!collapsed && (
               openMenus.dashboard ? <ChevronDown /> : <ChevronRight />
             )} */}
-        </button>
+          </button>
         </Link>
 
         {/* {openMenus.dashboard && !collapsed && (
@@ -59,299 +59,320 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
           </div>
         )} */}
       </div>
-    {/* book appointment */}
+      {/* book appointment */}
 
       <div>
-        <Link to="book-appointment" >
-        <button
-          onClick={() => toggleMenu("bookAppointment")}
-          className="
+        <Link to="book-appointment">
+          <button
+            onClick={() => toggleMenu("bookAppointment")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <CalendarPlus className="h-4 w-4" />
-            {!collapsed && <span>Book Appointment</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <CalendarPlus className="h-4 w-4" />
+              {!collapsed && <span>Book Appointment</span>}
+            </div>
+          </button>
         </Link>
       </div>
-      
+
       {/*My Appointments */}
 
       <div>
         <Link to="view-appointment">
-        <button
-          onClick={() => toggleMenu("myAppointments")}
-          className="
+          <button
+            onClick={() => toggleMenu("myAppointments")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <CalendarSearch className="h-4 w-4" />
-            {!collapsed && <span>My Appointments</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <CalendarSearch className="h-4 w-4" />
+              {!collapsed && <span>My Appointments</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Resports */}
 
       <div>
-        <Link to= "view-reports" >
-        <button
-          onClick={() => toggleMenu("myReports")}
-          className="
+        <Link to="view-reports">
+          <button
+            onClick={() => toggleMenu("myReports")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <TicketsPlane className="h-4 w-4" />
-            {!collapsed && <span>My Reports</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <TicketsPlane className="h-4 w-4" />
+              {!collapsed && <span>My Reports</span>}
+            </div>
+          </button>
         </Link>
       </div>
-            {/* my heath boradr */}
+      {/* my heath boradr */}
 
       <div>
-        <Link to= "health-board" >
-        <button
-          onClick={() => toggleMenu("myHealth")}
-          className="
+        <Link to="health-board">
+          <button
+            onClick={() => toggleMenu("myHealth")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <SquareActivity className="h-4 w-4" />
-            {!collapsed && <span>My Health Board</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <SquareActivity className="h-4 w-4" />
+              {!collapsed && <span>My Health Board</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Calender */}
 
       <div>
         <Link to="calandar">
-        <button
-          onClick={() => toggleMenu("calandar")}
-          className="
+          <button
+            onClick={() => toggleMenu("calandar")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <CalendarCheck className="h-4 w-4" />
-            {!collapsed && <span>Calender</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <CalendarCheck className="h-4 w-4" />
+              {!collapsed && <span>Calender</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Feedback*/}
       <div>
         <Link to="feedback">
-        <button
-          onClick={() => toggleMenu("feedback")}
-          className="
+          <button
+            onClick={() => toggleMenu("feedback")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <MessageSquareMore className="h-4 w-4" />
-            {!collapsed && <span>Feedback</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <MessageSquareMore className="h-4 w-4" />
+              {!collapsed && <span>Feedback</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Payements */}
 
       <div>
-       <Link to="view-payments">
-        <button
-          onClick={() => toggleMenu("payment")}
-          className="
+        <Link to="view-payments">
+          <button
+            onClick={() => toggleMenu("payment")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4" />
-            {!collapsed && <span>Payments</span>}
-          </div>
-        </button>
-       </Link>
+          >
+            <div className="flex items-center gap-2">
+              <Landmark className="h-4 w-4" />
+              {!collapsed && <span>Payments</span>}
+            </div>
+          </button>
+        </Link>
       </div>
 
       {/* Settings */}
       <div>
         <Link to="profile">
-         <button
-          onClick={() => toggleMenu("")}
-          className="
+          <button
+            onClick={() => toggleMenu("")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <SquareUser className="h-4 w-4" />
-            {!collapsed && <span>Profile</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <SquareUser className="h-4 w-4" />
+              {!collapsed && <span>Profile</span>}
+            </div>
+          </button>
         </Link>
       </div>
     </nav>
   );
 }
-  //  MAIN COMPONENT (USES ONE SIDEBAR MENU)
+//  MAIN COMPONENT (USES ONE SIDEBAR MENU)
 
-export default function PatientNavBar({children}) {
-   const [collapsed, setCollapsed] = useState(false);
-    const [openMenus, setOpenMenus] = useState({
-      dashboard: false,
-      profile: false,
-      appointment:false,
-      payment:false,
-      feedback:false,
-      calandar:false,
-      myHealth:false,
-      myReports:false,
-      myAppointments:false,
-      bookAppointment:false
-    });
-  
-    const toggleMenu = (key) =>
-      setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
-  
-    return (
-      <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white">
-        {/* -------- DESKTOP -------- */}
-        <aside
-          className={`
+export default function PatientNavBar({ children }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [openMenus, setOpenMenus] = useState({
+    dashboard: false,
+    profile: false,
+    appointment: false,
+    payment: false,
+    feedback: false,
+    calandar: false,
+    myHealth: false,
+    myReports: false,
+    myAppointments: false,
+    bookAppointment: false,
+  });
+
+  const toggleMenu = (key) =>
+    setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
+  const api_url = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    console.log("logout");
+
+    try {
+      const log = await axios.post(
+        `${api_url}/userLogout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      sessionStorage.clear();
+      localStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.error("Error in logout", error);
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white">
+      {/* -------- DESKTOP -------- */}
+      <aside
+        className={`
             hidden md:flex flex-col border-r transition-all overflow-hidden
             bg-white dark:bg-gray-950
             border-gray-200 dark:border-gray-800
             ${collapsed ? "w-20" : "w-64"}
           `}
-        >
-          {/* Header */}
-          <div
-            className="
+      >
+        {/* Header */}
+        <div
+          className="
               p-4 border-b flex justify-between items-center
               border-gray-200 dark:border-gray-800
             "
+        >
+          {!collapsed && (
+            <div className="flex items-center">
+              <img
+                src="https://res.cloudinary.com/dvlal7skv/image/upload/v1764175364/Green_and_White_Modern_Medical_Logo__1__page-0001-removebg-preview_pnxcha.png"
+                alt="logo"
+                className="w-14 h-14"
+              />
+              <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "}
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCollapsed(!collapsed)}
           >
-            {!collapsed && (
-              <div className="flex items-center">
-                <img
-                  src="https://res.cloudinary.com/dvlal7skv/image/upload/v1764175364/Green_and_White_Modern_Medical_Logo__1__page-0001-removebg-preview_pnxcha.png"
-                  alt="logo"
-                  className="w-14 h-14"
-                />
-                <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "}
-              </div>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setCollapsed(!collapsed)}
-            >
-              <Menu />
-            </Button>
-          </div>
-  
-          {/* Shared Menu */}
-          <div className="flex-1 p-4 overflow-auto">
-            <SidebarMenu
-              collapsed={collapsed}
-              openMenus={openMenus}
-              toggleMenu={toggleMenu}
-            />
-          </div>
-  
-          {/* Footer */}
-          <div
-            className="
+            <Menu />
+          </Button>
+        </div>
+
+        {/* Shared Menu */}
+        <div className="flex-1 p-4 overflow-auto">
+          <SidebarMenu
+            collapsed={collapsed}
+            openMenus={openMenus}
+            toggleMenu={toggleMenu}
+          />
+        </div>
+
+        {/* Footer */}
+        <div
+          className="
               p-4 border-t 
               border-gray-200 dark:border-gray-800
             "
+        >
+          <Button
+            variant="destructive"
+            className="w-full justify-start dark:bg-red-600 dark:hover:bg-red-700"
+            onClick={logout}
           >
-            <Button
-              variant="destructive"
-              className="w-full justify-start dark:bg-red-600 dark:hover:bg-red-700"
-            >
-              <LogOut className="h-4 w-4" />
-              {!collapsed && <span className="ml-2">Logout</span>}
-            </Button>
-          </div>
-        </aside>
-  
-        {/* -------- MOBILE -------- */}
-        <div
-          className="
+            <LogOut className="h-4 w-4" />
+            {!collapsed && <span className="ml-2">Logout</span>}
+          </Button>
+        </div>
+      </aside>
+
+      {/* -------- MOBILE -------- */}
+      <div
+        className="
             md:hidden p-4 border-b flex items-center gap-2
             border-gray-200 dark:border-gray-800
             bg-white dark:bg-gray-950
           "
-        >
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu />
-              </Button>
-            </SheetTrigger>
-  
-            <SheetContent
-              side="left"
-              className="p-4 bg-white dark:bg-gray-950 text-black dark:text-white"
-            >
-              <div className="flex items-center">
-                {/* <img
+      >
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu />
+            </Button>
+          </SheetTrigger>
+
+          <SheetContent
+            side="left"
+            className="p-4 bg-white dark:bg-gray-950 text-black dark:text-white"
+          >
+            <div className="flex items-center">
+              {/* <img
                   src="https://res.cloudinary.com/dvlal7skv/image/upload/v1764175364/Green_and_White_Modern_Medical_Logo__1__page-0001-removebg-preview_pnxcha.png"
                   alt="logo"
                   className="w-14 h-14"
                 /> */}
-                <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "}
-              </div>
-  
-              <SidebarMenu
-                collapsed={false}
-                openMenus={openMenus}
-                toggleMenu={toggleMenu}
-              />
-  
-              <div className="mt-6 border-t pt-4 border-gray-200 dark:border-gray-800">
-                <Button
-                  variant="destructive"
-                  className="w-full justify-start dark:bg-red-600 dark:hover:bg-red-700"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="ml-2">Logout</span>
-                </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
-          <div className="flex items-center">
-            {/* <img
+              <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "}
+            </div>
+
+            <SidebarMenu
+              collapsed={false}
+              openMenus={openMenus}
+              toggleMenu={toggleMenu}
+            />
+
+            <div className="mt-6 border-t pt-4 border-gray-200 dark:border-gray-800">
+              <Button
+                variant="destructive"
+                className="w-full justify-start dark:bg-red-600 dark:hover:bg-red-700"
+                onClick={logout}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="ml-2">Logout</span>
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+        <div className="flex items-center">
+          {/* <img
               src="https://res.cloudinary.com/dvlal7skv/image/upload/v1764175364/Green_and_White_Modern_Medical_Logo__1__page-0001-removebg-preview_pnxcha.png"
               alt="logo"
               className="w-14 h-14"
             /> */}
-            {/* <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "} */}
-          </div>
+          {/* <h2 className="font-bold font-medysure text-lg ">Medy Sure</h2>{" "} */}
         </div>
-  
-        {/* Content */}
-        <main className="flex-1 overflow-auto relative">
-          {children}
-  
-         <Outlet />
-        </main>
       </div>
-    );
-  }
 
+      {/* Content */}
+      <main className="flex-1 overflow-auto relative">
+        {children}
 
+        <Outlet />
+      </main>
+    </div>
+  );
+}

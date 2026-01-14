@@ -18,7 +18,8 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/Theme/theme-toggle";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 /* ---------------------------------------------
    SHARED SIDEBAR MENU (ONLY WRITTEN ONCE)
@@ -28,23 +29,22 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
     <nav className="flex flex-col gap-4">
       {/* Dashboard */}
       <div>
-        <Link to='dashboard'>
-        <button
-          onClick={() => toggleMenu("dashboard")}
-          className="
+        <Link to="dashboard">
+          <button
+            onClick={() => toggleMenu("dashboard")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
-            {!collapsed && <span>Dashboard</span>}
-            
-          </div>
-          {/* {!collapsed && (
+          >
+            <div className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              {!collapsed && <span>Dashboard</span>}
+            </div>
+            {/* {!collapsed && (
               openMenus.dashboard ? <ChevronDown /> : <ChevronRight />
             )} */}
-        </button>
+          </button>
         </Link>
 
         {/* {openMenus.dashboard && !collapsed && (
@@ -75,15 +75,14 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
 
         {openMenus.profile && !collapsed && (
           <div className="ml-8 mt-2 flex flex-col gap-2">
-             <Link to='admins'>
-            <button className="text-sm hover:underline">Admins</button>
+            <Link to="admins">
+              <button className="text-sm hover:underline">Admins</button>
             </Link>
-            <Link to='doctors'>
-            <button className="text-sm hover:underline">Doctors</button>
+            <Link to="doctors">
+              <button className="text-sm hover:underline">Doctors</button>
             </Link>
-            <Link to='patients'>
-                        <button className="text-sm hover:underline">Patient</button>
-
+            <Link to="patients">
+              <button className="text-sm hover:underline">Patient</button>
             </Link>
           </div>
         )}
@@ -92,89 +91,89 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
 
       <div>
         <Link to="appointment">
-        <button
-          onClick={() => toggleMenu("appointments")}
-          className="
+          <button
+            onClick={() => toggleMenu("appointments")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <CalendarSearch className="h-4 w-4" />
-            {!collapsed && <span>Appointments</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <CalendarSearch className="h-4 w-4" />
+              {!collapsed && <span>Appointments</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Resports */}
 
       <div>
-        <Link to= "report" >
-        <button
-          onClick={() => toggleMenu("report")}
-          className="
+        <Link to="report">
+          <button
+            onClick={() => toggleMenu("report")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <TicketsPlane className="h-4 w-4" />
-            {!collapsed && <span>Reports</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <TicketsPlane className="h-4 w-4" />
+              {!collapsed && <span>Reports</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Calender */}
 
       <div>
         <Link to="calandar">
-        <button
-          onClick={() => toggleMenu("calender")}
-          className="
+          <button
+            onClick={() => toggleMenu("calender")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <CalendarCheck className="h-4 w-4" />
-            {!collapsed && <span>Calender</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <CalendarCheck className="h-4 w-4" />
+              {!collapsed && <span>Calender</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Feedback*/}
       <div>
         <Link to="feedback">
-        <button
-          onClick={() => toggleMenu("feedback")}
-          className="
+          <button
+            onClick={() => toggleMenu("feedback")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <MessageSquareMore className="h-4 w-4" />
-            {!collapsed && <span>Feedback</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <MessageSquareMore className="h-4 w-4" />
+              {!collapsed && <span>Feedback</span>}
+            </div>
+          </button>
         </Link>
       </div>
       {/* Payements */}
 
       <div>
         <Link to="payment">
-        <button
-          onClick={() => toggleMenu("payment")}
-          className="
+          <button
+            onClick={() => toggleMenu("payment")}
+            className="
             w-full flex items-center justify-between p-2 rounded-md 
             hover:bg-gray-100 dark:hover:bg-gray-800
           "
-        >
-          <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4" />
-            {!collapsed && <span>Payments</span>}
-          </div>
-        </button>
+          >
+            <div className="flex items-center gap-2">
+              <Landmark className="h-4 w-4" />
+              {!collapsed && <span>Payments</span>}
+            </div>
+          </button>
         </Link>
       </div>
 
@@ -202,7 +201,27 @@ export default function AdminNavBar({ children }) {
 
   const toggleMenu = (key) =>
     setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
+  const api_url = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
+  const logout = async () => {
+    console.log("logout");
+
+    try {
+      const log = await axios.post(
+        `${api_url}/userLogout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      sessionStorage.clear();
+      localStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.error("Error in logout", error);
+    }
+  };
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white">
       {/* -------- DESKTOP -------- */}
@@ -259,6 +278,7 @@ export default function AdminNavBar({ children }) {
           <Button
             variant="destructive"
             className="w-full justify-start dark:bg-red-600 dark:hover:bg-red-700"
+            onClick={logout}
           >
             <LogOut className="h-4 w-4" />
             {!collapsed && <span className="ml-2">Logout</span>}
@@ -304,6 +324,7 @@ export default function AdminNavBar({ children }) {
               <Button
                 variant="destructive"
                 className="w-full justify-start dark:bg-red-600 dark:hover:bg-red-700"
+                onClick={logout}
               >
                 <LogOut className="h-4 w-4" />
                 <span className="ml-2">Logout</span>
@@ -325,7 +346,7 @@ export default function AdminNavBar({ children }) {
       <main className="flex-1 overflow-auto relative">
         {children}
 
-       <Outlet />
+        <Outlet />
       </main>
     </div>
   );
