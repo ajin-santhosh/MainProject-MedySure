@@ -43,7 +43,7 @@ import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
-import ThemeToggle from '@/components/Theme/theme-toggle'
+import ThemeToggle from "@/components/Theme/theme-toggle";
 // logic from here
 
 export const getColumns = (deletePayment) => [
@@ -152,7 +152,12 @@ export const getColumns = (deletePayment) => [
         Amount <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("amount")}{"₹"}</div>,
+    cell: ({ row }) => (
+      <div>
+        {row.getValue("amount")}
+        {"₹"}
+      </div>
+    ),
   },
   {
     accessorKey: "type",
@@ -287,7 +292,7 @@ export const getColumns = (deletePayment) => [
 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
- <DropdownMenuItem
+            <DropdownMenuItem
               className="text-red-700"
               onClick={() =>
                 toast.warning("Delete Payment?", {
@@ -308,13 +313,13 @@ export const getColumns = (deletePayment) => [
   },
 ];
 function AdminManagePayments() {
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
- 
+
   // fetch report
   const payments = async () => {
     try {
@@ -326,7 +331,7 @@ function AdminManagePayments() {
       console.error("Error loading payment", err);
     }
   };
-// delete Payment
+  // delete Payment
   const deletePayment = async (_id) => {
     try {
       await axios.delete(`${api_url}/payment/deletePayment/${_id}`, {
@@ -341,7 +346,7 @@ function AdminManagePayments() {
       console.error("Error deleting Payment", error);
     }
   };
-const exportPayemnts = async () => {
+  const exportPayemnts = async () => {
     try {
       const response = await axios.get(`${api_url}/admin/export-paymentData`, {
         responseType: "blob",
@@ -385,43 +390,40 @@ const exportPayemnts = async () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
   return (
-<>
+    <>
       <div className={`flex-1 flex flex-col`}>
-              {/* Header */}
-              <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-                <div className="flex items-center space-x-2">
-                  {/* Hamburger for mobile */}
-      
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-                    My Reports
-                  </h1>
-                </div>
-      
-                <div className="flex items-center space-x-4">
-                  <ThemeToggle />
-                </div>
-              </header>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
 
-             <div className="p-5 bg-zinc-100 dark:bg-slate-950">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              My Reports
+            </h1>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
+
+        <div className="p-5 bg-zinc-100 dark:bg-slate-950">
           <div className="w-full">
             {/* FILTER BAR */}
             <div className="flex items-end py-4">
               <Input
                 placeholder="Filter by title"
-                value={
-                  table.getColumn("title")?.getFilterValue() ||
-                  ""
-                }
+                value={table.getColumn("title")?.getFilterValue() || ""}
                 onChange={(e) =>
-                  table
-                    .getColumn("title",)
-                    ?.setFilterValue(e.target.value)
+                  table.getColumn("title")?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
 
               <ButtonGroup className="pl-5">
-                <Button variant="outline" onClick={exportPayemnts}>Export CSV</Button>
+                <Button variant="outline" onClick={exportPayemnts}>
+                  Export CSV
+                </Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />
@@ -527,9 +529,9 @@ const exportPayemnts = async () => {
             </div>
           </div>
         </div>
-
-              </div>
-   </>  )
+      </div>
+    </>
+  );
 }
 
-export default AdminManagePayments
+export default AdminManagePayments;
