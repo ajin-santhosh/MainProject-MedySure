@@ -40,17 +40,15 @@ import {
 import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 
-
 //library import
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
 
-
 // import  Sample from "../admin/Sample";
 import ThemeToggle from "@/components/Theme/theme-toggle";
 import AdminAddAdminSheet from "./AdminAddAdminSheet";
-//logic -- 
+//logic --
 export const getColumns = (deleteAdmin) => [
   {
     accessorKey: "_id",
@@ -76,58 +74,60 @@ export const getColumns = (deleteAdmin) => [
   {
     accessorKey: "active",
     header: ({ column }) => {
-        const activeOptions = [true,false];
-        const currentFilter = column.getFilterValue();
-    
-        return (
-          <div className="flex items-center gap-2">
-            {/* FILTER DROPDOWN */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="ml-auto">
-                  Status <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-    
-              <DropdownMenuContent align="end">
-                {activeOptions.map((active) => (
-                  <DropdownMenuCheckboxItem
-                    key={active}
-                    checked={currentFilter === active}
-                    onCheckedChange={(selected) => {
-                      if (selected) {
-                        column.setFilterValue(active);
-                      } else {
-                        column.setFilterValue(undefined);
-                      }
-                    }}
-                    className="capitalize"
-                  >
-                    {active?"acitve": "inactive"}
-                  </DropdownMenuCheckboxItem>
-                ))}
-    
-                {/* CLEAR FILTER */}
+      const activeOptions = [true, false];
+      const currentFilter = column.getFilterValue();
+
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Status <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              {activeOptions.map((active) => (
                 <DropdownMenuCheckboxItem
-                  checked={!currentFilter}
-                  onCheckedChange={() => column.setFilterValue(undefined)}
+                  key={active}
+                  checked={currentFilter === active}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(active);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
                 >
-                  Clear Filter
+                  {active ? "acitve" : "inactive"}
                 </DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-    
-            {/* SORT BUTTON */}
-            <Button
-              variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        );
-      },
-    cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
+              ))}
+
+              {/* CLEAR FILTER */}
+              <DropdownMenuCheckboxItem
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
+              >
+                Clear Filter
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div>{row.getValue("active") ? "active" : "in active"}</div>
+    ),
   },
 
   {
@@ -142,8 +142,6 @@ export const getColumns = (deleteAdmin) => [
     ),
     cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
-
-
 
   // ACTIONS COLUMN
   {
@@ -165,17 +163,14 @@ export const getColumns = (deleteAdmin) => [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <Sheet>
               <SheetTrigger asChild>
-
-            <DropdownMenuItem
-              className="text-green-700"
-              onSelect={(e) => e.preventDefault()}
-            >
-              Update
-            </DropdownMenuItem>
-
-            </SheetTrigger  >
-              <AdminAddAdminSheet mode="update" 
-                initialData={admin} />
+                <DropdownMenuItem
+                  className="text-green-700"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  Update
+                </DropdownMenuItem>
+              </SheetTrigger>
+              <AdminAddAdminSheet mode="update" initialData={admin} />
             </Sheet>
 
             <DropdownMenuItem
@@ -206,8 +201,7 @@ export const getColumns = (deleteAdmin) => [
   },
 ];
 function AdminManageAdmins() {
-
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -241,7 +235,27 @@ function AdminManageAdmins() {
       console.error("Error in admin delete", error);
     }
   };
+  const exportAdmin = async () => {
+    try {
+      const response = await axios.get(`${api_url}/admin/export-adminData`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
 
+      console.log("Admin data exported:");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Admins.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error in  export data fetch", error);
+    }
+  };
   // load once
   useEffect(() => {
     adm();
@@ -267,161 +281,161 @@ function AdminManageAdmins() {
   });
   return (
     <>
-    <div className={`flex-1 flex flex-col`}>
-            {/* Header */}
-            <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-              <div className="flex items-center space-x-2">
-                {/* Hamburger for mobile */}
-    
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-                  Admins
-                </h1>
-              </div>
-    
-              <div className="flex items-center space-x-4">
-                <ThemeToggle />
-              </div>
-            </header>
+      <div className={`flex-1 flex flex-col`}>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
 
-              <div className={`flex-1 flex flex-col `}>
-                      <div className="p-3">
-                        <div className="p-2 w-full bg-zinc-100 dark:bg-slate-950">
-                          {/* FILTER BAR */}
-                          <div className="flex items-end py-4">
-                            <Input
-                              placeholder="Filter emails..."
-                              value={table.getColumn("email")?.getFilterValue() || ""}
-                              onChange={(e) =>
-                                table.getColumn("email")?.setFilterValue(e.target.value)
-                              }
-                              className="max-w-sm"
-                            />
-              
-                            
-                                <ButtonGroup className="pl-5">
-                                                <Sheet>
-                                                  <SheetTrigger asChild>
-                                                    <Button variant="outline">Add Admin</Button>
-                                                  </SheetTrigger>
-                                                  <AdminAddAdminSheet  />
-                                                </Sheet>
-                                                <ButtonGroupSeparator />
-                                                <Button size="icon" variant="outline">
-                                                  <UserRoundPlus />
-                                                </Button>
-                                              </ButtonGroup>
-                            <ButtonGroup className="pl-5">
-                              <Button variant="outline">Export CSV</Button>
-                              <ButtonGroupSeparator />
-                              <Button size="icon" variant="outline">
-                                <FileSpreadsheet />
-                              </Button>
-                            </ButtonGroup>
-              
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="ml-auto">
-                                  Columns <ChevronDown className="ml-2 h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-              
-                              <DropdownMenuContent align="end">
-                                {table
-                                  .getAllColumns()
-                                  .filter((c) => c.getCanHide())
-                                  .map((column) => (
-                                    <DropdownMenuCheckboxItem
-                                      key={column.id}
-                                      checked={column.getIsVisible()}
-                                      onCheckedChange={(value) =>
-                                        column.toggleVisibility(!!value)
-                                      }
-                                      className="capitalize"
-                                    >
-                                      {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                  ))}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-              
-                          {/* TABLE */}
-                          <div className="overflow-hidden rounded-md border">
-                            <Table>
-                              <TableHeader>
-                                {table.getHeaderGroups().map((group) => (
-                                  <TableRow key={group.id}>
-                                    {group.headers.map((header) => (
-                                      <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                          ? null
-                                          : flexRender(
-                                              header.column.columnDef.header,
-                                              header.getContext()
-                                            )}
-                                      </TableHead>
-                                    ))}
-                                  </TableRow>
-                                ))}
-                              </TableHeader>
-              
-                              <TableBody>
-                                {table.getRowModel().rows.length ? (
-                                  table.getRowModel().rows.map((row) => (
-                                    <TableRow key={row.id}>
-                                      {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                          {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                          )}
-                                        </TableCell>
-                                      ))}
-                                    </TableRow>
-                                  ))
-                                ) : (
-                                  <TableRow>
-                                    <TableCell colSpan="100%" className="text-center h-24">
-                                      No results.
-                                    </TableCell>
-                                  </TableRow>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              Admins
+            </h1>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
+
+        <div className={`flex-1 flex flex-col `}>
+          <div className="p-3">
+            <div className="p-2 w-full bg-zinc-100 dark:bg-slate-950">
+              {/* FILTER BAR */}
+              <div className="flex items-end py-4">
+                <Input
+                  placeholder="Filter emails..."
+                  value={table.getColumn("email")?.getFilterValue() || ""}
+                  onChange={(e) =>
+                    table.getColumn("email")?.setFilterValue(e.target.value)
+                  }
+                  className="max-w-sm"
+                />
+
+                <ButtonGroup className="pl-5">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline">Add Admin</Button>
+                    </SheetTrigger>
+                    <AdminAddAdminSheet />
+                  </Sheet>
+                  <ButtonGroupSeparator />
+                  <Button size="icon" variant="outline">
+                    <UserRoundPlus />
+                  </Button>
+                </ButtonGroup>
+                <ButtonGroup className="pl-5">
+                  <Button variant="outline" onClick={exportAdmin}>
+                    Export CSV
+                  </Button>
+                  <ButtonGroupSeparator />
+                  <Button size="icon" variant="outline">
+                    <FileSpreadsheet />
+                  </Button>
+                </ButtonGroup>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="ml-auto">
+                      Columns <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end">
+                    {table
+                      .getAllColumns()
+                      .filter((c) => c.getCanHide())
+                      .map((column) => (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                          className="capitalize"
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              {/* TABLE */}
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    {table.getHeaderGroups().map((group) => (
+                      <TableRow key={group.id}>
+                        {group.headers.map((header) => (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
                                 )}
-                              </TableBody>
-                            </Table>
-                          </div>
-              
-                          {/* FOOTER */}
-                          <div className="flex items-center justify-end space-x-2 py-4">
-                            <div className="text-sm text-muted-foreground">
-                              {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                              {table.getFilteredRowModel().rows.length} row(s) selected.
-                            </div>
-              
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => table.previousPage()}
-                              disabled={!table.getCanPreviousPage()}
-                            >
-                              Previous
-                            </Button>
-              
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => table.nextPage()}
-                              disabled={!table.getCanNextPage()}
-                            >
-                              Next
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableHeader>
 
+                  <TableBody>
+                    {table.getRowModel().rows.length ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan="100%" className="text-center h-24">
+                          No results.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* FOOTER */}
+              <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="text-sm text-muted-foreground">
+                  {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                  {table.getFilteredRowModel().rows.length} row(s) selected.
+                </div>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  Previous
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
     </>
-  )
+  );
 }
 
-export default AdminManageAdmins
+export default AdminManageAdmins;

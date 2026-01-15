@@ -37,6 +37,8 @@ import {
   ButtonGroup,
   ButtonGroupSeparator,
 } from "@/components/ui/button-group";
+import { UserRoundPlus, FileSpreadsheet } from "lucide-react";
+
 // library import
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -339,7 +341,26 @@ function AdminManagePayments() {
       console.error("Error deleting Payment", error);
     }
   };
+const exportPayemnts = async () => {
+    try {
+      const response = await axios.get(`${api_url}/admin/export-paymentData`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
 
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Payments.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error in  export data fetch", error);
+    }
+  };
   // load once
   useEffect(() => {
     payments();
@@ -399,13 +420,13 @@ function AdminManagePayments() {
                 className="max-w-sm"
               />
 
-              {/* <ButtonGroup className="pl-5">
-                <Button variant="outline">Export CSV</Button>
+              <ButtonGroup className="pl-5">
+                <Button variant="outline" onClick={exportPayemnts}>Export CSV</Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />
                 </Button>
-              </ButtonGroup> */}
+              </ButtonGroup>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -77,7 +77,13 @@ export const getColumns = (deleteAppointment) => [
   {
     accessorKey: "status",
     header: ({ column }) => {
-      const statusOptions = ["pending", "scheduled", "rescheduled", "cancelled", "completed"];
+      const statusOptions = [
+        "pending",
+        "scheduled",
+        "rescheduled",
+        "cancelled",
+        "completed",
+      ];
       const currentFilter = column.getFilterValue();
 
       return (
@@ -135,14 +141,12 @@ export const getColumns = (deleteAppointment) => [
   {
     accessorKey: "patientName",
     header: ({ column }) => (
-
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Patient Name <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
-
     ),
     cell: ({ row }) => <div>{row.getValue("patientName")}</div>,
   },
@@ -160,11 +164,18 @@ export const getColumns = (deleteAppointment) => [
     cell: ({ row }) => <div>{row.getValue("doctorName")}</div>,
   },
 
-
   {
     accessorKey: "doctorDepartment",
     header: ({ column }) => {
-      const departmentOptions = ["generalMedicine", "pediatrics", "gynecology", "cardiology", "dermatology", "orthopedics", "neurology"];
+      const departmentOptions = [
+        "generalMedicine",
+        "pediatrics",
+        "gynecology",
+        "cardiology",
+        "dermatology",
+        "orthopedics",
+        "neurology",
+      ];
       const currentFilter = column.getFilterValue();
 
       return (
@@ -253,6 +264,18 @@ export const getColumns = (deleteAppointment) => [
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("description")}</div>,
+  },
+  {
+    accessorKey: "notes",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Notes <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("notes")}</div>,
   },
   {
     accessorKey: "payment",
@@ -393,7 +416,30 @@ function AdminAppointment() {
       console.error("Error deleting Appointment", error);
     }
   };
+  const exportAppointment = async () => {
+    try {
+      const response = await axios.get(
+        `${api_url}/admin/export-appointmentData`,
+        {
+          responseType: "blob",
+          withCredentials: true,
+        }
+      );
 
+      // console.log("Admin data exported:");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Appointments.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error in  export data fetch", error);
+    }
+  };
   // load once
   useEffect(() => {
     apm();
@@ -440,18 +486,23 @@ function AdminAppointment() {
             <div className="flex items-end py-4">
               <Input
                 placeholder="Filter by names"
-                value={table.getColumn("patientName")?.getFilterValue() || table.getColumn("doctorName")?.getFilterValue() || ""}
+                value={
+                  table.getColumn("patientName")?.getFilterValue() ||
+                  table.getColumn("doctorName")?.getFilterValue() ||
+                  ""
+                }
                 onChange={(e) =>
-                  table.getColumn("patientName", "doctorName")?.setFilterValue(e.target.value)
-
+                  table
+                    .getColumn("patientName", "doctorName")
+                    ?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
 
-
-
               <ButtonGroup className="pl-5">
-                <Button variant="outline">Export CSV</Button>
+                <Button variant="outline" onClick={exportAppointment}>
+                  Export CSV
+                </Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />
@@ -496,9 +547,9 @@ function AdminAppointment() {
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
                         </TableHead>
                       ))}
                     </TableRow>
@@ -557,10 +608,9 @@ function AdminAppointment() {
             </div>
           </div>
         </div>
-
       </div>
     </>
-  )
+  );
 }
 
-export default AdminAppointment
+export default AdminAppointment;

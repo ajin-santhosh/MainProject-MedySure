@@ -1,4 +1,3 @@
-
 ("use client");
 // component import
 import { toast } from "sonner";
@@ -78,72 +77,72 @@ export const getColumns = (deleteDoctor) => [
   {
     accessorKey: "active",
     header: ({ column }) => {
-    const activeOptions = [true,false];
-    const currentFilter = column.getFilterValue();
+      const activeOptions = [true, false];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Status <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Status <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {activeOptions.map((active) => (
+            <DropdownMenuContent align="end">
+              {activeOptions.map((active) => (
+                <DropdownMenuCheckboxItem
+                  key={active}
+                  checked={currentFilter === active}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(active);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {active ? "acitve" : "inactive"}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={active}
-                checked={currentFilter === active}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(active);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {active?"acitve": "inactive"}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
 
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  },
-    
-    cell: ({ row }) => <div>{row.getValue("active")?"active":"in active"}</div>,
+    cell: ({ row }) => (
+      <div>{row.getValue("active") ? "active" : "in active"}</div>
+    ),
   },
 
   {
     accessorKey: "email",
     header: ({ column }) => (
-      
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Email <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
-      
     ),
     cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
@@ -175,71 +174,71 @@ export const getColumns = (deleteDoctor) => [
   },
 
   {
-  accessorKey: "gender",
-  header: ({ column }) => {
-    const genderOptions = ["male", "female", "other"];
-    const currentFilter = column.getFilterValue();
+    accessorKey: "gender",
+    header: ({ column }) => {
+      const genderOptions = ["male", "female", "other"];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Gender <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Gender <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {genderOptions.map((gender) => (
+            <DropdownMenuContent align="end">
+              {genderOptions.map((gender) => (
+                <DropdownMenuCheckboxItem
+                  key={gender}
+                  checked={currentFilter === gender}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(gender);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {gender}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={gender}
-                checked={currentFilter === gender}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(gender);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {gender}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("gender")}</div>,
   },
-  cell: ({ row }) => <div>{row.getValue("gender")}</div>,
-},
-
 
   {
     accessorKey: "experiance",
-   header: ({ column }) => (
+    header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Experiance<ArrowUpDown className="ml-2 h-4 w-4" />
+        Experiance
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("experiance")}</div>,
@@ -248,57 +247,65 @@ export const getColumns = (deleteDoctor) => [
   {
     accessorKey: "department",
     header: ({ column }) => {
-    const departmentOptions = ["generalMedicine","pediatrics","gynecology","cardiology","dermatology","orthopedics","neurology"];
-    const currentFilter = column.getFilterValue();
+      const departmentOptions = [
+        "generalMedicine",
+        "pediatrics",
+        "gynecology",
+        "cardiology",
+        "dermatology",
+        "orthopedics",
+        "neurology",
+      ];
+      const currentFilter = column.getFilterValue();
 
-    return (
-      <div className="flex items-center gap-2">
-        {/* FILTER DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Department <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+      return (
+        <div className="flex items-center gap-2">
+          {/* FILTER DROPDOWN */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Department <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            {departmentOptions.map((department) => (
+            <DropdownMenuContent align="end">
+              {departmentOptions.map((department) => (
+                <DropdownMenuCheckboxItem
+                  key={department}
+                  checked={currentFilter === department}
+                  onCheckedChange={(selected) => {
+                    if (selected) {
+                      column.setFilterValue(department);
+                    } else {
+                      column.setFilterValue(undefined);
+                    }
+                  }}
+                  className="capitalize"
+                >
+                  {department}
+                </DropdownMenuCheckboxItem>
+              ))}
+
+              {/* CLEAR FILTER */}
               <DropdownMenuCheckboxItem
-                key={department}
-                checked={currentFilter === department}
-                onCheckedChange={(selected) => {
-                  if (selected) {
-                    column.setFilterValue(department);
-                  } else {
-                    column.setFilterValue(undefined);
-                  }
-                }}
-                className="capitalize"
+                checked={!currentFilter}
+                onCheckedChange={() => column.setFilterValue(undefined)}
               >
-                {department}
+                Clear Filter
               </DropdownMenuCheckboxItem>
-            ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            {/* CLEAR FILTER */}
-            <DropdownMenuCheckboxItem
-              checked={!currentFilter}
-              onCheckedChange={() => column.setFilterValue(undefined)}
-            >
-              Clear Filter
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* SORT BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    );
-  },
+          {/* SORT BUTTON */}
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row }) => <div>{row.getValue("department")}</div>,
   },
 
@@ -328,15 +335,14 @@ export const getColumns = (deleteDoctor) => [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <Sheet>
               <SheetTrigger asChild>
-                
-                  <DropdownMenuItem className="text-green-700"
-                    onSelect={(e) => e.preventDefault()}>
-                    Update
-                  </DropdownMenuItem>
-                
-              </SheetTrigger  >
-              <AdminAddDoctorSheet mode="update" 
-                initialData={doctor} />
+                <DropdownMenuItem
+                  className="text-green-700"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  Update
+                </DropdownMenuItem>
+              </SheetTrigger>
+              <AdminAddDoctorSheet mode="update" initialData={doctor} />
             </Sheet>
 
             <DropdownMenuItem
@@ -403,6 +409,28 @@ function AdminManageDoctors() {
     }
   };
 
+  const exportDoctor = async () => {
+    try {
+      const response = await axios.get(`${api_url}/admin/export-doctorData`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
+
+      // console.log("doctor data exported:");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Doctors.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error in  export data fetch", error);
+    }
+  };
+
   // load once
   useEffect(() => {
     doc();
@@ -461,7 +489,7 @@ function AdminManageDoctors() {
                   <SheetTrigger asChild>
                     <Button variant="outline">Add Doctor</Button>
                   </SheetTrigger>
-                  <AdminAddDoctorSheet  />
+                  <AdminAddDoctorSheet />
                 </Sheet>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
@@ -470,7 +498,9 @@ function AdminManageDoctors() {
               </ButtonGroup>
 
               <ButtonGroup className="pl-5">
-                <Button variant="outline">Export CSV</Button>
+                <Button variant="outline" onClick={exportDoctor}>
+                  Export CSV
+                </Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />

@@ -68,28 +68,28 @@ export const getColumns = (deleteReport) => [
     enableSorting: false,
     enableHiding: false,
   },
-//   {
-//     accessorKey: "fileUrl",
-//     header: ({ table }) => (
-//       <Checkbox
-//         className="hidden"
-//         checked={
-//           table.getIsAllPageRowsSelected() ||
-//           (table.getIsSomePageRowsSelected() && "indeterminate")
-//         }
-//         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-//       />
-//     ),
-//     cell: ({ row }) => (
-//       <Checkbox
-//         className="hidden"
-//         checked={row.getIsSelected()}
-//         onCheckedChange={(value) => row.toggleSelected(!!value)}
-//       />
-//     ),
-//     enableSorting: false,
-//     enableHiding: false,
-//   },
+  //   {
+  //     accessorKey: "fileUrl",
+  //     header: ({ table }) => (
+  //       <Checkbox
+  //         className="hidden"
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       />
+  //     ),
+  //     cell: ({ row }) => (
+  //       <Checkbox
+  //         className="hidden"
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       />
+  //     ),
+  //     enableSorting: false,
+  //     enableHiding: false,
+  //   },
   {
     accessorKey: "title",
     header: ({ column }) => (
@@ -374,6 +374,28 @@ function AdminManageReports() {
     }
   };
 
+  const exportReports = async () => {
+    try {
+      const response = await axios.get(`${api_url}/admin/export-reportData`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
+
+      // console.log("Admin data exported:");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Reports.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error in  export data fetch", error);
+    }
+  };
+
   // load once
   useEffect(() => {
     repo();
@@ -422,20 +444,17 @@ function AdminManageReports() {
             <div className="flex items-end py-4">
               <Input
                 placeholder="Filter by title"
-                value={
-                  table.getColumn("title")?.getFilterValue() ||
-                  ""
-                }
+                value={table.getColumn("title")?.getFilterValue() || ""}
                 onChange={(e) =>
-                  table
-                    .getColumn("title",)
-                    ?.setFilterValue(e.target.value)
+                  table.getColumn("title")?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
 
               <ButtonGroup className="pl-5">
-                <Button variant="outline">Export CSV</Button>
+                <Button variant="outline" onClick={exportReports}>
+                  Export CSV
+                </Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />

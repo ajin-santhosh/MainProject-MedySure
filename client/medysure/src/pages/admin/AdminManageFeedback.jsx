@@ -332,6 +332,26 @@ function AdminManageFeedback() {
       console.error("Error deleting Appointment", error);
     }
   };
+  const exportFeedbacks = async () => {
+    try {
+      const response = await axios.get(`${api_url}/admin/export-feedbackData`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Feedbacks.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error in  export data fetch", error);
+    }
+  };
 
   // load once
   useEffect(() => {
@@ -381,7 +401,7 @@ function AdminManageFeedback() {
                 placeholder="Filter by doctor or appointment"
                 value={
                   table.getColumn("appointment")?.getFilterValue() ||
-                    table.getColumn("doctorName")?.getFilterValue() ||
+                  table.getColumn("doctorName")?.getFilterValue() ||
                   ""
                 }
                 onChange={(e) =>
@@ -391,7 +411,9 @@ function AdminManageFeedback() {
               />
 
               <ButtonGroup className="pl-5">
-                <Button variant="outline">Export CSV</Button>
+                <Button variant="outline" onClick={exportFeedbacks}>
+                  Export CSV
+                </Button>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">
                   <FileSpreadsheet />

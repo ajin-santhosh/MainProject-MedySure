@@ -146,6 +146,7 @@ const getAppointment = async (req, res) => {
           description: 1,
           status: 1,
           payment: 1,
+          notes:1,
           patientName: {
             $concat: ["$patient.firstName", " ", "$patient.lastName"],
           },
