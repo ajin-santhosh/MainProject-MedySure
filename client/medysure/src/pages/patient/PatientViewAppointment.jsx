@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import {
   Field,
   FieldDescription,
@@ -151,7 +152,8 @@ function PatientViewAppointment() {
       appointment();
 
       // console.log("Server response:", res.data.data);
-      alert("Appointment updated successfully");
+      // alert("Appointment updated successfully");
+      toast.success("Appointment Updated Successfully");
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)
@@ -176,7 +178,8 @@ function PatientViewAppointment() {
           withCredentials: true,
         });
 
-        console.log("Appointment deleted:", _id);
+        // console.log("Appointment deleted:", _id);
+        toast.success("Appointment Deleted Successfully");
 
         // re-fetch data
         appointment();

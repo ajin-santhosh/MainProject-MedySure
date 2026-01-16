@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -49,16 +50,17 @@ export function PatientAddFeedback({ open, setOpen, _id, doctorId }) {
 
       console.log("Submitting:", payload);
 
-      await axios.post(`${api_url}/feedback/createFeedback`, payload,
-        { withCredentials: true }
-      );
+      await axios.post(`${api_url}/feedback/createFeedback`, payload, {
+        withCredentials: true,
+      });
 
       setOpen(false); // close modal after success
       setRating(0);
       setFormData({ description: "" });
+      toast.success("Feedback Added Successfully");
     } catch (error) {
       console.error(error);
-      alert("Failed to submit feedback");
+      toast.warning("Feedback not Added");
     } finally {
       setLoading(false);
     }

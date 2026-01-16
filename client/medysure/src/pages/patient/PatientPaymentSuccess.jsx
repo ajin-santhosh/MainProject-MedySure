@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useEffect } from "react";
 import axios from "axios";
 import { CheckCircle2 } from "lucide-react";
@@ -5,20 +6,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 function PatientPaymentSuccess() {
-    const api_url = import.meta.env.VITE_API_URL;
+  const api_url = import.meta.env.VITE_API_URL;
 
-    useEffect(() => {
-    const sessionId = new URLSearchParams(window.location.search)
-      .get("session_id");
+  useEffect(() => {
+    const sessionId = new URLSearchParams(window.location.search).get(
+      "session_id"
+    );
 
     if (sessionId) {
-      axios.post(`${api_url}/payment/verifyAndSavePayment`, { sessionId },{
+      axios.post(
+        `${api_url}/payment/verifyAndSavePayment`,
+        { sessionId },
+        {
           withCredentials: true,
-        });
+        }
+      );
     }
+    toast.success("Payment Done Successfully");
   }, []);
   return (
-<div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-green-50 px-4">
       <Card className="max-w-md w-full shadow-xl rounded-2xl">
         <CardContent className="p-8 text-center">
           <div className="flex justify-center mb-4">
@@ -34,10 +41,10 @@ function PatientPaymentSuccess() {
           </p>
 
           <div className="mt-6 space-y-3">
-            <Link to= "/patient/view-appointment">
-            <Button className="w-full bg-green-600 hover:bg-green-700">
-              View Appointment
-            </Button>
+            <Link to="/patient/view-appointment">
+              <Button className="w-full bg-green-600 hover:bg-green-700">
+                View Appointment
+              </Button>
             </Link>
 
             <Link to="/patient/dashboard">
@@ -52,7 +59,8 @@ function PatientPaymentSuccess() {
           </p>
         </CardContent>
       </Card>
-    </div>  )
+    </div>
+  );
 }
 
-export default PatientPaymentSuccess
+export default PatientPaymentSuccess;

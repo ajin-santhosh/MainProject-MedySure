@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import {
   Field,
   FieldDescription,
@@ -16,9 +17,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-
-
-
 
 import { MoreHorizontal, ChevronDownIcon } from "lucide-react";
 
@@ -51,19 +49,19 @@ function PatientFeedback() {
   };
   const deleteFeedback = async (_id) => {
     if (confirm("Delete this task?")) {
-    try {
-      await axios.delete(`${api_url}/feedback/deleteFeedback/${_id}`, {
-        withCredentials: true,
-      });
+      try {
+        await axios.delete(`${api_url}/feedback/deleteFeedback/${_id}`, {
+          withCredentials: true,
+        });
 
-      //   console.log("feedback deleted:", _id);
-
-      // re-fetch data
-      fetchFeedback();
-    } catch (error) {
-      console.error("Error deleting Appointment", error);
+        //   console.log("feedback deleted:", _id);
+        toast.success("Feedback Deleted Successfully");
+        // re-fetch data
+        fetchFeedback();
+      } catch (error) {
+        console.error("Error deleting Appointment", error);
+      }
     }
-}
   };
   // load once
   useEffect(() => {

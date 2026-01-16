@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import React from "react";
 import {
   Field,
@@ -105,7 +107,8 @@ function PatientBookAppointment() {
         { withCredentials: true }
       );
       // console.log("Server response:", res.data.data);
-      alert("Appointment booked successfully");
+      // alert("Appointment booked successfully");
+      toast.success("Appointment Booked Successfully");
 
       if (dialogCloseRef.current) dialogCloseRef.current.click();
 
@@ -375,8 +378,10 @@ function PatientBookAppointment() {
                             />
                           </div>
                         </div>
-                      </div> 
-                      <p className="p-1 text-sm text-blue-500">Make Sure Your Payment from My Appointments...</p>
+                      </div>
+                      <p className="p-1 text-sm text-blue-500">
+                        Make Sure Your Payment from My Appointments...
+                      </p>
                       {errors.date && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.date}

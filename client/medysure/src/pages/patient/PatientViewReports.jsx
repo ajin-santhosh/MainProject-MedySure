@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Input } from "@/components/ui/input";
-
 import {
   Table,
   TableBody,
@@ -33,15 +32,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-} from "@/components/ui/button-group";
 // library import
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
-import ThemeToggle from '@/components/Theme/theme-toggle'
+import ThemeToggle from "@/components/Theme/theme-toggle";
 // logic from here
 
 export const getColumns = (deleteReport) => [
@@ -65,28 +60,28 @@ export const getColumns = (deleteReport) => [
     enableSorting: false,
     enableHiding: false,
   },
-//   {
-//     accessorKey: "fileUrl",
-//     header: ({ table }) => (
-//       <Checkbox
-//         className="hidden"
-//         checked={
-//           table.getIsAllPageRowsSelected() ||
-//           (table.getIsSomePageRowsSelected() && "indeterminate")
-//         }
-//         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-//       />
-//     ),
-//     cell: ({ row }) => (
-//       <Checkbox
-//         className="hidden"
-//         checked={row.getIsSelected()}
-//         onCheckedChange={(value) => row.toggleSelected(!!value)}
-//       />
-//     ),
-//     enableSorting: false,
-//     enableHiding: false,
-//   },
+  //   {
+  //     accessorKey: "fileUrl",
+  //     header: ({ table }) => (
+  //       <Checkbox
+  //         className="hidden"
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       />
+  //     ),
+  //     cell: ({ row }) => (
+  //       <Checkbox
+  //         className="hidden"
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       />
+  //     ),
+  //     enableSorting: false,
+  //     enableHiding: false,
+  //   },
   {
     accessorKey: "title",
     header: ({ column }) => (
@@ -287,6 +282,10 @@ export const getColumns = (deleteReport) => [
                     label: "Confirm",
                     onClick: () => deleteReport(reports._id),
                   },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
+                  },
                 })
               }
             >
@@ -328,27 +327,31 @@ const downloadFile = async (reportId) => {
     document.body.removeChild(link);
 
     window.URL.revokeObjectURL(url); // clean up
-    console.log("Download succeeded");
+    // console.log("Download succeeded");
+    toast.success("Report Downloaded Successfully");
   } catch (err) {
     console.error("Error downloading report", err);
   }
 };
 function PatientViewReports() {
-      const userId = sessionStorage.getItem("user_id");
+  const userId = sessionStorage.getItem("user_id");
 
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
- 
+
   // fetch report
   const repo = async () => {
     try {
-      const res = await axios.get(`${api_url}/report/getReportForPatient/${userId}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${api_url}/report/getReportForPatient/${userId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setData(res.data.data);
     } catch (err) {
       console.error("Error loading appointments", err);
@@ -362,7 +365,8 @@ function PatientViewReports() {
         withCredentials: true,
       });
 
-      console.log("Appointment deleted:", userId);
+      // console.log("Appointment deleted:", userId);
+      toast.success("Report Deleted Successfully");
 
       // re-fetch data
       repo();
@@ -395,37 +399,32 @@ function PatientViewReports() {
     getFilteredRowModel: getFilteredRowModel(),
   });
   return (
-   <>
+    <>
       <div className={`flex-1 flex flex-col`}>
-              {/* Header */}
-              <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-                <div className="flex items-center space-x-2">
-                  {/* Hamburger for mobile */}
-      
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-                    My Reports
-                  </h1>
-                </div>
-      
-                <div className="flex items-center space-x-4">
-                  <ThemeToggle />
-                </div>
-              </header>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
 
-             <div className="p-5 bg-zinc-100 dark:bg-slate-950">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              My Reports
+            </h1>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
+
+        <div className="p-5 bg-zinc-100 dark:bg-slate-950">
           <div className="w-full">
             {/* FILTER BAR */}
             <div className="flex items-end py-4">
               <Input
                 placeholder="Filter by title"
-                value={
-                  table.getColumn("title")?.getFilterValue() ||
-                  ""
-                }
+                value={table.getColumn("title")?.getFilterValue() || ""}
                 onChange={(e) =>
-                  table
-                    .getColumn("title",)
-                    ?.setFilterValue(e.target.value)
+                  table.getColumn("title")?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
@@ -537,10 +536,9 @@ function PatientViewReports() {
             </div>
           </div>
         </div>
-
-              </div>
-   </>
-  )
+      </div>
+    </>
+  );
 }
 
-export default PatientViewReports
+export default PatientViewReports;
