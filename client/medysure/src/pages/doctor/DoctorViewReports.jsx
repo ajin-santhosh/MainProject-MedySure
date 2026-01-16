@@ -41,7 +41,7 @@ import {
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
-import ThemeToggle from '@/components/Theme/theme-toggle'
+import ThemeToggle from "@/components/Theme/theme-toggle";
 // logic from here
 export const getColumns = (deleteReport) => [
   {
@@ -170,10 +170,6 @@ export const getColumns = (deleteReport) => [
 
     cell: ({ row }) => <div>{row.getValue("reportType")}</div>,
   },
-  
-
-  
-  
 
   // ACTIONS COLUMN
   {
@@ -202,6 +198,10 @@ export const getColumns = (deleteReport) => [
                   action: {
                     label: "Confirm",
                     onClick: () => deleteReport(reports._id),
+                  },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
                   },
                 })
               }
@@ -244,27 +244,32 @@ const downloadFile = async (reportId) => {
     document.body.removeChild(link);
 
     window.URL.revokeObjectURL(url); // clean up
-    console.log("Download succeeded");
+    toast.success("Your Report is Downloaded Successfully");
+
+    // console.log("Download succeeded");
   } catch (err) {
     console.error("Error downloading report", err);
   }
 };
 function DoctorViewReports() {
-     const userId = sessionStorage.getItem("user_id");
+  const userId = sessionStorage.getItem("user_id");
 
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
- 
+
   // fetch report
   const repo = async () => {
     try {
-      const res = await axios.get(`${api_url}/report/getReportForDoctor/${userId}`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${api_url}/report/getReportForDoctor/${userId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setData(res.data.data);
     } catch (err) {
       console.error("Error loading appointments", err);
@@ -278,9 +283,11 @@ function DoctorViewReports() {
         withCredentials: true,
       });
 
-      console.log("Appointment deleted:", userId);
+      // console.log("Appointment deleted:", userId);
 
       // re-fetch data
+      toast.success(" Report Deleted Successfully");
+
       repo();
     } catch (error) {
       console.error("Error deleting Appointment", error);
@@ -310,39 +317,34 @@ function DoctorViewReports() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-    
-  return (
-<>
-      <div className={`flex-1 flex flex-col`}>
-              {/* Header */}
-              <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
-                <div className="flex items-center space-x-2">
-                  {/* Hamburger for mobile */}
-      
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
-                    My Reports
-                  </h1>
-                </div>
-      
-                <div className="flex items-center space-x-4">
-                  <ThemeToggle />
-                </div>
-              </header>
 
-             <div className="p-5 bg-zinc-100 dark:bg-slate-950">
+  return (
+    <>
+      <div className={`flex-1 flex flex-col`}>
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 shadow-md  flex justify-between items-center border-b p-3">
+          <div className="flex items-center space-x-2">
+            {/* Hamburger for mobile */}
+
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pl-4">
+              My Reports
+            </h1>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+          </div>
+        </header>
+
+        <div className="p-5 bg-zinc-100 dark:bg-slate-950">
           <div className="w-full">
             {/* FILTER BAR */}
             <div className="flex items-end py-4">
               <Input
                 placeholder="Filter by patient"
-                value={
-                  table.getColumn("patientName")?.getFilterValue() ||
-                  ""
-                }
+                value={table.getColumn("patientName")?.getFilterValue() || ""}
                 onChange={(e) =>
-                  table
-                    .getColumn("patientName",)
-                    ?.setFilterValue(e.target.value)
+                  table.getColumn("patientName")?.setFilterValue(e.target.value)
                 }
                 className="max-w-sm"
               />
@@ -454,9 +456,9 @@ function DoctorViewReports() {
             </div>
           </div>
         </div>
-
-              </div>
-   </>  )
+      </div>
+    </>
+  );
 }
 
-export default DoctorViewReports
+export default DoctorViewReports;

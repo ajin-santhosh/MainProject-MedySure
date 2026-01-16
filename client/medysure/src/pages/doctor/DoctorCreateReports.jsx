@@ -19,17 +19,16 @@ import {
   FieldGroup,
   FieldSet,
 } from "@/components/ui/field";
-import {
- Plus,X
-} from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "sonner";
 
 function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
   const api_url = import.meta.env.VITE_API_URL;
-    const doctorId = sessionStorage.getItem("user_id");
+  const doctorId = sessionStorage.getItem("user_id");
 
   const [type, setType] = useState("");
   const [loading, setLoading] = useState(false);
@@ -72,9 +71,7 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
   const resetForm = () => {
     setType("");
     setFormData({ title: "", prescription: "" });
-    setTableData([
-      { testName: "", result: "", unit: "", reference: "" },
-    ]);
+    setTableData([{ testName: "", result: "", unit: "", reference: "" }]);
   };
 
   // Submit handler
@@ -86,11 +83,7 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
 
       if (type === "lab report") {
         const isValid = tableData.every(
-          (row) =>
-            row.testName &&
-            row.result &&
-            row.unit &&
-            row.reference
+          (row) => row.testName && row.result && row.unit && row.reference
         );
 
         if (!formData.title || !isValid) {
@@ -108,6 +101,7 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
           },
           { withCredentials: true }
         );
+        toast.success("Lab Report Sended Successfully");
       }
 
       if (type === "prescription") {
@@ -120,12 +114,13 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
           `${api_url}/report/createPrescription`,
           {
             title: formData.title,
-            prescription:formData.prescription,
+            prescription: formData.prescription,
             patientId,
             doctorId,
           },
           { withCredentials: true }
         );
+        toast.success("Prescription Sended Successfully");
       }
 
       setOpen(false);
@@ -160,78 +155,76 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
                   }
                 />
 
-               {/* LAB REPORT */}
-{type === "lab report" && (
-  <div className="space-y-3 max-h-96 overflow-y-auto">
-    {tableData.map((row, index) => (
-      <div
-        key={index}
-        className="
+                {/* LAB REPORT */}
+                {type === "lab report" && (
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {tableData.map((row, index) => (
+                      <div
+                        key={index}
+                        className="
           grid grid-cols-1 gap-2 p-3 border rounded
           sm:grid-cols-2 sm:gap-3
           lg:grid-cols-[2fr_1fr_1fr_2fr_auto] lg:gap-3
           items-center
         "
-      >
-        <input
-          name="testName"
-          placeholder="Test Name"
-          value={row.testName}
-          onChange={(e) => handleChange(index, e)}
-          className="border rounded px-3 py-2 w-full"
-        />
-        <input
-          name="result"
-          placeholder="Result"
-          value={row.result}
-          onChange={(e) => handleChange(index, e)}
-          className="border rounded px-3 py-2 w-full"
-        />
-        <input
-          name="unit"
-          placeholder="Unit"
-          value={row.unit}
-          onChange={(e) => handleChange(index, e)}
-          className="border rounded px-3 py-2 w-full"
-        />
-        <input
-          name="reference"
-          placeholder="Reference Range"
-          value={row.reference}
-          onChange={(e) => handleChange(index, e)}
-          className="border rounded px-3 py-2 w-full"
-        />
-        <button
-          type="button"
-          onClick={() => removeRow(index)}
-          disabled={tableData.length === 1}
-          className="text-red-500 hover:text-red-700 disabled:opacity-40 disabled:cursor-not-allowed justify-self-end"
-        >
-          <X />
-        </button>
-      </div>
-    ))}
+                      >
+                        <input
+                          name="testName"
+                          placeholder="Test Name"
+                          value={row.testName}
+                          onChange={(e) => handleChange(index, e)}
+                          className="border rounded px-3 py-2 w-full"
+                        />
+                        <input
+                          name="result"
+                          placeholder="Result"
+                          value={row.result}
+                          onChange={(e) => handleChange(index, e)}
+                          className="border rounded px-3 py-2 w-full"
+                        />
+                        <input
+                          name="unit"
+                          placeholder="Unit"
+                          value={row.unit}
+                          onChange={(e) => handleChange(index, e)}
+                          className="border rounded px-3 py-2 w-full"
+                        />
+                        <input
+                          name="reference"
+                          placeholder="Reference Range"
+                          value={row.reference}
+                          onChange={(e) => handleChange(index, e)}
+                          className="border rounded px-3 py-2 w-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeRow(index)}
+                          disabled={tableData.length === 1}
+                          className="text-red-500 hover:text-red-700 disabled:opacity-40 disabled:cursor-not-allowed justify-self-end"
+                        >
+                          <X />
+                        </button>
+                      </div>
+                    ))}
 
-    <Button type="button" onClick={addRow} className="mt-2">
-      Add Test <Plus />
-    </Button>
-  </div>
-)}
+                    <Button type="button" onClick={addRow} className="mt-2">
+                      Add Test <Plus />
+                    </Button>
+                  </div>
+                )}
 
-
-{/* PRESCRIPTION */}
-{type === "prescription" && (
-  <Textarea
-    placeholder="Write prescription details..."
-    rows={5}
-    value={formData.prescription}
-    onChange={(e) =>
-      setFormData({ ...formData, prescription: e.target.value })
-    }
-    className="w-full"
-  />
-)}
-
+                {/* PRESCRIPTION */}
+                {type === "prescription" && (
+                  <Textarea
+                    placeholder="Write prescription details..."
+                    rows={5}
+                    value={formData.prescription}
+                    onChange={(e) =>
+                      setFormData({ ...formData, prescription: e.target.value })
+                    }
+                    className="w-full"
+                  />
+                )}
 
                 {/* TYPE SELECT */}
                 <div>
@@ -241,12 +234,8 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
                       <SelectValue placeholder="Select report Type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="prescription">
-                        Prescription
-                      </SelectItem>
-                      <SelectItem value="lab report">
-                        Lab report
-                      </SelectItem>
+                      <SelectItem value="prescription">Prescription</SelectItem>
+                      <SelectItem value="lab report">Lab report</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

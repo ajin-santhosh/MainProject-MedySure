@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +17,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import axios from "axios";
-function DoctorAddNotes({ open, setOpen, appointmentId,existingNotes,onUpdate }) {
-    const api_url = import.meta.env.VITE_API_URL;
-    const [formData, setFormData] = useState({
+function DoctorAddNotes({
+  open,
+  setOpen,
+  appointmentId,
+  existingNotes,
+  onUpdate,
+}) {
+  const api_url = import.meta.env.VITE_API_URL;
+  const [formData, setFormData] = useState({
     note: "",
   });
   const [loading, setLoading] = useState(false);
- useEffect(() => {
+  useEffect(() => {
     if (open) {
       setFormData({
         note: existingNotes || "", // add OR update
@@ -41,13 +48,16 @@ function DoctorAddNotes({ open, setOpen, appointmentId,existingNotes,onUpdate })
 
       console.log("Submitting:", payload);
 
-      await axios.patch(`${api_url}/appointment/doctorAddNotes/${appointmentId}`, payload,
+      await axios.patch(
+        `${api_url}/appointment/doctorAddNotes/${appointmentId}`,
+        payload,
         { withCredentials: true }
       );
-       console.log("succes")
+      //  console.log("succes")
       setOpen(false); // close modal after success
       setFormData({ note: "" });
-      onUpdate()
+      toast.success(" Note Updated Successfully");
+      onUpdate();
     } catch (error) {
       console.error(error);
       alert("Failed to submit notes");
@@ -56,7 +66,7 @@ function DoctorAddNotes({ open, setOpen, appointmentId,existingNotes,onUpdate })
     }
   };
   return (
-<Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Notes for Patient</DialogTitle>
@@ -76,10 +86,9 @@ function DoctorAddNotes({ open, setOpen, appointmentId,existingNotes,onUpdate })
                   }
                 />
                 <FieldDescription>
-                 Share your quick guide to help patient
+                  Share your quick guide to help patient
                 </FieldDescription>
               </Field>
-
             </FieldGroup>
           </FieldSet>
 
@@ -90,13 +99,14 @@ function DoctorAddNotes({ open, setOpen, appointmentId,existingNotes,onUpdate })
               </Button>
             </DialogClose>
 
-            <Button type="submit" disabled={loading }>
+            <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>  )
+    </Dialog>
+  );
 }
 
-export default DoctorAddNotes
+export default DoctorAddNotes;

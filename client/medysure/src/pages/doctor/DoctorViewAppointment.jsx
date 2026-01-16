@@ -1,4 +1,6 @@
 import React from "react";
+import { toast } from "sonner";
+
 import {
   Field,
   FieldDescription,
@@ -23,7 +25,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-
 
 import { MoreHorizontal, ChevronDownIcon } from "lucide-react";
 
@@ -171,7 +172,7 @@ function DoctorViewAppointment() {
 
                       <th className="p-2">Booked Date</th>
                       <th className="p-2">Scheduled Date</th>
-                                           <th className="p-2">Time</th>
+                      <th className="p-2">Time</th>
 
                       <th className="p-2">Notes</th>
                       <th className="p-2">Description</th>
@@ -208,7 +209,7 @@ function DoctorViewAppointment() {
                         <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.appointmentDate}
                         </td>
-                         <td className="p-3 text-gray-600 dark:text-gray-300">
+                        <td className="p-3 text-gray-600 dark:text-gray-300">
                           {d.appointmentTime}
                         </td>
 

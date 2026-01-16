@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 ("use client");
 import { Button } from "@/components/ui/button";
-
 import { Mail, User, Shield } from "lucide-react";
 import ThemeToggle from "@/components/Theme/theme-toggle";
 import DoctorUpdateProfile from "./DoctorUpdateProfile";

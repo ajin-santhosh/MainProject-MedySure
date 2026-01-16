@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +47,7 @@ function DoctorUpdateProfile({ isOpen, onClose, initialData, onUpdate }) {
     let payload = {
       email: formData.email,
       password: formData.password,
-     
+
       firstName: formData.firstName,
       lastName: formData.lastName,
       gender: formData.gender,
@@ -73,9 +74,8 @@ function DoctorUpdateProfile({ isOpen, onClose, initialData, onUpdate }) {
       );
       console.log("Server response:", res.data.data);
       onUpdate?.();
-      alert("doctor update completed successfully");
-            onClose()
-
+      toast.success("Profile Updated Successfully");
+      onClose();
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)
@@ -106,34 +106,31 @@ function DoctorUpdateProfile({ isOpen, onClose, initialData, onUpdate }) {
             <div className="overflow-y-auto px-6 py-6">
               <FieldGroup>
                 <CardTitle className="mb-4">Doctor Details</CardTitle>
-                  <Field>
-                    <FieldLabel>E Mail</FieldLabel>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@email.com"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />{" "}
-                  </Field>
+                <Field>
+                  <FieldLabel>E Mail</FieldLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@email.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />{" "}
+                </Field>
 
-                  
-<Field>
-                    <FieldLabel>Password</FieldLabel>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
-                  </Field>
-                  {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.password}
-                    </p>
-                  )}
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                </Field>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
                 {/* Name */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Field>

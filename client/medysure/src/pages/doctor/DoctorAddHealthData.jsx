@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -58,8 +59,12 @@ function DoctorAddHealthData({
         };
         // console.log("Update logic here, healthtable ID:", healthtable);
         // If you implement update API later:
-        await axios.put(`${api_url}/health/updateHealthTable/${healthtable}`, payload, { withCredentials: true });
-        alert("Data Updated succeccfully")
+        await axios.put(
+          `${api_url}/health/updateHealthTable/${healthtable}`,
+          payload,
+          { withCredentials: true }
+        );
+        toast.success("Health Data Updated Successfully");
       } else {
         // ADD branch
         const payload = {
@@ -76,10 +81,8 @@ function DoctorAddHealthData({
           payload,
           { withCredentials: true }
         );
-                      alert("Data Added succeccfully")
-
+        toast.success("Health Data Added Successfully");
       }
-
 
       onUpdate?.(); // refresh parent data
       setOpen(false); // close modal

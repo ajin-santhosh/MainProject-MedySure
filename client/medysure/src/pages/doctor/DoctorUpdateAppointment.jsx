@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +27,7 @@ function DoctorUpdateAppointment({
   existingStatus,
   onUpdate,
 }) {
-    const api_url = import.meta.env.VITE_API_URL;
+  const api_url = import.meta.env.VITE_API_URL;
 
   const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
@@ -67,7 +68,7 @@ function DoctorUpdateAppointment({
         },
         { withCredentials: true }
       );
-
+      toast.success("Appointment Updated Successfully");
       onUpdate?.();
       setOpen(false);
     } catch (error) {
@@ -78,7 +79,7 @@ function DoctorUpdateAppointment({
     }
   };
   return (
-<Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Update Appointment</DialogTitle>
@@ -118,8 +119,7 @@ function DoctorUpdateAppointment({
                 <SelectItem value="scheduled">Scheduled</SelectItem>
                 <SelectItem value="rescheduled">Rescheduled</SelectItem>
                 <SelectItem value="cancelled"> Cancelled</SelectItem>
-                                <SelectItem value="completed"> Completed</SelectItem>
-
+                <SelectItem value="completed"> Completed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -138,7 +138,7 @@ function DoctorUpdateAppointment({
         </form>
       </DialogContent>
     </Dialog>
-    )
+  );
 }
 
-export default DoctorUpdateAppointment
+export default DoctorUpdateAppointment;
