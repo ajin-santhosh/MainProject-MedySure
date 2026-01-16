@@ -301,6 +301,10 @@ export const getColumns = (deletePayment) => [
                     label: "Confirm",
                     onClick: () => deletePayment(reports._id),
                   },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
+                  },
                 })
               }
             >
@@ -337,8 +341,9 @@ function AdminManagePayments() {
       await axios.delete(`${api_url}/payment/deletePayment/${_id}`, {
         withCredentials: true,
       });
+      toast.success("Payment Deleted Successfully");
 
-      console.log("Payment deleted:");
+      // console.log("Payment deleted:");
 
       // re-fetch data
       payments();
@@ -352,6 +357,7 @@ function AdminManagePayments() {
         responseType: "blob",
         withCredentials: true,
       });
+      toast.success("Payment Data Fetched Successfully");
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
 

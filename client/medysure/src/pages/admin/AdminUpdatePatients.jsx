@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +24,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-function AdminUpdatePatients({ initialData }) {
+function AdminUpdatePatients({ initialData, onUpdate }) {
   const api_url = import.meta.env.VITE_API_URL;
   //   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -118,8 +119,10 @@ function AdminUpdatePatients({ initialData }) {
         }
       );
       console.log("Server response:", res.data.data);
-      alert("Patient update completed successfully");
+      toast.success("Patient Updated Successfully");
+      // alert("Patient update completed successfully");
       // navigate("/admin/doctors");
+      onUpdate?.();
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)

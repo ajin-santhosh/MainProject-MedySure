@@ -50,7 +50,7 @@ import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
 
 // logic from here
-export const getColumns = (deletePatient) => [
+export const getColumns = (deletePatient, pat) => [
   {
     accessorKey: "userId",
     header: ({ table }) => (
@@ -463,7 +463,7 @@ export const getColumns = (deletePatient) => [
                   Update
                 </DropdownMenuItem>
               </SheetTrigger>
-              <AdminUpdatePatients initialData={patient} />
+              <AdminUpdatePatients initialData={patient} onUpdate={pat} />
             </Sheet>
 
             <DropdownMenuItem
@@ -474,6 +474,10 @@ export const getColumns = (deletePatient) => [
                   action: {
                     label: "Confirm",
                     onClick: () => deletePatient(patient.userId),
+                  },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
                   },
                 })
               }
@@ -520,8 +524,8 @@ function AdminManagePatients() {
       await axios.delete(`${api_url}/patient/deletePatient/${userId}`, {
         withCredentials: true,
       });
-
-      console.log("patient deleted:", userId);
+      toast.success("Patient Deleted Successfully");
+      // console.log("patient deleted:", userId);
 
       // re-fetch data
       pat();
@@ -535,8 +539,8 @@ function AdminManagePatients() {
         responseType: "blob",
         withCredentials: true,
       });
+      toast.success("Patient Data Fetched Successfully");
 
-      // console.log("Admin data exported:");
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
       const link = document.createElement("a");
@@ -557,7 +561,7 @@ function AdminManagePatients() {
 
   const table = useReactTable({
     data,
-    columns: getColumns(deletePatient),
+    columns: getColumns(deletePatient, pat),
     state: {
       sorting,
       columnFilters,

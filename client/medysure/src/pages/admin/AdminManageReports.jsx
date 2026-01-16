@@ -290,6 +290,10 @@ export const getColumns = (deleteReport) => [
                     label: "Confirm",
                     onClick: () => deleteReport(reports._id),
                   },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
+                  },
                 })
               }
             >
@@ -316,6 +320,7 @@ const downloadFile = async (reportId) => {
       responseType: "blob", // important!
       withCredentials: true,
     });
+    toast.success("Report Downloaded Successfully")
 
     // Create a URL for the blob
     const url = window.URL.createObjectURL(
@@ -364,8 +369,9 @@ function AdminManageReports() {
       await axios.delete(`${api_url}/appointment/deleteAppointment/${_id}`, {
         withCredentials: true,
       });
+      toast.success("Report Deleted Successfully");
 
-      console.log("Appointment deleted:", userId);
+      // console.log("Appointment deleted:", userId);
 
       // re-fetch data
       repo();
@@ -380,8 +386,8 @@ function AdminManageReports() {
         responseType: "blob",
         withCredentials: true,
       });
+      toast.success("Report Data Fetched Successfully");
 
-      // console.log("Admin data exported:");
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
       const link = document.createElement("a");

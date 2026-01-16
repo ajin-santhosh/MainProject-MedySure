@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import ThemeToggle from "@/components/Theme/theme-toggle";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
@@ -177,14 +176,14 @@ function SidebarMenu({ collapsed, openMenus, toggleMenu }) {
         </Link>
       </div>
 
-      {/* Settings */}
+      {/* Settings
       <Button
         variant="ghost"
         className="justify-start hover:bg-gray-100 dark:hover:bg-gray-800"
       >
         <Settings className="h-4 w-4" />
         {!collapsed && <span className="ml-2">Settings</span>}
-      </Button>
+      </Button> */}
     </nav>
   );
 }

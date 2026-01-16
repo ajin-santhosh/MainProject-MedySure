@@ -363,6 +363,10 @@ export const getColumns = (deleteAppointment) => [
                     label: "Confirm",
                     onClick: () => deleteAppointment(appointment._id),
                   },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
+                  },
                 })
               }
             >
@@ -407,8 +411,9 @@ function AdminAppointment() {
       await axios.delete(`${api_url}/appointment/deleteAppointment/${_id}`, {
         withCredentials: true,
       });
+      toast.success("Appointment Deleted Successfully");
 
-      console.log("Appointment deleted:", userId);
+      // console.log("Appointment deleted:", userId);
 
       // re-fetch data
       apm();
@@ -425,8 +430,8 @@ function AdminAppointment() {
           withCredentials: true,
         }
       );
+      toast.success("Appointment Data Fetched Successfully");
 
-      // console.log("Admin data exported:");
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
       const link = document.createElement("a");

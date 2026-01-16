@@ -52,7 +52,7 @@ import axios from "axios";
 const api_url = import.meta.env.VITE_API_URL;
 
 // logic from here
-export const getColumns = (deleteDoctor) => [
+export const getColumns = (deleteDoctor, doc) => [
   {
     accessorKey: "userId",
     header: ({ table }) => (
@@ -342,7 +342,11 @@ export const getColumns = (deleteDoctor) => [
                   Update
                 </DropdownMenuItem>
               </SheetTrigger>
-              <AdminAddDoctorSheet mode="update" initialData={doctor} />
+              <AdminAddDoctorSheet
+                mode="update"
+                initialData={doctor}
+                onUpdate={doc}
+              />
             </Sheet>
 
             <DropdownMenuItem
@@ -353,6 +357,10 @@ export const getColumns = (deleteDoctor) => [
                   action: {
                     label: "Confirm",
                     onClick: () => deleteDoctor(doctor.userId),
+                  },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
                   },
                 })
               }
@@ -399,8 +407,9 @@ function AdminManageDoctors() {
       await axios.delete(`${api_url}/doctor/deleteDoctor/${userId}`, {
         withCredentials: true,
       });
+      toast.success("Doctor deleted successfully");
 
-      console.log("Doctor deleted:", userId);
+      // console.log("Doctor deleted:", userId);
 
       // re-fetch data
       doc();
@@ -415,6 +424,7 @@ function AdminManageDoctors() {
         responseType: "blob",
         withCredentials: true,
       });
+      toast.success("Doctor Data Fetched successfully");
 
       // console.log("doctor data exported:");
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -438,7 +448,7 @@ function AdminManageDoctors() {
 
   const table = useReactTable({
     data,
-    columns: getColumns(deleteDoctor),
+    columns: getColumns(deleteDoctor, doc),
     state: {
       sorting,
       columnFilters,
@@ -489,7 +499,7 @@ function AdminManageDoctors() {
                   <SheetTrigger asChild>
                     <Button variant="outline">Add Doctor</Button>
                   </SheetTrigger>
-                  <AdminAddDoctorSheet />
+                  <AdminAddDoctorSheet onUpdate={doc} />
                 </Sheet>
                 <ButtonGroupSeparator />
                 <Button size="icon" variant="outline">

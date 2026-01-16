@@ -286,6 +286,10 @@ export const getColumns = (deleteFeedback) => [
                     label: "Confirm",
                     onClick: () => deleteFeedback(rataings._id),
                   },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
+                  },
                 })
               }
             >
@@ -323,7 +327,7 @@ function AdminManageFeedback() {
       await axios.delete(`${api_url}/feedback/deleteFeedback/${_id}`, {
         withCredentials: true,
       });
-
+      toast.success("Feedback Deleted Successfully");
       //   console.log("feedback deleted:", _id);
 
       // re-fetch data
@@ -338,6 +342,7 @@ function AdminManageFeedback() {
         responseType: "blob",
         withCredentials: true,
       });
+      toast.success("Feedback Data Fetched Successfully");
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
 

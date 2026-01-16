@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +17,7 @@ import { Toggle } from "@/components/ui/toggle";
 import {} from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
-function AdminAddAdminSheet({ mode = "add", initialData }) {
+function AdminAddAdminSheet({ mode = "add", initialData, onUpdate }) {
   const api_url = import.meta.env.VITE_API_URL;
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -29,11 +30,11 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
   const handleToggle = (e) => {
-    const { id, type, checked,value} = e.target;
+    const { id, type, checked, value } = e.target;
     setFormData((prev) => ({
-    ...prev,
-    [id]: type === "checkbox" ? checked : value,
-  }));
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,16 +54,17 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
       const payload = {
         email: formData.email,
         password: formData.password,
-        active:formData.active
+        active: formData.active,
       };
-       console.log(payload);
+      console.log(payload);
 
       try {
         const res = await axios.post(`${api_url}/admin/createAdmin`, payload, {
           withCredentials: true,
         });
         console.log("Server response:", res.data.data);
-        alert("registration completed successfully");
+        toast.success("Admin Added successfully");
+        onUpdate?.();
       } catch (error) {
         if (error.response) {
           // Backend returned error (like 401)
@@ -82,15 +84,13 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
       let payload = {
         email: formData.email,
         password: formData.password,
-        active:formData.active
-
+        active: formData.active,
       };
       if (!formData.password) {
         // check password
         payload = {
           email: formData.email,
-          active:formData.active
-
+          active: formData.active,
         };
       }
       //   console.log(payload);
@@ -104,7 +104,10 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
           }
         );
         console.log("Server response:", res.data.data);
-        alert("Update completed successfully");
+        toast.success("Admin Updated Successfully");
+        onUpdate?.();
+
+        // alert("Update completed successfully");
         // navigate("/doctors");
       } catch (error) {
         if (error.response) {
@@ -164,10 +167,13 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
             <div // toggle
               className="grid grid-cols-2"
             >
-              <div >
+              <div>
                 <h2 className="text-sm font-semibold">
-                  User Status: <span className="text-sm font-semibold text-blue-500" > {formData.active ? "Active" : "Inactive"}</span>
-                 
+                  User Status:{" "}
+                  <span className="text-sm font-semibold text-blue-500">
+                    {" "}
+                    {formData.active ? "Active" : "Inactive"}
+                  </span>
                 </h2>
               </div>
 
@@ -175,8 +181,8 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
               <div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
-                     type="checkbox"
-                     id="active"
+                    type="checkbox"
+                    id="active"
                     checked={formData.active}
                     onChange={handleToggle}
                     className="sr-only peer"
@@ -201,7 +207,7 @@ function AdminAddAdminSheet({ mode = "add", initialData }) {
                   ></div>
                 </label>
               </div>
-            </div>  
+            </div>
 
             <div className="grid gap-3">
               {errors.err && (

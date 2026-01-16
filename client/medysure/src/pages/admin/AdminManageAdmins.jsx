@@ -49,7 +49,7 @@ const api_url = import.meta.env.VITE_API_URL;
 import ThemeToggle from "@/components/Theme/theme-toggle";
 import AdminAddAdminSheet from "./AdminAddAdminSheet";
 //logic --
-export const getColumns = (deleteAdmin) => [
+export const getColumns = (deleteAdmin, adm) => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -170,7 +170,11 @@ export const getColumns = (deleteAdmin) => [
                   Update
                 </DropdownMenuItem>
               </SheetTrigger>
-              <AdminAddAdminSheet mode="update" initialData={admin} />
+              <AdminAddAdminSheet
+                mode="update"
+                initialData={admin}
+                onUpdate={adm}
+              />
             </Sheet>
 
             <DropdownMenuItem
@@ -181,6 +185,10 @@ export const getColumns = (deleteAdmin) => [
                   action: {
                     label: "Confirm",
                     onClick: () => deleteAdmin(admin._id),
+                  },
+                  cancel: {
+                    label: "Cancel",
+                    // onClick: () => console.log("Cancelled"),
                   },
                 })
               }
@@ -226,8 +234,8 @@ function AdminManageAdmins() {
       await axios.delete(`${api_url}/admin/deleteAdmin/${_id}`, {
         withCredentials: true,
       });
-
-      console.log("Admin deleted:", _id);
+      toast.success("Admin deleted successfully");
+      // console.log("Admin deleted:", _id);
 
       // re-fetch data
       adm();
@@ -242,7 +250,8 @@ function AdminManageAdmins() {
         withCredentials: true,
       });
 
-      console.log("Admin data exported:");
+      // console.log("Admin data exported:");
+      toast.success("Admin Data Fetched SuccessFully");
       const url = window.URL.createObjectURL(new Blob([response.data]));
 
       const link = document.createElement("a");
@@ -263,7 +272,7 @@ function AdminManageAdmins() {
 
   const table = useReactTable({
     data,
-    columns: getColumns(deleteAdmin),
+    columns: getColumns(deleteAdmin, adm),
     state: {
       sorting,
       columnFilters,
@@ -316,7 +325,7 @@ function AdminManageAdmins() {
                     <SheetTrigger asChild>
                       <Button variant="outline">Add Admin</Button>
                     </SheetTrigger>
-                    <AdminAddAdminSheet />
+                    <AdminAddAdminSheet onUpdate={adm} />
                   </Sheet>
                   <ButtonGroupSeparator />
                   <Button size="icon" variant="outline">

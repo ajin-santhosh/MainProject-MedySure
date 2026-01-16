@@ -22,8 +22,9 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-export function AdminAddDoctorSheet({ mode = "add", initialData }) {
+export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
   const api_url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -94,8 +95,10 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
           }
         );
         console.log("Server response:", res.data.data);
-        alert("registration completed successfully");
+         toast.success("Doctor Created Successfully");
+        // alert("registration completed successfully");
         // navigate("/doctors");
+        onUpdate?.()
       } catch (error) {
         if (error.response) {
           // Backend returned error (like 401)
@@ -155,8 +158,11 @@ export function AdminAddDoctorSheet({ mode = "add", initialData }) {
             withCredentials: true,
           }
         );
-        console.log("Server response:", res.data.data);
-        alert("doctor update completed successfully");
+        // console.log("Server response:", res.data.data);
+          toast.success("Doctor Updated Successfully");
+        onUpdate?.()
+
+        // alert("doctor update completed successfully");
         // navigate("/admin/doctors");
       } catch (error) {
         if (error.response) {
