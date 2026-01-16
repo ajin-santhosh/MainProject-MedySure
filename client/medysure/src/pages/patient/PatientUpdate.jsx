@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -93,7 +94,8 @@ function PatientUpdate({ isOpen, onClose,initialData,onUpdate}) {
       );
       console.log("Server response:", res.data.data);
 onUpdate?.();
-      alert("Patient update completed successfully");
+      // alert("Patient update completed successfully");
+      toast.success("Profile Updated SuccessFully")
       onClose()
     } catch (error) {
       if (error.response) {

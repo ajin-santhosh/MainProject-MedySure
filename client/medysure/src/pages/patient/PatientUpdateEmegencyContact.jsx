@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
@@ -6,7 +7,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 function PatientUpdateEmegencyContact({ isOpen, onClose }) {
-      if (!isOpen) return null;
+  if (!isOpen) return null;
 
   const api_url = import.meta.env.VITE_API_URL;
   const userId = sessionStorage.getItem("user_id");
@@ -42,9 +43,9 @@ function PatientUpdateEmegencyContact({ isOpen, onClose }) {
         formData,
         { withCredentials: true }
       );
-      alert("Updated Emergancy Contact")
+      // alert("Updated Emergancy Contact")
+      toast.success("Emergnecy Contact Updated Successfully");
       onClose();
-
     } catch (err) {
       console.error("Error updating emergency contact", err);
     }
@@ -72,9 +73,7 @@ function PatientUpdateEmegencyContact({ isOpen, onClose }) {
         {/* 🔹 Body */}
         <div className="overflow-y-auto px-6 py-6">
           <FieldGroup>
-            <CardTitle className="mb-4">
-              Emergency Contact Details
-            </CardTitle>
+            <CardTitle className="mb-4">Emergency Contact Details</CardTitle>
 
             <Field>
               <FieldLabel>Name</FieldLabel>
@@ -119,7 +118,10 @@ function PatientUpdateEmegencyContact({ isOpen, onClose }) {
           <Button variant="outline" type="button" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             Update
           </Button>
         </div>
