@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { FieldDescription } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
