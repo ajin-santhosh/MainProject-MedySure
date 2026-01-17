@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "sonner";
 import {
   Field,
   FieldDescription,
@@ -16,53 +17,52 @@ import axios from "axios";
 
 function LoginPage() {
   const api_url = import.meta.env.VITE_API_URL;
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [warning, setWarning] = useState('')
+  const [warning, setWarning] = useState("");
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
   const handleSubtmit = async (e) => {
     e.preventDefault();
     // console.log(formData);
-    setWarning('')
+    setWarning("");
     try {
-        
-
       const login = await axios.post(`${api_url}/userLogin`, formData, {
         withCredentials: true,
       });
-      console.log(
-        "Login successful:",
-        login.data.message,
-        login.data.data.id,
-        login.data.data.role
-      );
-      sessionStorage.setItem("user_id", login.data.data.id)
+      // console.log(
+      //   "Login successful:",
+      //   login.data.message,
+      //   login.data.data.id,
+      //   login.data.data.role
+      // );
+      toast.success(`Welcome ${login.data.data.email} `);
+      sessionStorage.setItem("user_id", login.data.data.id);
 
-      if(login.data.data.role == 'admin'){
-        navigate('/admin')
-      }
-      else if (login.data.data.role == 'doctor'){
-        navigate('/doctor')
-      }
-      else if (login.data.data.role == 'patient'){
-        navigate('/patient')
-      }
-      else{
-        console.log("error in role")
+      if (login.data.data.role == "admin") {
+        navigate("/admin");
+      } else if (login.data.data.role == "doctor") {
+        navigate("/doctor");
+      } else if (login.data.data.role == "patient") {
+        navigate("/patient");
+      } else {
+        console.log("error in role");
       }
     } catch (error) {
       if (error.response) {
         // Backend returned error (like 401)
         setWarning(error.response.data.message || "Login failed");
+        toast.warning("Oops..! Login failed");
       } else if (error.request) {
         setWarning("Server not responding. Try again later.");
+        toast.warning("Server not responding. Try again later");
       } else {
         setWarning("Something went wrong: " + error.message);
+        toast.warning("Something went wrong:");
       }
-  }
-};
+    }
+  };
 
   return (
     <>
@@ -123,10 +123,7 @@ function LoginPage() {
                   </Field>
                 </FieldGroup>
                 <Button type="submit">Login</Button>{" "}
- {warning && (
-        <p className="text-red-800 font-sm">{warning}</p>
-      )}
-
+                {warning && <p className="text-red-800 font-sm">{warning}</p>}
                 <p className="text-center text-gray-600 mt-4">
                   Don’t have an account?{" "}
                   <Link
@@ -138,6 +135,31 @@ function LoginPage() {
                 </p>
               </FieldSet>
             </form>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-gray-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <span>© 2026 MedySure. All rights reserved.</span>
+          <div className="flex gap-4">
+            <a
+              href="#"
+              className="hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              Twitter
+            </a>
+            <a
+              href="#"
+              className="hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              LinkedIn
+            </a>
+            <a
+              href="#"
+              className="hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              GitHub
+            </a>
           </div>
         </div>
       </div>

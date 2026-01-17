@@ -248,6 +248,7 @@ export default function PatientNavBar({ children }) {
   };
 
   return (
+    <>
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white">
       {/* -------- DESKTOP -------- */}
       <aside
@@ -373,6 +374,10 @@ export default function PatientNavBar({ children }) {
 
         <Outlet />
       </main>
+      
     </div>
+     
+    </>
+    
   );
 }

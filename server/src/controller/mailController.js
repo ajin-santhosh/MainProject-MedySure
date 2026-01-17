@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const speakeasy = require("speakeasy");
 
-const patientSignInMailVerfication = async (userId) => {
+const patientSignInMailVerfication = async (userId,userEmail) => {
   if (!userId) {
     return false;
   }
@@ -25,7 +25,7 @@ const patientSignInMailVerfication = async (userId) => {
   try {
     const info = await transporter.sendMail({
       from: process.env.email,
-      to: "ajindemo555@gmail.com",
+      to: userEmail,
       subject: "MedySure OTP for verification",
       html: `
     <div style="font-family: Arial, sans-serif; padding: 10px;">
