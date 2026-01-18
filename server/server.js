@@ -16,14 +16,15 @@ const healthTableRoutes = require("./src/routes/healthTableRoutes")
 const paymentRoutes = require("./src/routes/paymentRoutes")
 const app = express();
 const port = process.env.PORT || 5000;
+
 const allowedOrigins = [
-  "https://medy-sure.vercel.app",
-  "http://localhost:5173",
+  "http://localhost:5173",           // local dev
+  "https://medy-sure.vercel.app"    // production frontend
 ];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-
+  
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
@@ -35,15 +36,17 @@ app.use((req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, Content-Type, Accept, Authorization"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    return res.sendStatus(200);  // Respond to preflight
   }
 
   next();
 });
+
+
 /* ========================================================= */
 
 app.use(express.json());
