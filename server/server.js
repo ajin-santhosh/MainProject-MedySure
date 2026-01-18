@@ -14,9 +14,10 @@ const reportRoutes = require("./src/routes/reportRoutes")
 const dashBoardRoutes = require("./src/routes/dashBoardRoutes")
 const healthTableRoutes = require("./src/routes/healthTableRoutes")
 const paymentRoutes = require("./src/routes/paymentRoutes")
-const app = express()
-const port = process.env.Port
-connectDB()
+const app = express();
+const port = process.env.PORT || 5000;
+
+connectDB();
 app.use(cors({
   origin: ["https://medy-sure.vercel.app/", "http://localhost:5173/"],  // correct spelling 
   credentials: true
