@@ -18,7 +18,7 @@ const app = express()
 const port = process.env.Port
 connectDB()
 app.use(cors({
-  origin: ["https://medysure-api-42cx.onrender.com", "http://localhost:5173/"],  // correct spelling 
+  origin: ["https://medy-sure.vercel.app/", "http://localhost:5173/"],  // correct spelling 
   credentials: true
 }));app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
