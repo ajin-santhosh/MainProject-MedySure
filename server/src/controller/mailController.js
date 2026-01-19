@@ -1,15 +1,6 @@
-const nodemailer = require("nodemailer");
 const speakeasy = require("speakeasy");
+const axios = require("axios");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER,
-    pass: process.env.BREVO_PASS,
-  },
-});
 
 const patientSignInMailVerfication = async (userEmail) => {
   if (!userEmail) {
@@ -28,23 +19,37 @@ const patientSignInMailVerfication = async (userEmail) => {
   console.log("BEFORE SENDMAIL");
 
   try {
-    const info = await transporter.sendMail({
-      from: `"MedySure" <medysurepvtlmtd@gmail.com>`,
-      to: userEmail,
-      subject: "MedySure OTP for verification",
-      html: `
-    <div style="font-family: Arial, sans-serif; padding: 10px;">
+   const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "MedySure",
+          email: `medysurepvtlmtd@gmail.com`, // VERIFIED SENDER
+        },
+        to: [
+          { email: userEmail }
+        ],
+        subject: "MedySure OTP Verification",
+        htmlContent: `
+         <div style="font-family: Arial, sans-serif; padding: 10px;">
       <p>Your OTP for verification is:</p>
-
       <h1 style="color: #333; letter-spacing: 3px;">${token}</h1>
-
       <p>This OTP is valid for <strong>5 minutes</strong>.</p>
-
       <p style="margin-top: 20px;">Thanks,<br>MedySure Team</p>
-    </div>
-  `,
-    });
-    console.log("AFTER SENDMAIL");
+      </div>
+
+        `,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
+
+    console.log("MAIL SENT ✅", response.data);
     return true;
   } catch (error) {
     console.error("MAIL FAILED ", error);
