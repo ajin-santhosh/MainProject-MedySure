@@ -131,7 +131,9 @@ const createPatient = async (req, res) => {
     const userId = newUser._id;
     const mailsender = await patientSignInMailVerfication(userId,email); // mail sender
     if (mailsender !== true) {
+       console.log("mail failed")
       return res.status(500).json({ success:false, message: "error in sending mail" });
+     
     }
     return res.status(201).json({
       success:true,

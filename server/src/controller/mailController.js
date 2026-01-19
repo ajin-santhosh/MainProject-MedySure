@@ -22,6 +22,7 @@ const patientSignInMailVerfication = async (userId,userEmail) => {
         step: 300,      // 5 minutes validity
         digits: 6
     });
+    console.log("BEFORE SENDMAIL");
 
   try {
     const info = await transporter.sendMail({
@@ -40,6 +41,7 @@ const patientSignInMailVerfication = async (userId,userEmail) => {
     </div>
   `,
     });
+    console.log("mail sended")
     return true;
   } catch (error) {
     console.error("MAIL FAILED ", error);
