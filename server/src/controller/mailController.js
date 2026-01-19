@@ -1,17 +1,18 @@
 const nodemailer = require("nodemailer");
 const speakeasy = require("speakeasy");
-
-const patientSignInMailVerfication = async (userId,userEmail) => {
-  if (!userId) {
-    return false;
-  }
-  const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: process.env.email,
       pass: process.env.emailPassword,
     },
   });
+
+const patientSignInMailVerfication = async (userId,userEmail) => {
+  if (!userId) {
+    return false;
+  }
+  
   const secret = Buffer.from(userId.toString()).toString("base64");
 
     // Generate OTP valid for 5 minutes (300 seconds)
@@ -41,8 +42,8 @@ const patientSignInMailVerfication = async (userId,userEmail) => {
     });
     return true;
   } catch (error) {
-    console.log("Message sent:", info.messageId);
-    throw error;
+    console.error("MAIL FAILED ", error);
+  return false;
   }
 };
 
