@@ -94,13 +94,15 @@ function PatientRegistration() {
         payload,
         {
           withCredentials: true,
-        }
+        },
       );
       console.log("Server response:", res.data);
       sessionStorage.removeItem("user_id");
+      sessionStorage.removeItem("user_email");
+
       // alert("registration completed successfully");
       toast.success(
-        "Registration Completed Successfully, Your are ready to Login"
+        "Registration Completed Successfully, Your are ready to Login",
       );
       navigate("/"); // or wherever you want
     } catch (err) {

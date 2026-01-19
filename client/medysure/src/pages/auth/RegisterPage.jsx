@@ -29,13 +29,15 @@ function RegisterPage() {
     if (formData.password !== formData.confirm_password) {
       return setWarning("Password not Matched");
     }
+    sessionStorage.setItem("user_email", formData.email);
+
     try {
       const register = await axios.post(
         `${api_url}/patient/createPatient`,
         formData,
         {
           withCredentials: true,
-        }
+        },
       );
       // console.log(
       //   "register successful:",
@@ -44,6 +46,7 @@ function RegisterPage() {
       // );
       toast.info("Your Otp is sended to your Registerd Email");
       sessionStorage.setItem("user_id", register.data.data);
+
       navigate("/otp-verify");
     } catch (error) {
       if (error.response) {

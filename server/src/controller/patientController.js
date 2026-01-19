@@ -6,18 +6,17 @@ const mongoose = require("mongoose");
 //
 //patient registration otp validator
 const patientOtpValidator = async (req, res) => {
-  const { userId } = req.params;
-  const { otp } = req.body;
+  const { otp,email } = req.body;
   try {
-    if (!userId || !otp) {
+    if (!email || !otp) {
       return res
         .status(400)
-        .json({ success: false, message: "userid and otp are required" });
+        .json({ success: false, message: "email and otp are required" });
     }
-    const secret = Buffer.from(userId.toString()).toString("base64");
+  const secret = process.env.OTP_SECRET + email;
     const isValid = speakeasy.totp.verify({
       secret: secret,
-      encoding: "base64",
+      encoding: "ascii",
       token: otp,
       step: 300, // Must match send step
       window: 0, // No time drift allowed

@@ -1,32 +1,35 @@
 const nodemailer = require("nodemailer");
 const speakeasy = require("speakeasy");
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.email,
-      pass: process.env.emailPassword,
-    },
-  });
 
-const patientSignInMailVerfication = async (userId,userEmail) => {
-  if (!userId) {
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_PASS,
+  },
+});
+
+const patientSignInMailVerfication = async (userEmail) => {
+  if (!userEmail) {
     return false;
   }
-  
-  const secret = Buffer.from(userId.toString()).toString("base64");
 
-    // Generate OTP valid for 5 minutes (300 seconds)
-    const token = speakeasy.totp({
-        secret: secret,
-        encoding: "base64",
-        step: 300,      // 5 minutes validity
-        digits: 6
-    });
-    console.log("BEFORE SENDMAIL");
+  const secret = process.env.OTP_SECRET + userEmail;
+
+  // Generate OTP valid for 5 minutes (300 seconds)
+  const token = speakeasy.totp({
+    secret: secret,
+    encoding: "ascii",
+    step: 300, // 5 minutes validity
+    digits: 6,
+  });
+  console.log("BEFORE SENDMAIL");
 
   try {
     const info = await transporter.sendMail({
-      from: process.env.email,
+      from: `"MedySure" <medysurepvtlmtd@gmail.com>`,
       to: userEmail,
       subject: "MedySure OTP for verification",
       html: `
@@ -41,11 +44,11 @@ const patientSignInMailVerfication = async (userId,userEmail) => {
     </div>
   `,
     });
-    console.log("mail sended")
+    console.log("AFTER SENDMAIL");
     return true;
   } catch (error) {
     console.error("MAIL FAILED ", error);
-  return false;
+    return false;
   }
 };
 

@@ -16,7 +16,7 @@ import axios from "axios";
 
 // function start here
 function OtpVerifyPage() {
-  const userId = sessionStorage.getItem("user_id");
+  const email = sessionStorage.getItem("user_email");
   const api_url = import.meta.env.VITE_API_URL;
 
   const navigate = useNavigate();
@@ -44,12 +44,7 @@ function OtpVerifyPage() {
   if (timeLeft == 0) {
     // check timer
 
-    const deleteUser = axios.post(`${api_url}/admin/deleteAdmin/${userId}`, {
-      withCredentials: true,
-    });
-    console.log("user deleted", deleteUser.data.message);
-
-    sessionStorage.removeItem("user_id");
+    sessionStorage.removeItem("user_email");
     navigate("/register");
   }
   const verifyOtp = async () => {
@@ -57,15 +52,15 @@ function OtpVerifyPage() {
     try {
       setWarning("");
       const verify = await axios.post(
-        `${api_url}/patient/patientOtpValidate/${userId}`,
-        { otp: otp },
+        `${api_url}/patient/patientOtpValidate`,
+        { otp: otp, email },
 
         {
           headers: {
             "Content-Type": "application/json",
           },
           withCredentials: true,
-        }
+        },
       );
       console.log("otp verified successfully", verify.data.message);
       toast.success("Your Otp Verified");
