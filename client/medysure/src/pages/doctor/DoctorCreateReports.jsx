@@ -26,7 +26,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 
-function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
+function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
   const api_url = import.meta.env.VITE_API_URL;
   const doctorId = sessionStorage.getItem("user_id");
 
@@ -98,6 +98,7 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
             tableData,
             patientId,
             doctorId,
+            email,
           },
           { withCredentials: true }
         );
@@ -117,6 +118,7 @@ function DoctorCreateReports({ open, setOpen, patientId, onUpdate }) {
             prescription: formData.prescription,
             patientId,
             doctorId,
+            email,
           },
           { withCredentials: true }
         );

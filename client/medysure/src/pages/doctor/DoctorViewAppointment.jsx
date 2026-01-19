@@ -302,6 +302,7 @@ function DoctorViewAppointment() {
                                   }}
                                   patientId={d.patientId}
                                   onUpdate={appointment}
+                                  email={d.email}
                                 />
                               </DropdownMenuItem>{" "}
                             </DropdownMenuContent>

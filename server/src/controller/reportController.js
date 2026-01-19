@@ -18,7 +18,7 @@ cloudinary.config({
 });
 
 const createReport = async (req, res) => {
-  const { patientId, doctorId, title, tableData } = req.body;
+  const { patientId, doctorId,email, title, tableData } = req.body;
 
   userId = patientId;
   const today = new Date();
@@ -58,7 +58,7 @@ const createReport = async (req, res) => {
       tableData,
     };
     const { buffer } = await createPdf(ejsFilePath, data);
-    await reportMailSender(buffer);
+    await reportMailSender(buffer,email);
 
     const customPublicId = `report_${Date.now()}`; // need to customise while creating frontend
     const result = await uploadPdfBuffer(buffer, customPublicId);
@@ -88,7 +88,7 @@ const createReport = async (req, res) => {
 };
 
 const createPrescription = async (req, res) => {
-  const { patientId, doctorId, title, prescription } = req.body;
+  const { patientId, doctorId,email, title, prescription } = req.body;
 
   userId = doctorId;
   const today = new Date();
@@ -119,7 +119,7 @@ const createPrescription = async (req, res) => {
       title,
     };
     const { buffer } = await createPdf(ejsFilePath, data);
-    await reportMailSender(buffer);
+    await reportMailSender(buffer,email);
 
     const customPublicId = `report_${Date.now()}`; // need to customise while creating frontend
     const result = await uploadPdfBuffer(buffer, customPublicId);

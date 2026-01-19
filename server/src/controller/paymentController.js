@@ -28,8 +28,8 @@ const Appointment = require("../models/appointmentSchema");
         appointmentId,
         doctorId
       },
-      success_url: "http://localhost:5173/patient/payment-success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "http://localhost:5173/patient/payment-cancel",
+      success_url: "https://medy-sure.vercel.app/patient/payment-success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://medy-sure.vercel.app/patient/payment-cancel",
     });
 
     res.json({ url: session.url })

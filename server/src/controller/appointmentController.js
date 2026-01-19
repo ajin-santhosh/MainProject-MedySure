@@ -347,7 +347,17 @@ const getAppointmentForDoctor = async (req, res) => {
           as: "patient",
         },
       },
+      {
+    $lookup: {
+      from: "users",
+      localField: "patientId",
+      foreignField: "_id",
+      as: "user",
+    },
+  },
       { $unwind: "$patient" },
+      { $unwind: "$user" },
+
       {
         $project: {
           _id: 1,
@@ -383,6 +393,7 @@ const getAppointmentForDoctor = async (req, res) => {
           patientName: {
             $concat: ["$patient.firstName", " ", "$patient.lastName"],
           },
+          email:"$user.email",
         },
       },
     ]);
