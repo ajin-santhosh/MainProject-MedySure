@@ -67,7 +67,7 @@ function PatientBookAppointment() {
       description: "",
       time: "10:30:00",
       id: "",
-    } // for form data
+    }, // for form data
   );
   const handleChange = (e) => {
     // for formdata
@@ -88,9 +88,15 @@ function PatientBookAppointment() {
       return; // stop submission
     }
     setErrors({});
-    const datePart = date.toISOString().split("T")[0]; // '2025-02-02'
+    console.log(date);
+    const datePart =
+      date.getFullYear() +
+      "-" +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(date.getDate()).padStart(2, "0");
     const datetime = `${datePart}T${formData.time}`;
-    // console.log(datetime)
+    console.log(datetime);
     // console.log(id)
 
     const payload = {
@@ -104,7 +110,7 @@ function PatientBookAppointment() {
       const res = await axios.post(
         `${api_url}/appointment/createAppointment`,
         payload,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       // console.log("Server response:", res.data.data);
       // alert("Appointment booked successfully");
@@ -315,18 +321,18 @@ function PatientBookAppointment() {
                           <Label htmlFor="description">Descrption</Label>
                           <InputGroup>
                             <InputGroupTextarea
-                              placeholder="Enter your descrption"
+                              placeholder="Enter your descrption < 60 characters"
                               id="description"
                               name="description"
                               value={formData.description}
                               onChange={handleChange}
                               required
                             />
-                            <InputGroupAddon align="block-end">
+                            {/* <InputGroupAddon align="block-end">
                               <InputGroupText className="text-muted-foreground text-xs">
                                 60 characters
                               </InputGroupText>
-                            </InputGroupAddon>
+                            </InputGroupAddon> */}
                           </InputGroup>
                         </div>
                         <div className="flex gap-4">

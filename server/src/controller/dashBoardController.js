@@ -3,6 +3,7 @@ const Appointment = require("../models/appointmentSchema");
 const Feedback = require("../models/feedbackSchema");
 const Report = require("../models/reportSchema");
 const Patient = require("../models/patientSchema");
+const Payment = require("../models/paymentSchema");
 const mongoose = require("mongoose");
 
 const totalDoctors = async (req, res) => {     // for getting total doctor count
@@ -266,6 +267,24 @@ const totalReportsByPatient = async (req,res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+const totalPaymentsByPatient = async (req,res) => {
+  const {id} = req.params
+    try {
+    const totalCount = await Payment.countDocuments({
+      patientId: new mongoose.Types.ObjectId(id)
+    })
+   return res.status(201).json({
+      success: true,
+      message: "Patient Payment count",
+      data: totalCount  
+    })
+  } catch (error) {
+    console.error("Error fetching patient Payment count:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
 // for getting patinet appointmet status count
 const patientAppintmentStatusReport = async (req, res) => { 
    const {userId} = req.params
@@ -443,6 +462,7 @@ module.exports = {
   totalAppointmentByPatient,
   totalFeedbackByPatient,
   totalReportsByPatient,
+  totalPaymentsByPatient,
   patientAppintmentStatusReport,
   totalAppointmentForDoctor,
   totalFeedbackForDoctor,

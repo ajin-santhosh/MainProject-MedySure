@@ -12,9 +12,10 @@ function PatientDashBoard() {
   const [totalappointment, setTotalappointment] = useState(0);
   const [totalfeedback, setTotalfeedback] = useState(0);
   const [totalreport, setTotalreport] = useState(0);
+  const [totalpayment,setTotalpayment] = useState(0)
   const fetchCount = async () => {
     try {
-      const [ a_count, f_count, r_count] =
+      const [ a_count, f_count, r_count,p_count] =
         await Promise.all([
           axios.get(`${api_url}/dashboard/totalAppointmentByPatient/${id}`, {
             withCredentials: true,
@@ -25,10 +26,15 @@ function PatientDashBoard() {
           axios.get(`${api_url}/dashboard/totalReportsByPatient/${id}`, {
             withCredentials: true,
           }),
+           axios.get(`${api_url}/dashboard/totalPaymentsByPatient/${id}`, {
+            withCredentials: true,
+          }),
           ]);
       setTotalappointment(a_count.data.data);
       setTotalfeedback(f_count.data.data);
       setTotalreport(r_count.data.data);
+      setTotalpayment(p_count.data.data);
+
     } catch (error) {
       console.error("Error in API calls for counts:", error);
     }
@@ -54,7 +60,7 @@ const userId = sessionStorage.getItem("user_id");
           { withCredentials: true }
         );
   
-        console.log("STATUS DATA:", result.data.status);  // logs only once
+        // console.log("STATUS DATA:", result.data.status);  // logs only once
   
         setRes(result.data.status);
       } catch (error) {
@@ -89,10 +95,11 @@ const userId = sessionStorage.getItem("user_id");
      {
       id: 4,
       cardH: "Total Payments",
-      total_count: 3,
+      total_count: totalpayment,
       th2: "MedySure Payments",
       th3: "total number of Payments you paid",
     },
+    
   ];
   return (
 <>
@@ -144,7 +151,7 @@ const userId = sessionStorage.getItem("user_id");
 
               <div className="grid gap-1">
                  {res.map((entry) => (
-                <div className="flex items-center bg-white dark:bg-gray-800 p-2 rounded-xl shadow-sm">
+                <div key={entry._id} className="flex items-center bg-white dark:bg-gray-800 p-2 rounded-xl shadow-sm">
                   <span>
                     {/* <ShieldCheck /> */}
                   </span>

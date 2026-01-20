@@ -122,7 +122,7 @@ function RegisterPage() {
                 required
               />
               {warning && <p className="text-red-800 font-sm">{warning}</p>}
-              <Button className="w-20">Verify</Button>
+              <Button className="w-20 mt-2">Verify</Button>
               <p className="text- text-gray-600 mt-4 ">
                 Already have an account, sign in -
                 <Link to="/" className="text-blue-500 hover:underline">

@@ -24,15 +24,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
+export function AdminAddDoctorSheet({ mode = "add", initialData, onUpdate }) {
   const api_url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: initialData?.email || "",
     password: "",
-    active:initialData?.active || false,
-    firstName: initialData?.firstName || "",
+    active: initialData?.active || false,
+    firstName: initialData?.firstName || "Dr.",
     lastName: initialData?.lastName || "",
     department: initialData?.department || "",
     experiance: initialData?.experiance || "",
@@ -50,19 +50,21 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
   };
   // for handling toggle
   const handleToggle = (e) => {
-    const { id, type, checked,value} = e.target;
+    const { id, type, checked, value } = e.target;
     setFormData((prev) => ({
-    ...prev,
-    [id]: type === "checkbox" ? checked : value,
-  }))
-  }
-  
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let validationErrors = {};
-    
-    if (mode === "add") {   // Adding doctor
-    if (!formData.password) validationErrors.password = "password is required";
+
+    if (mode === "add") {
+      // Adding doctor
+      if (!formData.password)
+        validationErrors.password = "password is required";
       if (!formData.gender) validationErrors.gender = "Gender is required";
       if (!formData.department)
         validationErrors.department = "deparrtment is required";
@@ -76,7 +78,7 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
       const payload = {
         email: formData.email,
         password: formData.password,
-        active:formData.active,
+        active: formData.active,
         firstName: formData.firstName,
         lastName: formData.lastName,
         department: formData.department,
@@ -84,7 +86,7 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
         gender: formData.gender,
         qualification: formData.qualification,
       };
-    //   console.log(payload);
+      //   console.log(payload);
 
       try {
         const res = await axios.post(
@@ -92,13 +94,24 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
           payload,
           {
             withCredentials: true,
-          }
+          },
         );
         console.log("Server response:", res.data.data);
-         toast.success("Doctor Created Successfully");
+        toast.success("Doctor Created Successfully");
         // alert("registration completed successfully");
         // navigate("/doctors");
-        onUpdate?.()
+        onUpdate?.();
+        setFormData({
+          email: "",
+          password: "",
+          active: false,
+          firstName: "Dr.",
+          lastName:"",
+          department: "",
+          experiance: "",
+          gender: "",
+          qualification: "",
+        });
       } catch (error) {
         if (error.response) {
           // Backend returned error (like 401)
@@ -112,9 +125,7 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
           setErrors(validationErrors);
         }
       }
-    } 
-    
-    else {
+    } else {
       if (!formData.gender) validationErrors.gender = "Gender is required";
       if (!formData.department)
         validationErrors.department = "deparrtment is required";
@@ -126,7 +137,7 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
       let payload = {
         email: formData.email,
         password: formData.password,
-        active:formData.active,
+        active: formData.active,
         firstName: formData.firstName,
         lastName: formData.lastName,
         department: formData.department,
@@ -137,9 +148,9 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
 
       if (!formData.password) {
         // check password
-         payload = {
+        payload = {
           email: formData.email,
-          active:formData.active,
+          active: formData.active,
           firstName: formData.firstName,
           lastName: formData.lastName,
           department: formData.department,
@@ -147,20 +158,20 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
           gender: formData.gender,
           qualification: formData.qualification,
         };
-      } 
+      }
 
       // console.log(payload)
-  try {
+      try {
         const res = await axios.put(
           `${api_url}/doctor/updateDoctor/${initialData.userId}`,
           payload,
           {
             withCredentials: true,
-          }
+          },
         );
         // console.log("Server response:", res.data.data);
-          toast.success("Doctor Updated Successfully");
-        onUpdate?.()
+        toast.success("Doctor Updated Successfully");
+        onUpdate?.();
 
         // alert("doctor update completed successfully");
         // navigate("/admin/doctors");
@@ -177,7 +188,6 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
           setErrors(validationErrors);
         }
       }
-
     }
   };
 
@@ -215,20 +225,17 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
-                
               />
               {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password}
-                  </p>
-                )}
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
             <div className="grid gap-3">
               <Label htmlFor="firstName">First Name</Label>
               <Input
                 id="firstName"
                 type="text"
-                placeholder="first name"
+                placeholder="Dr. first name"
                 value={formData.firstName}
                 onChange={handleChange}
                 required
@@ -314,10 +321,13 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
             <div // toggle
               className="grid grid-cols-2"
             >
-              <div >
+              <div>
                 <h2 className="text-sm font-semibold">
-                  User Status: <span className="text-sm font-semibold text-blue-500" > {formData.active ? "Active" : "Inactive"}</span>
-                 
+                  User Status:{" "}
+                  <span className="text-sm font-semibold text-blue-500">
+                    {" "}
+                    {formData.active ? "Active" : "Inactive"}
+                  </span>
                 </h2>
               </div>
 
@@ -325,8 +335,8 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
               <div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
-                     type="checkbox"
-                     id="active"
+                    type="checkbox"
+                    id="active"
                     checked={formData.active}
                     onChange={handleToggle}
                     className="sr-only peer"
@@ -351,7 +361,7 @@ export function AdminAddDoctorSheet({ mode = "add", initialData,onUpdate }) {
                   ></div>
                 </label>
               </div>
-            </div> 
+            </div>
             <div className="grid gap-3">
               <Label htmlFor="qualification"> Qualification</Label>
               <Input

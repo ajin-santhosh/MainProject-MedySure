@@ -42,6 +42,8 @@ function AdminAddAdminSheet({ mode = "add", initialData, onUpdate }) {
 
     if (mode === "add") {
       // Adding Admin
+      setFormData({ email: "", password: "", active: false });
+
       if (!formData.password)
         validationErrors.password = "password is required";
       if (Object.keys(validationErrors).length > 0) {
@@ -101,7 +103,7 @@ function AdminAddAdminSheet({ mode = "add", initialData, onUpdate }) {
           payload,
           {
             withCredentials: true,
-          }
+          },
         );
         console.log("Server response:", res.data.data);
         toast.success("Admin Updated Successfully");

@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const reportMailSender = async (pdfBuffer, userEmail) => {
-// console.log("PDF BUFFER SIZE (bytes):", pdfBuffer?.length);
+  // console.log("PDF BUFFER SIZE (bytes):", pdfBuffer?.length);
   try {
     const buffer = Buffer.from(pdfBuffer);
     const pdfBase64 = buffer.toString("base64");

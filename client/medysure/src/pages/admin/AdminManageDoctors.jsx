@@ -484,8 +484,9 @@ function AdminManageDoctors() {
         <div className="p-3 ">
           <div className="p-2 w-full bg-zinc-100 dark:bg-slate-950">
             {/* FILTER BAR */}
-            <div className="flex items-end py-4">
-              <Input
+            <div className="grid justify-center grid-cols-2 sm:grid-cols-4 gap-4 p-4">
+              <div>
+                <Input
                 placeholder="Filter emails..."
                 value={table.getColumn("email")?.getFilterValue() || ""}
                 onChange={(e) =>
@@ -493,8 +494,10 @@ function AdminManageDoctors() {
                 }
                 className="max-w-sm"
               />
+              </div>
 
-              <ButtonGroup className="pl-5">
+              <div>
+                <ButtonGroup className="pl-5">
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="outline">Add Doctor</Button>
@@ -506,8 +509,10 @@ function AdminManageDoctors() {
                   <UserRoundPlus />
                 </Button>
               </ButtonGroup>
+              </div>
 
-              <ButtonGroup className="pl-5">
+              <div>
+                <ButtonGroup className="pl-5">
                 <Button variant="outline" onClick={exportDoctor}>
                   Export CSV
                 </Button>
@@ -516,8 +521,10 @@ function AdminManageDoctors() {
                   <FileSpreadsheet />
                 </Button>
               </ButtonGroup>
+              </div>
 
-              <DropdownMenu>
+              <div>
+                <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="ml-auto">
                     Columns <ChevronDown className="ml-2 h-4 w-4" />
@@ -542,6 +549,7 @@ function AdminManageDoctors() {
                     ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
             </div>
 
             {/* TABLE */}
