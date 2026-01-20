@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
+import PageLoader from "@/components/Loader/PageLoader";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
 function RegisterPage() {
   const navigate = useNavigate();
   const api_url = import.meta.env.VITE_API_URL;
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -32,6 +35,7 @@ function RegisterPage() {
     sessionStorage.setItem("user_email", formData.email);
 
     try {
+      setLoading(true);
       const register = await axios.post(
         `${api_url}/patient/createPatient`,
         formData,
@@ -58,8 +62,11 @@ function RegisterPage() {
       } else {
         setWarning("Something went wrong: " + error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
+  if (loading) return <PageLoader text="Loading" />;
 
   return (
     <>

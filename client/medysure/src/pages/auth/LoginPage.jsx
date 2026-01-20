@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/Theme/theme-toggle";
+import PageLoader from "@/components/Loader/PageLoader";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // function start
@@ -20,6 +21,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [warning, setWarning] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -28,6 +30,7 @@ function LoginPage() {
     // console.log(formData);
     setWarning("");
     try {
+      setLoading(true);
       const login = await axios.post(`${api_url}/userLogin`, formData, {
         withCredentials: true,
       });
@@ -61,9 +64,14 @@ function LoginPage() {
         setWarning("Something went wrong: " + error.message);
         toast.warning("Something went wrong:");
       }
+    } finally {
+      setLoading(false);
     }
   };
-
+  if (loading)
+    return (
+      <PageLoader text="Sometime server may down due to inactivity...this may take upto < 50 seconds" />
+    );
   return (
     <>
       <div className="min-h-screen p-10 ">

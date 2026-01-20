@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt")
 const Users = require("../models/userSchema");
-const { createAccessToken } = require('../utils/jwt') 
+const { createAccessToken } = require('../utils/jwt')
 const COOKIE_NAME = process.env.ACCESS_COOKIE_NAME
 
 const cookieOptions = {
@@ -11,6 +11,7 @@ const cookieOptions = {
 };
 const userLogin = async (req, res) => {
   try {
+
     const { email, password } = req.body;
 
     const user = await Users.findOne({ email });
@@ -25,7 +26,7 @@ const userLogin = async (req, res) => {
     if (!match) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
-    
+
 
     const token = createAccessToken({
       id: user._id.toString(),
@@ -37,7 +38,7 @@ const userLogin = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
-      data: { id: user._id, email: user.email,role:user.role }
+      data: { id: user._id, email: user.email, role: user.role }
     });
 
   } catch (error) {
@@ -48,4 +49,4 @@ const userLogout = async (req, res) => {
   res.clearCookie(COOKIE_NAME, cookieOptions);
   return res.status(200).json({ success: true, message: "Logged out" });
 };
-module.exports ={userLogin,userLogout}
+module.exports = { userLogin, userLogout }
