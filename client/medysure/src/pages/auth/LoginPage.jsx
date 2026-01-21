@@ -70,7 +70,7 @@ function LoginPage() {
   };
   if (loading)
     return (
-      <PageLoader text="Sometime server may down due to inactivity...this may take upto < 50 seconds" />
+      <PageLoader text="Sometimes server may down due to inactivity... this may take upto < 50 seconds" />
     );
   return (
     <>
