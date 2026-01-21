@@ -1,34 +1,46 @@
 const ejs = require("ejs");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 
-const createPdf = async (ejsFilePath,dataObj = {}) => {
+const createPdf = async (ejsFilePath, dataObj = {}) => {
   try {
+    console.log("Chromium path:", await chromium.executablePath());
+
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      timeout: 0, // IMPORTANT for Render
     });
 
     const page = await browser.newPage();
 
-    // Render EJS with data (dataObj can be empty if you don't need it)
+    // Render EJS template
     const html = await ejs.renderFile(ejsFilePath, dataObj);
 
-    await page.setContent(html, { waitUntil: "domcontentloaded" });
+    await page.setContent(html, {
+      waitUntil: "networkidle0",
+    });
 
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "20px", bottom: "20px" },
+      margin: {
+        top: "20px",
+        bottom: "20px",
+        left: "20px",
+        right: "20px",
+      },
     });
 
     await browser.close();
 
     return {
-      buffer: pdfBuffer
+      buffer: pdfBuffer,
     };
-
   } catch (error) {
-    console.log("PDF generation error:", error);
+    console.error("PDF generation error:", error);
     throw error;
   }
 };
