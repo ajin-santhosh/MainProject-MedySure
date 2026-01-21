@@ -84,6 +84,8 @@ function DoctorAddNotes({
                   onChange={(e) =>
                     setFormData({ ...formData, note: e.target.value })
                   }
+                    onKeyDown={(e) => e.stopPropagation()}
+
                 />
                 <FieldDescription>
                   Share your quick guide to help patient

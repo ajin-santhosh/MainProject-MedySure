@@ -14,10 +14,13 @@ const createHealthTable = async (req, res) => {
     Blood_sugar,
   } = req.body;
   try {
-    const existingpatient = await HealthTable.findById({ patientId });
+    const existingpatient = await HealthTable.findOne({ patientId: patientId });
     if (existingpatient) {
-      return res.status(409).json({ success: false, message: "patient data exist already " });
+      return res
+        .status(409)
+        .json({ success: false, message: "patient data exist already " });
     }
+    console.log("ccc");
     const data = await HealthTable.create({
       doctorId,
       patientId,
@@ -39,21 +42,23 @@ const createHealthTable = async (req, res) => {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 const updateHealthTable = async (req, res) => {
   const { healthtable } = req.params;
-   const updateData = req.body;
+  const updateData = req.body;
 
   try {
     const existingpatient = await HealthTable.findById(healthtable);
     if (!existingpatient) {
-      return res.status(409).json({ success: false, message: "patient data not exist " });
+      return res
+        .status(409)
+        .json({ success: false, message: "patient data not exist " });
     }
     const data = await HealthTable.findByIdAndUpdate(
       healthtable,
       { $set: updateData },
-      { new: true }
-    )
+      { new: true },
+    );
     return res.status(201).json({
       success: true,
       message: "health data updated successfully",
@@ -65,7 +70,7 @@ const updateHealthTable = async (req, res) => {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 
 const getHelathTable = async (req, res) => {
   try {
@@ -125,19 +130,19 @@ const getHelathTable = async (req, res) => {
       data: data,
     });
   } catch (error) {
-     console.error("Error fetching healthdata:", error);
+    console.error("Error fetching healthdata:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
 };
 const getHelathTablePatient = async (req, res) => {
-  const {userId} = req.params
+  const { userId } = req.params;
   try {
     const data = await HealthTable.aggregate([
       {
-              $match: { patientId: new mongoose.Types.ObjectId(userId) }
-            },
+        $match: { patientId: new mongoose.Types.ObjectId(userId) },
+      },
       {
         $lookup: {
           from: "patients",
@@ -193,11 +198,16 @@ const getHelathTablePatient = async (req, res) => {
       data: data,
     });
   } catch (error) {
-     console.error("Error fetching health data:", error);
+    console.error("Error fetching health data:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
 };
 
-module.exports = { createHealthTable,getHelathTable,getHelathTablePatient,updateHealthTable };
+module.exports = {
+  createHealthTable,
+  getHelathTable,
+  getHelathTablePatient,
+  updateHealthTable,
+};

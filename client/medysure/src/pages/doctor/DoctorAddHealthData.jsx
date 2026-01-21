@@ -67,6 +67,7 @@ function DoctorAddHealthData({
         toast.success("Health Data Updated Successfully");
       } else {
         // ADD branch
+        const doctorId = userId
         const payload = {
           patientId,
           Blood_pressure: formData.Blood_pressure,
@@ -77,7 +78,7 @@ function DoctorAddHealthData({
           Blood_sugar: formData.Blood_sugar,
         };
         await axios.post(
-          `${api_url}/health/createHealthTable/${userId}`,
+          `${api_url}/health/createHealthTable/${doctorId}`,
           payload,
           { withCredentials: true }
         );

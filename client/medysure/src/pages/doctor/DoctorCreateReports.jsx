@@ -155,6 +155,8 @@ function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
+                    onKeyDown={(e) => e.stopPropagation()}
+
                 />
 
                 {/* LAB REPORT */}
@@ -175,6 +177,8 @@ function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
                           placeholder="Test Name"
                           value={row.testName}
                           onChange={(e) => handleChange(index, e)}
+                          onKeyDown={(e) => e.stopPropagation()}
+
                           className="border rounded px-3 py-2 w-full"
                         />
                         <input
@@ -182,6 +186,8 @@ function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
                           placeholder="Result"
                           value={row.result}
                           onChange={(e) => handleChange(index, e)}
+                            onKeyDown={(e) => e.stopPropagation()}
+
                           className="border rounded px-3 py-2 w-full"
                         />
                         <input
@@ -189,6 +195,8 @@ function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
                           placeholder="Unit"
                           value={row.unit}
                           onChange={(e) => handleChange(index, e)}
+                            onKeyDown={(e) => e.stopPropagation()}
+
                           className="border rounded px-3 py-2 w-full"
                         />
                         <input
@@ -196,12 +204,16 @@ function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
                           placeholder="Reference Range"
                           value={row.reference}
                           onChange={(e) => handleChange(index, e)}
+                            onKeyDown={(e) => e.stopPropagation()}
+
                           className="border rounded px-3 py-2 w-full"
                         />
                         <button
                           type="button"
                           onClick={() => removeRow(index)}
                           disabled={tableData.length === 1}
+                            onKeyDown={(e) => e.stopPropagation()}
+
                           className="text-red-500 hover:text-red-700 disabled:opacity-40 disabled:cursor-not-allowed justify-self-end"
                         >
                           <X />
@@ -224,6 +236,8 @@ function DoctorCreateReports({ open, setOpen, patientId,email, onUpdate }) {
                     onChange={(e) =>
                       setFormData({ ...formData, prescription: e.target.value })
                     }
+                      onKeyDown={(e) => e.stopPropagation()}
+
                     className="w-full"
                   />
                 )}

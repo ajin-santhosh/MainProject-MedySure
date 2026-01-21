@@ -5,13 +5,13 @@ const healthSchema = new mongoose.Schema(
               type: mongoose.Schema.Types.ObjectId,
               ref: "Users",
               required: true,
-              index:true
+              index: true,
             },
             doctorId: {
               type: mongoose.Schema.Types.ObjectId,
               ref: "Users",
               required: true,
-              index:true
+              index: true,
             },
             Blood_pressure:{
                 type:String,

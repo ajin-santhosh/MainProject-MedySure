@@ -4,7 +4,7 @@ const chromium = require("@sparticuz/chromium");
 
 const createPdf = async (ejsFilePath, dataObj = {}) => {
   try {
-    console.log("Chromium path:", await chromium.executablePath());
+    // console.log("Chromium path:", await chromium.executablePath());
 
     const browser = await puppeteer.launch({
       args: chromium.args,
