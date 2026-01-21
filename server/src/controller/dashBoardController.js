@@ -89,6 +89,21 @@ const totalReport = async (req, res) => {  // for getting total report count
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+const totalPayment = async (req, res) => {  // for getting total report count
+  try {
+    const total = await Payment.countDocuments();
+    return res.status(201).json({
+      success: true,
+      message: "total Payments",
+      data: total,
+    });
+  } catch (error) {
+    console.error("Error fetching Payment count:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
 const appintmentStatusReport = async (req, res) => { // for getting appointmet status count
   try {
     const total = await Appointment.aggregate([
@@ -155,6 +170,44 @@ return res.status(201).json({
 
     
 }
+const paymentWeekReport =  async(req,res) => {  // for getting appointment week count
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    try{
+       const data = await Payment.aggregate([
+  {
+    $match: {
+      createdAt : { $gte: sevenDaysAgo }
+    }
+  },
+  {
+    $group: {
+      _id: {
+        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+      },
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { _id: 1 }
+  }
+]);
+return res.status(201).json({
+      success: true,
+      message: "payment week report",
+      data:data  
+    });
+    }
+    catch(error){
+        console.error("Error fetching payment status:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+
+    
+}
+
 
 const patientWeekReport =  async(req,res) => {  // for getting patient week report
     const sevenDaysAgo = new Date();
@@ -455,8 +508,10 @@ module.exports = {
   totalAppointment,
   totalFeedback,
   totalReport,
+  totalPayment,
   appintmentStatusReport,
   appointmentWeekReport,
+  paymentWeekReport,
   patientWeekReport,
   acivePatientCount,
   totalAppointmentByPatient,

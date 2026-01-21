@@ -15,7 +15,7 @@ const AppointmentWeekReport = ({ items = [] }) => {
       style={{
         width: "100%",
         maxWidth: "500px",
-        maxHeight: "30vh",
+        maxHeight: "50vh",
         aspectRatio: 1.618,
       }}
       responsive

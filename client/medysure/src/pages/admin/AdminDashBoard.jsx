@@ -15,12 +15,14 @@ function AdminDashBoard() {
   const [totalfeedback, setTotalfeedback] = useState(0);
   const [totalreport, setTotalreport] = useState(0);
   const [totalactivepatient, setTotalactivepatient] = useState(0);
+  const [paymentCount, setPaymentCount] = useState(0)
   const [res1, setRes1] = useState([]);
   const [res2, setRes2] = useState([]);
+  const [res3, setRes3] = useState([]);
 
   const fetchCount = async () => {
     try {
-      const [p_count, d_cont, a_count, f_count, r_count, p_status_count] =
+      const [p_count, d_cont, a_count, f_count, r_count, p_status_count,pay_count] =
         await Promise.all([
           axios.get(`${api_url}/dashboard/totalPatients`, {
             withCredentials: true,
@@ -37,7 +39,10 @@ function AdminDashBoard() {
           axios.get(`${api_url}/dashboard/totalreports`, {
             withCredentials: true,
           }),
-          axios.get(`${api_url}/dashboard/acivePatientCount`),
+          axios.get(`${api_url}/dashboard/acivePatientCount`,{withCredentials: true,}),
+          axios.get(`${api_url}/dashboard/totalPayment`, {
+            withCredentials: true,
+          }),
         ]);
       setTotalpatients(p_count.data.total);
       setTotaldoctors(d_cont.data.total);
@@ -45,6 +50,7 @@ function AdminDashBoard() {
       setTotalfeedback(f_count.data.data);
       setTotalreport(r_count.data.data);
       setTotalactivepatient(p_status_count.data.total);
+      setPaymentCount(pay_count.data.data)
     } catch (error) {
       console.error("Error in API calls for counts:", error);
     }
@@ -96,15 +102,25 @@ function AdminDashBoard() {
       th2: "MedySure Reports",
       th3: "total number of Reports created so far",
     },
+    {
+      id: 6,
+      cardH: "Total Payments",
+      total_count: paymentCount,
+      th2: "MedySure Reports",
+      th3: "total number of Payments done so far",
+    },
   ];
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const [result1, result2] = await Promise.all([
+        const [result1, result2,result3] = await Promise.all([
           axios.get(`${api_url}/dashboard/appintmentStatusReport`, {
             withCredentials: true,
           }),
           axios.get(`${api_url}/dashboard/appointmentWeekReport`, {
+            withCredentials: true,
+          }),
+          axios.get(`${api_url}/dashboard/paymentWeekReport`, {
             withCredentials: true,
           }),
         ]);
@@ -112,6 +128,8 @@ function AdminDashBoard() {
         // console.log("STATUS DATA2:", result2.data.data);  // logs only once
         setRes1(result1.data.status);
         setRes2(result2.data.data);
+        setRes3(result3.data.data);
+
       } catch (error) {
         console.error("Error in API calls for appointment status:", error);
       }
@@ -208,6 +226,20 @@ function AdminDashBoard() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <h3 className=" text-xl font-bold pl-4 pt-4 font-pfont_2 ">
+          {" "}
+          Payment Dashboard
+        </h3>
+        <div className="grid grid-cols-1 p-4 gap-4 border m-4 shadow-lg bg-white dark:bg-gray-800">
+         
+          <div className="">
+            <h2 className="font-sans text-xl font-bold text-center pt-3 pb-10">
+              Payment by days (Last 7 days)
+            </h2>
+
+            <AppointmentWeekReport items={res3} />
           </div>
         </div>
         {/*   patient dashboard end */}
