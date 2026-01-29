@@ -15,6 +15,17 @@ import PageLoader from "@/components/Loader/PageLoader";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // function start
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useRef } from "react";
 
 function LoginPage() {
   const api_url = import.meta.env.VITE_API_URL;
@@ -22,6 +33,8 @@ function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(false);
+    const dialogCloseRef = useRef(null); // for modal close
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -141,9 +154,34 @@ function LoginPage() {
                     Register
                   </Link>
                 </p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                <p className="text-sm text-blue-500 hover:underline">Test Credentials</p>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    
+                      <DialogHeader>
+                        <DialogTitle>Test Data</DialogTitle>
+                        <DialogDescription className="p-1">
+                          Admin - admin@email.com <br />
+                          Password: 1234 <br />
+                          <hr />
+                           Doctor - priya.sharma@medysure.com <br />
+                           password: 1234
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                        
+                       
+                      <DialogFooter>
+                      </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </FieldSet>
             </form>
+            
           </div>
+          
         </div>
       </div>
       <div className="border-t border-gray-200 dark:border-slate-800">

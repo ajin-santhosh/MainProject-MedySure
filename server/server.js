@@ -14,6 +14,7 @@ const reportRoutes = require("./src/routes/reportRoutes")
 const dashBoardRoutes = require("./src/routes/dashBoardRoutes")
 const healthTableRoutes = require("./src/routes/healthTableRoutes")
 const paymentRoutes = require("./src/routes/paymentRoutes")
+const authMiddleware = require("./src/middleware/authMiddleware")
 const app = express();
 const port = process.env.PORT || 5000;
 connectDB();
